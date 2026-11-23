@@ -2,12 +2,11 @@
  * 🎨 API Vire do Mussaverso — POST /api/mussa (Vercel Serverless + Multi-Provider IA)
  *
  * Ordem automática de provedores (usa o primeiro configurado nas env vars da Vercel;
- * se o ComfyUI local estiver offline, faz fallback automático para o próximo):
- *   1. COMFYUI_URL   -> Seu ComfyUI local (FLUX.2 Klein 4B NVFP4) via Cloudflare Tunnel (GRÁTIS e ILIMITADO!)
- *                       Opcional: COMFYUI_SECRET (enviado em X-Comfy-Secret)
- *   2. HF_TOKEN      -> Hugging Face Inference Providers (FLUX.1-Kontext-dev)
- *                       Opcional: HF_MODEL (padrão: black-forest-labs/FLUX.1-Kontext-dev)
- *   3. AZURE_API_KEY -> Azure AI Foundry (gpt-image-2)
+ * se o ComfyUI local estiver offline, faz fallback automático para o Hugging Face):
+ *   1. COMFYUI_URL -> Seu ComfyUI local (FLUX.2 Klein 4B NVFP4) via Cloudflare Tunnel (GRÁTIS e ILIMITADO!)
+ *                     Opcional: COMFYUI_SECRET (enviado em X-Comfy-Secret)
+ *   2. HF_TOKEN    -> Hugging Face Inference Providers (FLUX.1-Kontext-dev)
+ *                     Opcional: HF_MODEL (padrão: black-forest-labs/FLUX.1-Kontext-dev)
  *
  * Opcional (log de estatística): SUPABASE_URL + SUPABASE_SECRET_KEY
  */
@@ -176,63 +175,9 @@ async function gerarHuggingFace(imagemB64, mime) {
   throw new Error(ultimoErro);
 }
 
-/* ---------- 3. AZURE AI FOUNDRY (gpt-image-2) ---------- */
-async function gerarAzure(buffer, mime) {
-  const chave = process.env.AZURE_API_KEY;
-  const base = (process.env.AZURE_BASE || 'https://projetosites-resource.services.ai.azure.com/openai/v1').replace(/\/$/, '');
-  const campos = {
-    prompt: PROMPT,
-    model: 'gpt-image-2',
-    size: '1024x1024',
-    n: '1',
-    output_format: 'png',
-    quality: 'medium',
-    input_fidelity: 'high'
-  };
-
-  let resp, corpo, tentativas = 0;
-  while (true) {
-    const fd = new FormData();
-    fd.append('image', new Blob([buffer], { type: mime }), 'selfie.jpg');
-    Object.keys(campos).forEach(function (k) { fd.append(k, campos[k]); });
-
-    resp = await fetch(`${base}/images/edits`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${chave}` },
-      body: fd
-    });
-    corpo = await resp.text();
-    const m = resp.status === 400 && corpo.match(/[Uu]nknown parameter[^a-z_]*'?([a-z_]+)'?/);
-    const desconhecido = m && m[1];
-    if (!desconhecido || !(desconhecido in campos) || ++tentativas > 3) break;
-    delete campos[desconhecido];
-  }
-
-  if (resp.status === 429) {
-    const err = new Error('cota-ia');
-    err.code = 429;
-    throw err;
-  }
-  if (!resp.ok) {
-    if (/moderation|content_(policy|filter)|safety|responsible/i.test(corpo)) {
-      const err = new Error('bloqueada');
-      err.code = 400;
-      throw err;
-    }
-    throw new Error('azure-' + resp.status);
-  }
-  const json = JSON.parse(corpo);
-  const item = json.data && json.data[0];
-  if (item && item.b64_json) {
-    return { imagem: item.b64_json, mime: 'image/png', provedor: 'azure' };
-  }
-  throw new Error('azure-vazio');
-}
-
 module.exports = async function handler(req, res) {
   const temComfy = Boolean(process.env.COMFYUI_URL);
   const temHF = Boolean(process.env.HF_TOKEN);
-  const temAzure = Boolean(process.env.AZURE_API_KEY);
 
   if (req.method === 'GET') {
     return res.status(200).json({
@@ -240,8 +185,7 @@ module.exports = async function handler(req, res) {
       servico: 'vire-do-mussaverso-lucas',
       provedores: {
         comfyui: temComfy,
-        huggingface: temHF,
-        azure: temAzure
+        huggingface: temHF
       },
       supabaseConfigurado: Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY))
     });
@@ -251,7 +195,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ ok: false, erro: 'metodo-nao-permitido' });
   }
 
-  if (!temComfy && !temHF && !temAzure) {
+  if (!temComfy && !temHF) {
     return res.status(503).json({ ok: false, erro: 'sem-chave' });
   }
 
@@ -269,7 +213,6 @@ module.exports = async function handler(req, res) {
     const fila = [];
     if (temComfy) fila.push(function () { return gerarComfyUI(buffer, mime); });
     if (temHF) fila.push(function () { return gerarHuggingFace(imagem, mime); });
-    if (temAzure) fila.push(function () { return gerarAzure(buffer, mime); });
 
     let ultimoErro = null;
     for (const executar of fila) {

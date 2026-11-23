@@ -21,7 +21,7 @@
 | 📺 [`ranking.html`](ranking.html) | **Telão do Ranking** — top 10 gigante com rodízio automático a cada 10s para TV/tablet |
 | 📸 [`fotos.html`](fotos.html) | **Fotos dos Inscritos** — galeria colaborativa via Cloudinary (`festa_lucas`) com 5 molduras temáticas e marca d'água automática |
 | 📼 [`capsula.html`](capsula.html) | **Mande sua Rima** — cápsula do tempo selada no **Supabase PostgreSQL** (`capsula_mensagens`) |
-| 🎨 [`mussa.html`](mussa.html) | **Vire do Mussaverso!** — selfie → desenho cartoon estilo Mussa com IA (Azure `gpt-image-2` via `/api/mussa`) + mural opcional |
+| 🎨 [`mussa.html`](mussa.html) | **Vire do Mussaverso!** — selfie → desenho cartoon estilo Mussa com IA (ComfyUI local ou Hugging Face via `/api/mussa`) + mural opcional |
 
 ---
 
@@ -43,10 +43,9 @@
 2. Em **Project Settings → Environment Variables**, adicione:
    - `SUPABASE_URL`
    - `SUPABASE_SECRET_KEY`
-   - Para o gerador de avatar IA (`mussa.html`), escolha **um ou mais** provedores (ordem automática de fallback):
+   - Para o gerador de avatar IA (`mussa.html`), escolha **um ou ambos** os provedores gratuitos (ordem automática de fallback):
      - **`COMFYUI_URL`** *(Grátis e ilimitado!)*: rode `cloudflared tunnel --url http://127.0.0.1:8188` no seu PC com ComfyUI (`flux-2-klein-4b-nvfp4`) e cole a URL HTTPS gerada.
      - **`HF_TOKEN`** *(Hugging Face na nuvem)*: token com permissão *Inference Providers* (usa `FLUX.1-Kontext-dev`).
-     - **`AZURE_API_KEY`** *(opcional)*: Azure AI Foundry (`gpt-image-2`).
 3. Em **Project Settings → Domains → Add Domain**, digite **`festalucas.roberto.inf.br`**:
    - Com o domínio `roberto.inf.br` já gerenciado pela Vercel, o DNS e o certificado HTTPS são configurados automaticamente.
    - *(Se o DNS for externo, crie um registro `CNAME` apontando `festalucas` → `cname.vercel-dns.com`.)*
