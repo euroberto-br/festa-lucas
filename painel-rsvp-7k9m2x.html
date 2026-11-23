@@ -124,6 +124,29 @@ tr:last-child td{border-bottom:none}
   background:#E5DCCE;color:var(--grafite);border:3px solid var(--grafite);border-radius:14px;
   font-family:var(--display);font-weight:800;font-size:.95rem;padding:.55rem 1.1rem;cursor:pointer;
 }
+.abas-painel{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.25rem}
+.aba-p{
+  font-family:var(--display);font-weight:800;font-size:.94rem;text-decoration:none;
+  background:rgba(255,255,255,.1);color:var(--creme);
+  border:2.5px solid rgba(255,210,63,.5);border-radius:99px;padding:.42rem 1.1rem;
+}
+.aba-p.ativa{background:var(--ouro);color:var(--grafite);border-color:var(--grafite)}
+.btn-chk{background:#EFE4D6;color:var(--grafite)}
+.btn-chk.ok{background:#23B866;color:#fff;border-color:#0F5E33}
+.capsula-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.capsula-card{
+  background:var(--creme);color:var(--grafite);border:3.5px solid var(--ouro);border-radius:22px;
+  padding:1.15rem 1.2rem;box-shadow:0 6px 0 #090912;
+}
+.capsula-card h3{font-family:var(--display);font-weight:800;font-size:1.15rem;margin-bottom:.15rem}
+.capsula-meta{font-size:.8rem;font-weight:800;color:#6A4B8A;margin-bottom:.6rem}
+.capsula-msg{font-size:.95rem;font-weight:700;white-space:pre-wrap;line-height:1.5}
+@media print{
+  body{background:#fff !important;color:#000 !important}
+  #palcoCanvas,.btn-musica,.abas-painel,.barra-acoes,.stats,#boxLogin,#abaRsvp{display:none !important}
+  #abaCapsula{display:block !important}
+  .capsula-card{break-inside:avoid;box-shadow:none;border:2px solid #333}
+}
 </style>
 </head>
 <body>
@@ -143,11 +166,20 @@ tr:last-child td{border-bottom:none}
   </section>
 
   <section id="boxPainel" hidden>
+    <div class="abas-painel">
+      <button type="button" class="aba-p ativa" id="tabRsvp">📋 Confirmados & Check-in</button>
+      <button type="button" class="aba-p" id="tabCapsula">📼 Cápsula do Tempo</button>
+      <a class="aba-p" href="qr-mesas.html" target="_blank">🖨️ QR Code Mesas (A4)</a>
+      <a class="aba-p" href="ranking.html" target="_blank">📺 Abrir Telão</a>
+    </div>
+
+    <div id="abaRsvp">
     <div class="stats">
       <div class="stat"><div class="num" id="stFamilias">0</div><div class="lbl">Confirmações</div></div>
       <div class="stat"><div class="num" id="stPessoas">0</div><div class="lbl">Total de Pessoas</div></div>
       <div class="stat"><div class="num" id="stAdultos">0</div><div class="lbl">Adultos</div></div>
       <div class="stat"><div class="num" id="stCriancas">0</div><div class="lbl">Crianças</div></div>
+      <div class="stat" style="border-color:var(--verde)"><div class="num" id="stChegaram" style="color:var(--verde)">0</div><div class="lbl">Chegaram (Check-in)</div></div>
     </div>
 
     <div class="barra-acoes">
@@ -179,6 +211,20 @@ tr:last-child td{border-bottom:none}
           <tr><td colspan="8" class="vazio">Carregando lista...</td></tr>
         </tbody>
       </table>
+    </div>
+    </div>
+
+    <div id="abaCapsula" hidden>
+      <div class="barra-acoes">
+        <strong style="font-family:var(--display);font-size:1.25rem;color:var(--ouro)">📼 Rimas e Recados Selados (<span id="stCapsula">0</span>)</strong>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="cta" id="btnAtualizarCapsula" type="button">↺ Atualizar</button>
+          <button class="cta cta--capsula" id="btnImprimirCapsula" type="button">🖨️ Imprimir / Salvar PDF</button>
+        </div>
+      </div>
+      <div class="capsula-grid" id="gridCapsula">
+        <div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Carregando mensagens da Cápsula do Tempo...</div>
+      </div>
     </div>
   </section>
 </main>
@@ -266,22 +312,27 @@ tr:last-child td{border-bottom:none}
              (d.observacao || '').toLowerCase().indexOf(q) !== -1;
     });
 
-    var totP = 0, totA = 0, totC = 0;
+    var totP = 0, totA = 0, totC = 0, totChk = 0;
+    var checkins = lerCheckins();
     dados.forEach(function (d) {
       totP += Number(d.total_pessoas) || 0;
       totA += Number(d.total_adultos) || 0;
       totC += Number(d.total_criancas) || 0;
+      if (checkins[String(d.id)]) totChk += Number(d.total_pessoas) || 1;
     });
     document.getElementById('stFamilias').textContent = String(dados.length);
     document.getElementById('stPessoas').textContent = String(totP);
     document.getElementById('stAdultos').textContent = String(totA);
     document.getElementById('stCriancas').textContent = String(totC);
+    var stCh = document.getElementById('stChegaram');
+    if (stCh) stCh.textContent = String(totChk);
 
     if (!filtrados.length) {
       tbody.innerHTML = '<tr><td colspan="8" class="vazio">Nenhuma confirmação encontrada ainda.</td></tr>';
       return;
     }
     tbody.innerHTML = filtrados.map(function (d) {
+      var chegou = Boolean(checkins[String(d.id)]);
       return '<tr>' +
         '<td><strong>' + esc(d.nome) + '</strong></td>' +
         '<td>' + esc(d.acompanhantes_texto || '—') + '</td>' +
@@ -291,6 +342,7 @@ tr:last-child td{border-bottom:none}
         '<td>' + esc(d.observacao || '—') + '</td>' +
         '<td style="white-space:nowrap">' + esc(fmtData(d.criado_em)) + '</td>' +
         '<td><div class="acoes-cell">' +
+          '<button type="button" class="btn-mini btn-chk' + (chegou ? ' ok' : '') + '" data-acao="checkin" data-id="' + esc(d.id) + '">' + (chegou ? '✅ Chegou' : '⬜ Check-in') + '</button>' +
           '<button type="button" class="btn-mini btn-edit" data-acao="editar" data-id="' + esc(d.id) + '">✏️ Editar</button>' +
           '<button type="button" class="btn-mini btn-del" data-acao="remover" data-id="' + esc(d.id) + '">🗑️ Remover</button>' +
         '</div></td>' +
@@ -539,6 +591,56 @@ tr:last-child td{border-bottom:none}
     });
   });
 
+  function lerCheckins() {
+    try { return JSON.parse(localStorage.getItem('festa-lucas-checkins') || '{}') || {}; } catch (e) { return {}; }
+  }
+  function salvarCheckins(obj) {
+    try { localStorage.setItem('festa-lucas-checkins', JSON.stringify(obj)); } catch (e) {}
+  }
+
+  var tabRsvp = document.getElementById('tabRsvp');
+  var tabCapsula = document.getElementById('tabCapsula');
+  var abaRsvp = document.getElementById('abaRsvp');
+  var abaCapsula = document.getElementById('abaCapsula');
+  var gridCapsula = document.getElementById('gridCapsula');
+
+  function carregarCapsula() {
+    if (!chaveAtual) return;
+    gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Carregando mensagens...</div>';
+    fetch('/api/capsula?listar=1&t=' + Date.now(), {
+      headers: { 'X-Admin-Key': chaveAtual }
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || !d.ok) { gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1">Não foi possível carregar a Cápsula do Tempo.</div>'; return; }
+      var msgs = d.mensagens || [];
+      document.getElementById('stCapsula').textContent = String(msgs.length);
+      if (!msgs.length) {
+        gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Nenhuma mensagem gravada na Cápsula do Tempo ainda.</div>';
+        return;
+      }
+      gridCapsula.innerHTML = msgs.map(function (m) {
+        return '<article class="capsula-card">' +
+          '<h3>' + esc(m.nome) + (m.relacao ? ' · ' + esc(m.relacao) : '') + '</h3>' +
+          '<div class="capsula-meta">' + esc(m.tipo || '🎤 Recado') + ' · ' + esc(fmtData(m.criado_em)) + '</div>' +
+          '<div class="capsula-msg">' + esc(m.mensagem) + '</div>' +
+        '</article>';
+      }).join('');
+    }).catch(function () {
+      gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1">Erro de conexão ao carregar mensagens.</div>';
+    });
+  }
+
+  tabRsvp.addEventListener('click', function () {
+    tabRsvp.classList.add('ativa'); tabCapsula.classList.remove('ativa');
+    abaRsvp.hidden = false; abaCapsula.hidden = true;
+  });
+  tabCapsula.addEventListener('click', function () {
+    tabCapsula.classList.add('ativa'); tabRsvp.classList.remove('ativa');
+    abaCapsula.hidden = false; abaRsvp.hidden = true;
+    carregarCapsula();
+  });
+  document.getElementById('btnAtualizarCapsula').addEventListener('click', carregarCapsula);
+  document.getElementById('btnImprimirCapsula').addEventListener('click', function () { window.print(); });
+
   tbody.addEventListener('click', function (ev) {
     var btn = ev.target.closest('button[data-acao]');
     if (!btn) return;
@@ -546,6 +648,15 @@ tr:last-child td{border-bottom:none}
     var acao = btn.getAttribute('data-acao');
     var reg = dados.find(function (d) { return String(d.id) === String(id); });
     if (!reg) return;
+
+    if (acao === 'checkin') {
+      var chk = lerCheckins();
+      chk[String(id)] = !chk[String(id)];
+      salvarCheckins(chk);
+      render();
+      mostraToast(chk[String(id)] ? '✅ Check-in: ' + reg.nome + ' chegou!' : 'Check-in desmarcado.', 2200);
+      return;
+    }
 
     if (acao === 'editar') {
       abrirModal(reg);

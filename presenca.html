@@ -145,6 +145,34 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
   box-shadow:0 6px 0 var(--grafite-escuro);background:#181826;
 }
 .mapa-wrap iframe{width:100%;height:260px;border:0;display:block}
+
+/* Contagem Regressiva ao Vivo */
+.card-contagem{
+  margin-bottom:1.45rem;
+  background:linear-gradient(160deg, rgba(46,20,82,.92), rgba(18,14,36,.96));
+  color:var(--branco);
+  border:3.5px solid var(--ouro);border-radius:30px;
+  padding:1.35rem 1.2rem;text-align:center;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.16), 0 10px 0 var(--grafite-escuro), 0 22px 44px rgba(0,0,0,.55), 0 0 36px rgba(255,210,63,.22);
+}
+.contagem-titulo{
+  font-family:var(--display);font-weight:800;font-size:.88rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ouro);margin-bottom:.75rem;
+}
+.contagem-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;max-width:440px;margin:0 auto;
+}
+.cd-box{
+  background:rgba(10,8,22,.82);border:2.5px solid rgba(255,210,63,.6);border-radius:18px;
+  padding:.65rem .35rem;box-shadow:0 4px 0 var(--grafite-escuro);
+}
+.cd-num{
+  font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,6.5vw,2.35rem);
+  line-height:1;color:var(--ouro);
+}
+.cd-lbl{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,253,247,.82);margin-top:.2rem}
+.contagem-sub{margin-top:.8rem;font-size:.9rem;font-weight:800;color:var(--creme)}
 </style>
 </head>
 <body>
@@ -152,21 +180,37 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
 <section class="hero-pag" style="padding-top:2rem">
   <img src="img/lucas.jpg" alt="Lucas Nery faz 7 anos" style="width:128px;height:128px;object-fit:cover;border-radius:50%;border:5px solid var(--ouro);box-shadow:0 0 0 4px var(--grafite),0 12px 28px rgba(13,13,22,.45);margin:0 auto .9rem">
   <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">12/12/2026 · 13:00 · LUCAS NERY 7 ANOS</p>
-  <h1>✅ Confirmar Presença</h1>
-  <p>Avise pra gente quem da sua família vem curtir o show de 7 anos do Lucas no Mussa Style!</p>
+  <h1 id="tituloPag">✅ Confirmar Presença</h1>
+  <p id="subPag">Avise pra gente quem da sua família vem curtir o show de 7 anos do Lucas no Mussa Style!</p>
 </section>
 
 <main class="caixa">
-  <div class="card-rsvp">
+  <!-- CONTAGEM REGRESSIVA AO VIVO -->
+  <section class="card-contagem" id="boxContagem" aria-label="Contagem regressiva para a festa">
+    <p class="contagem-titulo" id="cdTitulo">⏳ Contagem regressiva para o grande show</p>
+    <div class="contagem-grid" id="cdGrid">
+      <div class="cd-box"><div class="cd-num" id="cdDias">00</div><div class="cd-lbl">Dias</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdHoras">00</div><div class="cd-lbl">Horas</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdMin">00</div><div class="cd-lbl">Min</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdSeg">00</div><div class="cd-lbl">Seg</div></div>
+    </div>
+    <p class="contagem-sub" id="cdSub">📅 Sábado, 12/12/2026 às 13:00 · Guimi Buffet</p>
+    <div id="cdAcoesExtra" style="display:none;gap:.65rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+      <a class="cta" id="btnEntrarSite" href="index.html" hidden>Entrar na Central da Festa 🎤</a>
+      <a class="cta cta--capsula" data-agenda="google" href="#">Google Calendar 📅</a>
+      <button class="cta cta--fotos" data-agenda="ics" type="button">Agenda Apple/ICS 📲</button>
+    </div>
+  </section>
+
+  <div class="card-rsvp" id="cardRsvp">
     <div class="aviso-prazo" id="avisoPrazo">
-      ⏰ Confirmações abertas até <strong>09/12/2026 às 23:00</strong>.
+      ⏰ Confirmações abertas até <strong>09/12/2026 às 22:00</strong>.
     </div>
 
     <div class="estado" id="telaEncerrada">
       <div style="font-size:3.2rem">🎉🎤</div>
       <h2>Confirmações encerradas!</h2>
-      <p>O prazo de confirmação foi encerrado em 09/12 às 23:00. Nos vemos na festa do Lucas Nery dia 12/12 às 13:00!</p>
-      <a class="cta" href="index.html">Ver o cardápio da festa 🍽️</a>
+      <p>O prazo de confirmação encerrou em 09/12 às 22:00. O site completo da festa abre dia 12/12 às 10:00!</p>
     </div>
 
     <form id="formPresenca" novalidate>
@@ -206,6 +250,8 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
       <h2>Presença confirmada!</h2>
       <p id="msgSucesso">Sua confirmação foi registrada com sucesso! Mal podemos esperar para comemorar os 7 anos do Lucas Nery com você.</p>
       <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
+        <a class="cta cta--capsula" data-agenda="google" href="#">Google Calendar 📅</a>
+        <button class="cta cta--fotos" data-agenda="ics" type="button">Salvar na Agenda (.ics) 📲</button>
         <button class="cta cta--ia" id="btnNova" type="button">Confirmar outra família</button>
       </div>
     </div>
@@ -223,6 +269,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
       <a class="cta" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Guimi+Buffet,+Rua+Muniz+de+Souza,+1130+-+Aclimacao,+Sao+Paulo+-+SP">Google Maps 🗺️</a>
       <a class="cta cta--ia" target="_blank" rel="noopener noreferrer" href="https://waze.com/ul?q=Guimi%20Buffet%20Rua%20Muniz%20de%20Souza%201130%20Sao%20Paulo&navigate=yes">Abrir no Waze 🚗</a>
       <button class="cta cta--jogos" id="btnCopiarEnd" type="button">Copiar endereço 📋</button>
+      <a class="cta cta--capsula" data-agenda="google" href="#">Agenda 📅</a>
     </div>
     <div class="mapa-wrap">
       <iframe title="Mapa do Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Guimi%20Buffet%2C%20Rua%20Muniz%20de%20Souza%2C%201130%20-%20Aclimacao%2C%20Sao%20Paulo%20-%20SP&t=&z=16&ie=UTF8&iwloc=&output=embed"></iframe>
@@ -236,7 +283,47 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
 (function () {
   'use strict';
   var API_URL = '/api/presenca';
-  var PRAZO_MS = Date.parse('2026-12-09T23:00:00-03:00');
+  var PRAZO_MS = Date.parse('2026-12-09T22:00:00-03:00');
+  var ABERTURA_SITE_MS = Date.parse('2026-12-12T10:00:00-03:00');
+  var FESTA_MS = Date.parse('2026-12-12T13:00:00-03:00');
+
+  var cardRsvp = document.getElementById('cardRsvp');
+  var tituloPag = document.getElementById('tituloPag');
+  var subPag = document.getElementById('subPag');
+  var cdTitulo = document.getElementById('cdTitulo');
+  var cdGrid = document.getElementById('cdGrid');
+  var cdDias = document.getElementById('cdDias');
+  var cdHoras = document.getElementById('cdHoras');
+  var cdMin = document.getElementById('cdMin');
+  var cdSeg = document.getElementById('cdSeg');
+  var cdSub = document.getElementById('cdSub');
+  var cdAcoesExtra = document.getElementById('cdAcoesExtra');
+  var btnEntrarSite = document.getElementById('btnEntrarSite');
+
+  function atualizaContagem() {
+    var agora = Date.now();
+    var diff = FESTA_MS - agora;
+    if (diff <= 0) {
+      cdTitulo.textContent = '🔥 É HOJE! SOLTA O BEAT!';
+      cdGrid.style.display = 'none';
+      cdSub.textContent = 'A festa de 7 anos do Lucas Nery já começou no Guimi Buffet! 🎤🎉';
+    } else {
+      var d = Math.floor(diff / 86400000);
+      var h = Math.floor((diff % 86400000) / 3600000);
+      var m = Math.floor((diff % 3600000) / 60000);
+      var s = Math.floor((diff % 60000) / 1000);
+      cdDias.textContent = String(d).padStart(2, '0');
+      cdHoras.textContent = String(h).padStart(2, '0');
+      cdMin.textContent = String(m).padStart(2, '0');
+      cdSeg.textContent = String(s).padStart(2, '0');
+    }
+    if (agora >= ABERTURA_SITE_MS) {
+      btnEntrarSite.hidden = false;
+      cdAcoesExtra.style.display = 'flex';
+    }
+  }
+  atualizaContagem();
+  setInterval(atualizaContagem, 1000);
 
   var form = document.getElementById('formPresenca');
   var telaEncerrada = document.getElementById('telaEncerrada');
@@ -261,9 +348,17 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
   }
 
   function mostraEncerrado() {
-    form.style.display = 'none';
-    avisoPrazo.style.display = 'none';
-    telaEncerrada.classList.add('mostra');
+    cardRsvp.style.display = 'none';
+    cdAcoesExtra.style.display = 'flex';
+    if (Date.now() >= ABERTURA_SITE_MS) {
+      tituloPag.textContent = '🎤 Chegou o Grande Dia!';
+      subPag.textContent = 'O site completo da festa de 7 anos do Lucas Nery está liberado!';
+      btnEntrarSite.hidden = false;
+    } else {
+      tituloPag.textContent = '⏳ Falta Pouco pro Show!';
+      subPag.textContent = 'Confirmações encerradas em 09/12 às 22:00. O site completo da festa abre no dia 12/12 às 10:00!';
+      cdSub.textContent = '🔓 Site da festa libera em 12/12/2026 às 10:00 · Festa às 13:00 no Guimi Buffet';
+    }
   }
 
   var ENDERECO_COPIA = 'Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo - SP, CEP 01534-001';
@@ -501,6 +596,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#110822}
     desenha(performance.now());
   })();
 </script>
+<script src="js/agenda.js"></script>
 <script src="js/musica.js"></script>
 </body>
 </html>

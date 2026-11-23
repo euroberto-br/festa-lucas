@@ -66,11 +66,32 @@ body{
 .dots{display:flex;gap:.5rem}
 .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.28)}
 .dot.ativo{background:var(--ouro);transform:scale(1.25)}
+
+/* Galeria ao vivo no Telão + QR Code fixo */
+.telao-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.telao-foto{
+  background:rgba(16,12,32,.92);border:3px solid var(--ouro);border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+.telao-foto img{width:100%;aspect-ratio:1;object-fit:cover}
+.telao-foto span{
+  display:block;padding:.45rem .7rem;font-family:var(--display);font-weight:800;font-size:.95rem;
+  color:var(--ouro);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;
+}
+.qr-telao{
+  position:fixed;right:18px;bottom:84px;z-index:50;
+  background:rgba(20,14,38,.94);border:3px solid var(--ouro);border-radius:18px;
+  padding:.55rem;text-align:center;width:138px;
+  box-shadow:0 10px 28px rgba(0,0,0,.6);
+}
+.qr-telao img{width:112px;height:112px;border-radius:10px;background:#fff;padding:4px;margin:0 auto .35rem}
+.qr-telao span{display:block;font-family:var(--display);font-weight:800;font-size:.76rem;line-height:1.15;color:var(--ouro)}
+@media (max-width:700px){.qr-telao{display:none}}
 </style>
 </head>
 <body>
 <header class="head">
-  <h1>🏆 Ranking da Tropa · Lucas 7!</h1>
+  <h1>🏆 Telão do Show · Lucas 7!</h1>
   <span class="badge-vista" id="tituloVista">🏆 Ranking Geral</span>
 </header>
 
@@ -78,31 +99,42 @@ body{
   <ol class="lista" id="listaRanking">
     <li class="vazio">Carregando o placar da Arena de Jogos... 🎤</li>
   </ol>
+  <div class="telao-fotos" id="gradeTelao" hidden></div>
 </main>
 
+<aside class="qr-telao" aria-label="QR Code para participar pelo celular">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=4&data=https%3A%2F%2Ffestalucas.roberto.inf.br" alt="QR Code festalucas.roberto.inf.br">
+  <span>📱 Escaneie e apareça no telão!</span>
+</aside>
+
 <footer class="rodape">
-  <span>Jogue pelo celular na Arena de Jogos e apareça no telão! 🎮</span>
+  <span>Jogue, envie fotos ou vire cartoon IA pelo celular e apareça no telão! 🎮📸🎨</span>
   <div class="dots" id="dots" aria-hidden="true"></div>
 </footer>
 
 <script>
 (function () {
   'use strict';
-  // Endpoint Serverless na Vercel conectado ao Supabase PostgreSQL
   var API_URL = '/api/ranking';
+  var CLOUD_BASE = 'https://res.cloudinary.com/znbneca7/image/upload/w_520,h_520,c_fill,q_auto,f_auto/';
   var apiOk = true;
 
   var VISTAS = [
-    { chave: 'geral', titulo: '🏆 Ranking Geral' },
-    { chave: 'runner', titulo: '🏃 Mussa Surf' },
-    { chave: 'sonic', titulo: '💨 Lucas Dash' },
-    { chave: 'flappy', titulo: '🚀 Voo do Mic' },
-    { chave: 'ritmo', titulo: '🎸 Batalha Hero' }
+    { chave: 'geral', tipo: 'rank', titulo: '🏆 Ranking Geral' },
+    { chave: 'fotos', tipo: 'fotos', titulo: '📸 Fotos dos Inscritos — Ao Vivo!' },
+    { chave: 'runner', tipo: 'rank', titulo: '🏃 Mussa Surf' },
+    { chave: 'ia', tipo: 'ia', titulo: '🎨 Mural do Mussaverso IA' },
+    { chave: 'sonic', tipo: 'rank', titulo: '💨 Lucas Dash' },
+    { chave: 'flappy', tipo: 'rank', titulo: '🚀 Voo do Mic' },
+    { chave: 'ritmo', tipo: 'rank', titulo: '🎸 Batalha Hero' }
   ];
   var dados = { geral: [], porJogo: { runner: [], sonic: [], flappy: [], ritmo: [] } };
+  var fotosLista = [];
+  var iaLista = [];
   var idx = 0;
 
   var lista = document.getElementById('listaRanking');
+  var gradeTelao = document.getElementById('gradeTelao');
   var tituloVista = document.getElementById('tituloVista');
   var dots = document.getElementById('dots');
 
@@ -115,13 +147,40 @@ body{
     });
   }
 
+  function renderGaleria(itens, vazioMsg) {
+    lista.hidden = true;
+    gradeTelao.hidden = false;
+    if (!itens.length) {
+      gradeTelao.innerHTML = '<div class="vazio" style="grid-column:1/-1">' + vazioMsg + '</div>';
+      return;
+    }
+    gradeTelao.innerHTML = itens.slice(0, 8).map(function (f) {
+      var ver = f.version ? 'v' + f.version + '/' : '';
+      var src = f.url || (CLOUD_BASE + ver + f.public_id + '.jpg');
+      var autor = String(f.autor || 'Tropa do Lucas').replace(/</g, '&lt;');
+      return '<div class="telao-foto"><img src="' + src + '" alt="' + autor + '"><span>' + autor + '</span></div>';
+    }).join('');
+  }
+
   function render() {
     var v = VISTAS[idx];
     tituloVista.textContent = v.titulo;
     desenhaDots();
 
+    if (v.tipo === 'fotos') {
+      renderGaleria(fotosLista, 'Escaneie o QR Code e mande a primeira foto da festa! 📸');
+      return;
+    }
+    if (v.tipo === 'ia') {
+      renderGaleria(iaLista, 'Escaneie o QR Code e crie seu personagem no Mussaverso IA! 🎨');
+      return;
+    }
+
+    gradeTelao.hidden = true;
+    lista.hidden = false;
+
     if (!apiOk) {
-      lista.innerHTML = '<li class="vazio">Conecte o Supabase nas variáveis da Vercel 🛠️<br>(SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY)</li>';
+      lista.innerHTML = '<li class="vazio">Conecte o Supabase nas variáveis da Vercel 🛠️</li>';
       return;
     }
 
@@ -155,11 +214,21 @@ body{
         else { apiOk = false; render(); }
       })
       .catch(function () { apiOk = false; render(); });
+
+    fetch('/api/galeria?pasta=festa_lucas&t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.ok && Array.isArray(d.fotos)) fotosLista = d.fotos; })
+      .catch(function () {});
+
+    fetch('/api/galeria?pasta=festa_lucas_ia&t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.ok && Array.isArray(d.fotos)) iaLista = d.fotos; })
+      .catch(function () {});
   }
 
   busca();
-  setInterval(busca, 30000);
-  setInterval(function () { idx = (idx + 1) % VISTAS.length; render(); }, 10000);
+  setInterval(busca, 25000);
+  setInterval(function () { idx = (idx + 1) % VISTAS.length; render(); }, 12000);
 })();
 </script>
 <script src="js/palco-bg.js"></script>

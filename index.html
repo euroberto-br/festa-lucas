@@ -15,7 +15,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tema-mussa.css">
 <script>
-if (Date.now() <= Date.parse('2026-12-09T23:00:00-03:00') && location.search.indexOf('festa=1') === -1 && location.search.indexOf('fotos') === -1) {
+// Até 12/12/2026 às 10:00 BRT o endereço principal direciona para presenca.html (confirmação + contagem regressiva).
+if (Date.now() < Date.parse('2026-12-12T10:00:00-03:00') && location.search.indexOf('festa=1') === -1 && location.search.indexOf('fotos') === -1) {
   location.replace('presenca.html');
 }
 </script>
@@ -192,6 +193,7 @@ body{
     <p class="hub-eyebrow">🎤 Pano na cabeça, bonézinho pra trás — Mussa Style!</p>
     <h1>Lucas Nery faz <span class="sete">7!</span></h1>
     <p class="hub-meta">📅 12/12/2026 · 🕐 13:00 · 📍 Guimi Buffet (Aclimação)</p>
+    <p class="hub-meta" id="hubContagem" style="margin-top:.55rem;border-color:var(--ouro);color:var(--ouro)">⏳ Calculando contagem regressiva...</p>
     <p class="hub-sub">Bem-vindo à central da festa da Tropa do Lucas! Escolha por onde começar:</p>
   </header>
 
@@ -244,6 +246,16 @@ body{
       <h2>Mande sua Rima</h2>
       <p>Deixe uma rima, recado ou conselho na cápsula do tempo para o Lucas ler quando crescer.</p>
       <span class="hub-go">Gravar mensagem →</span>
+    </a>
+
+    <a class="hub-card" href="quiz.html" style="--cor:#FFD23F">
+      <div class="hub-card-top">
+        <span class="hub-ico">🧠</span>
+        <span class="hub-tag">7 Perguntas</span>
+      </div>
+      <h2>Quiz do Lucas</h2>
+      <p>Quem conhece melhor o Lucas? 7 perguntas sobre o aniversariante valendo pontos no ranking!</p>
+      <span class="hub-go">Responder quiz →</span>
     </a>
 
     <a class="hub-card" href="local.html" style="--cor:#FF7A1A">
@@ -453,6 +465,25 @@ body{
       if (beatTimer) { clearTimeout(beatTimer); beatTimer = null; }
     }
   });
+  /* Contagem regressiva ao vivo até 12/12/2026 às 13:00 BRT */
+  var hubContagem = document.getElementById('hubContagem');
+  var FESTA_MS = Date.parse('2026-12-12T13:00:00-03:00');
+  function atualizaContagemHub() {
+    if (!hubContagem) return;
+    var diff = FESTA_MS - Date.now();
+    if (diff <= 0) {
+      hubContagem.textContent = '🔥 É HOJE! Solta o beat — a festa já começou!';
+      return;
+    }
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    hubContagem.textContent = '⏳ Faltam ' + d + 'd ' + String(h).padStart(2, '0') + 'h ' + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's para o show!';
+  }
+  atualizaContagemHub();
+  setInterval(atualizaContagemHub, 1000);
+
 })();
 </script>
 </body>

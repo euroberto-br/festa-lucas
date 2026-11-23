@@ -1,11 +1,11 @@
 /**
  * ✅ API Confirmação de Presença — GET/POST /api/presenca (Vercel Serverless + Supabase PostgreSQL)
- * Prazo limite: 09/12/2026 às 23:00 (horário de Brasília, UTC-03:00).
+ * Prazo limite: 09/12/2026 às 22:00 (horário de Brasília, UTC-03:00).
  */
 
 const crypto = require('crypto');
 
-const PRAZO_ISO = '2026-12-09T23:00:00-03:00';
+const PRAZO_ISO = '2026-12-09T22:00:00-03:00';
 const PRAZO_MS = Date.parse(PRAZO_ISO);
 
 function limpa(v, max) {

@@ -70,6 +70,13 @@ body{min-height:100svh;padding-bottom:3.5rem}
 }
 .barra{height:8px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:.35rem}
 .barra > span{display:block;height:100%;width:0;background:var(--ouro);transition:width .2s ease}
+.nav-chip-missao{
+  font-family:var(--display);font-weight:800;font-size:.82rem;
+  background:rgba(255,255,255,.09);color:var(--creme);
+  border:2px solid rgba(255,210,63,.45);border-radius:99px;padding:.3rem .82rem;
+  transition:transform .12s ease, background .12s ease;
+}
+.nav-chip-missao.ativa{background:var(--ouro);color:var(--grafite);border-color:var(--grafite);transform:translateY(-2px)}
 
 .galeria-head{
   display:flex;align-items:center;justify-content:space-between;gap:.8rem;
@@ -170,6 +177,16 @@ body{min-height:100svh;padding-bottom:3.5rem}
 
 <main class="wrap">
   <section class="card-envio" aria-label="Enviar fotos">
+    <div style="margin-bottom:1.1rem">
+      <p style="font-family:var(--display);font-weight:800;color:var(--ouro);font-size:.95rem;margin-bottom:.45rem">🎯 Missões Fotográficas da Mesa (opcional — toque para escolher):</p>
+      <div id="missoesLista" style="display:flex;gap:.45rem;flex-wrap:wrap">
+        <button type="button" class="nav-chip-missao" data-missao="Sinalzinho do L">🤙 Sinalzinho do L</button>
+        <button type="button" class="nav-chip-missao" data-missao="Mesa fazendo careta">🤪 Mesa fazendo careta</button>
+        <button type="button" class="nav-chip-missao" data-missao="Foto com o Lucas">🎤 Foto com o Lucas</button>
+        <button type="button" class="nav-chip-missao" data-missao="Ataque ao cardápio">🍔 Ataque ao cardápio</button>
+        <button type="button" class="nav-chip-missao" data-missao="Pose Mussa Style">🕺 Pose Mussa Style</button>
+      </div>
+    </div>
     <div class="envio-grade">
       <div class="campo">
         <label for="campoNome">Seu nome (aparece na legenda da foto)</label>
@@ -225,6 +242,21 @@ body{min-height:100svh;padding-bottom:3.5rem}
   var MARCA = 'l_text:Arial_28_bold:Festa%20Lucas%20Nery%20-%207%20anos%20(2026),co_rgb:FFFFFF,o_70,g_south_east,x_24,y_20';
 
   var campoNome = document.getElementById('campoNome');
+  var missaoAtiva = '';
+  document.querySelectorAll('.nav-chip-missao').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var m = btn.getAttribute('data-missao');
+      if (missaoAtiva === m) {
+        missaoAtiva = '';
+        btn.classList.remove('ativa');
+      } else {
+        document.querySelectorAll('.nav-chip-missao').forEach(function (b) { b.classList.remove('ativa'); });
+        missaoAtiva = m;
+        btn.classList.add('ativa');
+        mostraToast('🎯 Missão selecionada: ' + m + '! Agora escolha a foto 📸', 2600);
+      }
+    });
+  });
   var inputFotos = document.getElementById('inputFotos');
   var btnEscolher = document.getElementById('btnEscolher');
   var fila = document.getElementById('fila');
@@ -281,8 +313,9 @@ body{min-height:100svh;padding-bottom:3.5rem}
   }
 
   function enviarArquivo(arquivo) {
-    var nome = campoNome.value.trim() || 'Convidado da Tropa';
-    try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
+    var nomeBase = campoNome.value.trim() || 'Convidado da Tropa';
+    try { localStorage.setItem('festa-lucas-nome', nomeBase); } catch (e) {}
+    var nome = missaoAtiva ? (nomeBase + ' · 🎯 ' + missaoAtiva) : nomeBase;
 
     var item = document.createElement('div');
     item.className = 'fila-item';
