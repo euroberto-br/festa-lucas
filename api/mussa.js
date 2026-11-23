@@ -1,15 +1,15 @@
 /**
- * 🎨 API Vire do Mussaverso — POST /api/mussa (Vercel Serverless + Multi-Provider IA)
+ * 🎨 API Vire do Mussaverso — POST/GET /api/mussa (Vercel Serverless + Fila Assíncrona ComfyUI)
  *
- * Ordem automática de provedores (usa o primeiro configurado nas env vars da Vercel;
- * se o ComfyUI local estiver offline, faz fallback automático para o Hugging Face):
- *   1. COMFYUI_URL -> Seu ComfyUI local (FLUX.2 Klein 4B NVFP4) via Cloudflare Tunnel (GRÁTIS e ILIMITADO!)
- *                     Opcional: COMFYUI_SECRET (enviado em X-Comfy-Secret)
- *   2. HF_TOKEN    -> Hugging Face Inference Providers (FLUX.1-Kontext-dev)
- *                     Opcional: HF_MODEL (padrão: black-forest-labs/FLUX.1-Kontext-dev)
+ * Fluxo assíncrono (suporta 60+ convidados sem timeout na Vercel e estritamente 1 por vez na GPU):
+ *   - POST /api/mussa        -> Enfileira a selfie no ComfyUI (FIFO) e responde <2s com { status:'fila', jobId, posicao }
+ *   - GET  /api/mussa?job=ID -> Consulta posição na fila ('fila'|'gerando') ou entrega a imagem ('pronto')
+ *   - GET  /api/mussa        -> Healthcheck dos provedores + tamanho atual da fila
  *
- * Opcional (log de estatística): SUPABASE_URL + SUPABASE_SECRET_KEY
+ * Fallback automático: se COMFYUI_URL estiver offline e HF_TOKEN estiver configurado, usa Hugging Face.
  */
+
+const MAX_FILA = 25;
 
 const ESTILOS = [
   'bold 2D street-comic cartoon illustration with thick dark outlines and vibrant flat colors',
@@ -50,19 +50,21 @@ function pick(arr) {
 }
 
 function montarPrompt() {
-  const estilo = pick(ESTILOS);
-  const pose = pick(POSES);
-  const figurino = pick(FIGURINOS);
-  const cenario = pick(CENARIOS);
   return (
-    `Transform the person from the reference photo into a ${estilo}. ` +
+    `Transform the person from the reference photo into a ${pick(ESTILOS)}. ` +
     'Keep the person clearly recognizable: preserve their exact face features, eyes, skin tone, hair color and joyful smile. ' +
-    `Show them ${pose}, ${figurino}. ` +
-    `Background setting: ${cenario}. ` +
+    `Show them ${pick(POSES)}, ${pick(FIGURINOS)}. ` +
+    `Background setting: ${pick(CENARIOS)}. ` +
     'Kid-friendly, joyful, high quality framing (head and upper body nicely centered). ' +
     'Keep the bottom 20% of the image clean and uncluttered for a caption badge. ' +
     'Absolutely NO text, NO letters, NO numbers, NO words, NO logos and NO watermarks anywhere in the image.'
   );
+}
+
+function comfyHeaders() {
+  const h = {};
+  if (process.env.COMFYUI_SECRET) h['X-Comfy-Secret'] = process.env.COMFYUI_SECRET;
+  return h;
 }
 
 async function logUso(status, aparelho) {
@@ -83,13 +85,24 @@ async function logUso(status, aparelho) {
   } catch (e) {}
 }
 
-/* ---------- 1. COMFYUI LOCAL (FLUX.2 Klein 4B NVFP4 via Cloudflare Tunnel) ---------- */
-async function gerarComfyUI(buffer, mime, prompt) {
+/* ---------- COMFYUI: ENFILEIRAR (rápido, <2s) ---------- */
+async function enfileirarComfyUI(buffer, mime, prompt) {
   const base = process.env.COMFYUI_URL.replace(/\/$/, '');
-  const extraHeaders = {};
-  if (process.env.COMFYUI_SECRET) extraHeaders['X-Comfy-Secret'] = process.env.COMFYUI_SECRET;
+  const extra = comfyHeaders();
 
-  // Upload da selfie (timeout curto de 6s para detectar rápido se o PC está desligado)
+  // 1. Checa tamanho da fila atual (proteção anti-sobrecarga)
+  const qResp = await fetch(`${base}/queue`, { headers: extra, signal: AbortSignal.timeout(5000) });
+  if (!qResp.ok) throw new Error('comfy-queue-' + qResp.status);
+  const qJson = await qResp.json();
+  const running = (qJson.queue_running || []).length;
+  const pending = (qJson.queue_pending || []).length;
+  if (running + pending >= MAX_FILA) {
+    const err = new Error('fila-cheia');
+    err.code = 429;
+    throw err;
+  }
+
+  // 2. Upload da selfie
   const fd = new FormData();
   const ext = mime === 'image/png' ? 'png' : 'jpg';
   const fname = `selfie_${Date.now()}_${Math.floor(Math.random() * 9999)}.${ext}`;
@@ -97,14 +110,14 @@ async function gerarComfyUI(buffer, mime, prompt) {
 
   const up = await fetch(`${base}/upload/image`, {
     method: 'POST',
-    headers: extraHeaders,
+    headers: extra,
     body: fd,
-    signal: AbortSignal.timeout(6000)
+    signal: AbortSignal.timeout(8000)
   });
   if (!up.ok) throw new Error('comfy-upload-' + up.status);
-  const upJson = await up.json();
-  const imgName = upJson.name;
+  const { name: imgName } = await up.json();
 
+  // 3. Enfileira o workflow (FIFO nativo — 1 por vez na GPU)
   const seed = Math.floor(Math.random() * 1000000000);
   const wf = {
     '1': { class_type: 'UNETLoader', inputs: { unet_name: 'flux-2-klein-4b-nvfp4.safetensors', weight_dtype: 'default' } },
@@ -126,48 +139,98 @@ async function gerarComfyUI(buffer, mime, prompt) {
     '17': { class_type: 'SaveImage', inputs: { images: ['16', 0], filename_prefix: 'mussaverso_web' } }
   };
 
-  const q = await fetch(`${base}/prompt`, {
+  const pResp = await fetch(`${base}/prompt`, {
     method: 'POST',
-    headers: Object.assign({ 'Content-Type': 'application/json' }, extraHeaders),
+    headers: Object.assign({ 'Content-Type': 'application/json' }, extra),
     body: JSON.stringify({ prompt: wf, client_id: 'festa-lucas-vercel' }),
-    signal: AbortSignal.timeout(10000)
+    signal: AbortSignal.timeout(8000)
   });
-  if (!q.ok) throw new Error('comfy-prompt-' + q.status);
-  const { prompt_id } = await q.json();
+  if (!pResp.ok) throw new Error('comfy-prompt-' + pResp.status);
+  const { prompt_id } = await pResp.json();
 
-  // Polling até ~48s
-  for (let i = 0; i < 48; i++) {
-    await new Promise(function (r) { setTimeout(r, 1000); });
-    const h = await fetch(`${base}/history/${prompt_id}`, { headers: extraHeaders, signal: AbortSignal.timeout(5000) });
-    if (!h.ok) continue;
-    const hist = await h.json();
-    const item = hist[prompt_id];
-    if (!item) continue;
-    if (item.status && item.status.status_str === 'error') throw new Error('comfy-exec-error');
-    const imgs = item.outputs && item.outputs['17'] && item.outputs['17'].images;
-    if (imgs && imgs.length) {
-      const im = imgs[0];
-      const qs = new URLSearchParams({
-        filename: im.filename,
-        subfolder: im.subfolder || '',
-        type: im.type || 'output'
-      });
-      const v = await fetch(`${base}/view?${qs.toString()}`, { headers: extraHeaders, signal: AbortSignal.timeout(10000) });
-      if (!v.ok) throw new Error('comfy-view-' + v.status);
-      const ab = await v.arrayBuffer();
-      return { imagem: Buffer.from(ab).toString('base64'), mime: 'image/png', provedor: 'comfyui' };
-    }
-  }
-  throw new Error('comfy-timeout');
+  const totalFila = running + pending + 1;
+  const posicao = running === 0 && pending === 0 ? 0 : (pending + 1);
+  return {
+    ok: true,
+    status: posicao === 0 ? 'gerando' : 'fila',
+    jobId: prompt_id,
+    posicao,
+    totalFila,
+    provedor: 'comfyui'
+  };
 }
 
-/* ---------- 2. HUGGING FACE INFERENCE PROVIDERS (FLUX.1-Kontext-dev) ---------- */
+/* ---------- COMFYUI: CONSULTAR STATUS DE UM JOB ---------- */
+async function consultarJobComfyUI(jobId, aparelho) {
+  const base = process.env.COMFYUI_URL.replace(/\/$/, '');
+  const extra = comfyHeaders();
+
+  // 1. Verifica se já terminou em /history/{jobId}
+  const hResp = await fetch(`${base}/history/${encodeURIComponent(jobId)}`, {
+    headers: extra,
+    signal: AbortSignal.timeout(6000)
+  });
+  if (hResp.ok) {
+    const hist = await hResp.json();
+    const item = hist[jobId];
+    if (item) {
+      if (item.status && item.status.status_str === 'error') {
+        await logUso('erro:comfyui', aparelho);
+        return { ok: false, status: 'erro', erro: 'ia' };
+      }
+      const imgs = item.outputs && item.outputs['17'] && item.outputs['17'].images;
+      if (imgs && imgs.length) {
+        const im = imgs[0];
+        const qs = new URLSearchParams({
+          filename: im.filename,
+          subfolder: im.subfolder || '',
+          type: im.type || 'output'
+        });
+        const vResp = await fetch(`${base}/view?${qs.toString()}`, {
+          headers: extra,
+          signal: AbortSignal.timeout(12000)
+        });
+        if (!vResp.ok) return { ok: false, status: 'erro', erro: 'ia' };
+        const ab = await vResp.arrayBuffer();
+        await logUso('ok:comfyui', aparelho);
+        return {
+          ok: true,
+          status: 'pronto',
+          imagem: Buffer.from(ab).toString('base64'),
+          mime: 'image/png',
+          provedor: 'comfyui'
+        };
+      }
+    }
+  }
+
+  // 2. Ainda em andamento: lê posição exata em /queue
+  const qResp = await fetch(`${base}/queue`, { headers: extra, signal: AbortSignal.timeout(5000) });
+  if (!qResp.ok) return { ok: true, status: 'fila', posicao: 1, totalFila: 1 };
+  const qJson = await qResp.json();
+  const running = qJson.queue_running || [];
+  const pending = qJson.queue_pending || [];
+  const totalFila = running.length + pending.length;
+
+  // Em ComfyUI cada entrada da fila é um array [numero, prompt_id, ...]
+  if (running.some(function (it) { return it && it[1] === jobId; })) {
+    return { ok: true, status: 'gerando', posicao: 0, totalFila };
+  }
+  const idx = pending.findIndex(function (it) { return it && it[1] === jobId; });
+  if (idx !== -1) {
+    return { ok: true, status: 'fila', posicao: idx + 1, totalFila };
+  }
+
+  // Pequena janela de transição entre queue e history: aguarda próximo tick
+  return { ok: true, status: 'gerando', posicao: 0, totalFila: Math.max(1, totalFila) };
+}
+
+/* ---------- FALLBACK: HUGGING FACE (FLUX.1-Kontext-dev) ---------- */
 async function gerarHuggingFace(imagemB64, mime, prompt) {
   const token = process.env.HF_TOKEN;
   const model = process.env.HF_MODEL || 'black-forest-labs/FLUX.1-Kontext-dev';
   const dataUri = `data:${mime};base64,${imagemB64}`;
 
-  // Tenta router fal-ai (mais rápido e confiável para Kontext) e cai para hf-inference se necessário
   const tentativas = [
     {
       url: 'https://router.huggingface.co/fal-ai/fal-ai/flux-kontext/dev',
@@ -191,17 +254,15 @@ async function gerarHuggingFace(imagemB64, mime, prompt) {
       body: JSON.stringify(t.body),
       signal: AbortSignal.timeout(48000)
     });
-
     if (r.status === 402 || r.status === 429) {
       const err = new Error('cota-ia');
       err.code = 429;
       throw err;
     }
-
     const ct = r.headers.get('content-type') || '';
     if (r.ok && ct.startsWith('image/')) {
       const ab = await r.arrayBuffer();
-      return { imagem: Buffer.from(ab).toString('base64'), mime: ct.split(';')[0], provedor: 'huggingface' };
+      return { ok: true, status: 'pronto', imagem: Buffer.from(ab).toString('base64'), mime: ct.split(';')[0], provedor: 'huggingface' };
     }
     if (r.ok && ct.includes('application/json')) {
       const j = await r.json();
@@ -210,7 +271,7 @@ async function gerarHuggingFace(imagemB64, mime, prompt) {
         const dl = await fetch(imgUrl, { signal: AbortSignal.timeout(15000) });
         if (dl.ok) {
           const ab = await dl.arrayBuffer();
-          return { imagem: Buffer.from(ab).toString('base64'), mime: dl.headers.get('content-type') || 'image/png', provedor: 'huggingface' };
+          return { ok: true, status: 'pronto', imagem: Buffer.from(ab).toString('base64'), mime: dl.headers.get('content-type') || 'image/png', provedor: 'huggingface' };
         }
       }
     }
@@ -224,13 +285,28 @@ module.exports = async function handler(req, res) {
   const temHF = Boolean(process.env.HF_TOKEN);
 
   if (req.method === 'GET') {
+    const jobId = String((req.query && req.query.job) || '').trim();
+    if (jobId) {
+      if (!temComfy) return res.status(503).json({ ok: false, erro: 'sem-chave' });
+      if (!/^[a-zA-Z0-9_-]{8,64}$/.test(jobId)) {
+        return res.status(400).json({ ok: false, erro: 'job-invalido' });
+      }
+      try {
+        const aparelho = String((req.query && req.query.aparelho) || '');
+        const st = await consultarJobComfyUI(jobId, aparelho);
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).json(st);
+      } catch (e) {
+        return res.status(502).json({ ok: false, erro: 'ia' });
+      }
+    }
+
     return res.status(200).json({
       ok: true,
       servico: 'vire-do-mussaverso-lucas',
-      provedores: {
-        comfyui: temComfy,
-        huggingface: temHF
-      },
+      filaAssincrona: temComfy,
+      maxFila: MAX_FILA,
+      provedores: { comfyui: temComfy, huggingface: temHF },
       supabaseConfigurado: Boolean(process.env.SUPABASE_URL && (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY))
     });
   }
@@ -255,35 +331,33 @@ module.exports = async function handler(req, res) {
 
     const buffer = Buffer.from(imagem, 'base64');
     const prompt = montarPrompt();
-    const fila = [];
-    if (temComfy) fila.push(function () { return gerarComfyUI(buffer, mime, prompt); });
-    if (temHF) fila.push(function () { return gerarHuggingFace(imagem, mime, prompt); });
 
-    let ultimoErro = null;
-    for (const executar of fila) {
+    if (temComfy) {
       try {
-        const resIA = await executar();
-        await logUso('ok:' + resIA.provedor, aparelho);
-        return res.status(200).json({
-          ok: true,
-          imagem: resIA.imagem,
-          mime: resIA.mime,
-          provedor: resIA.provedor
-        });
+        const enq = await enfileirarComfyUI(buffer, mime, prompt);
+        return res.status(202).json(enq);
       } catch (e) {
-        ultimoErro = e;
-        if (e && e.message === 'bloqueada') {
-          await logUso('bloqueada', aparelho);
-          return res.status(400).json({ ok: false, erro: 'bloqueada' });
+        if (e && e.message === 'fila-cheia') {
+          await logUso('fila-cheia', aparelho);
+          return res.status(429).json({ ok: false, erro: 'fila-cheia' });
+        }
+        if (!temHF) {
+          await logUso('erro:comfyui', aparelho);
+          return res.status(502).json({ ok: false, erro: 'ia' });
         }
       }
     }
 
-    const code = (ultimoErro && ultimoErro.code) || 502;
-    const msg = (ultimoErro && ultimoErro.message === 'cota-ia') ? 'cota-ia' : 'ia';
-    await logUso(msg, aparelho);
-    return res.status(code).json({ ok: false, erro: msg });
+    if (temHF) {
+      const hfRes = await gerarHuggingFace(imagem, mime, prompt);
+      await logUso('ok:huggingface', aparelho);
+      return res.status(200).json(hfRes);
+    }
+
+    return res.status(502).json({ ok: false, erro: 'ia' });
   } catch (err) {
-    return res.status(500).json({ ok: false, erro: 'ia' });
+    const code = (err && err.code) || 500;
+    const msg = (err && err.message === 'cota-ia') ? 'cota-ia' : 'ia';
+    return res.status(code).json({ ok: false, erro: msg });
   }
 };

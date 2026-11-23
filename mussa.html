@@ -150,6 +150,7 @@ input[type="file"]{display:none}
     <div class="espera" id="boxEspera" aria-live="polite">
       <img src="img/mussa-mic.svg" alt="">
       <p id="msgEspera">Colocando o pano na cabeça e o bonézinho pra trás...</p>
+      <p id="filaBadge" style="margin-top:.55rem;font-size:.95rem;color:#FFFFFF;opacity:.92" hidden></p>
     </div>
 
     <div class="resultado" id="boxResultado">
@@ -207,6 +208,10 @@ input[type="file"]{display:none}
   var inGaleria = document.getElementById('inGaleria');
   var boxEspera = document.getElementById('boxEspera');
   var msgEspera = document.getElementById('msgEspera');
+  var filaBadge = document.getElementById('filaBadge');
+  var btnCamera = document.getElementById('btnCamera');
+  var btnGaleria = document.getElementById('btnGaleria');
+  var gerandoAgora = false;
   var boxResultado = document.getElementById('boxResultado');
   var imgResultado = document.getElementById('imgResultado');
   var btnBaixar = document.getElementById('btnBaixar');
@@ -321,13 +326,55 @@ input[type="file"]{display:none}
     });
   }
 
+  function aguardarJob(jobId) {
+    return new Promise(function (resolve, reject) {
+      var tentativas = 0;
+      var MAX_TENT = 120; // até ~4 minutos de fila sem timeout!
+      function checa() {
+        tentativas++;
+        fetch(API_URL + '?job=' + encodeURIComponent(jobId) + '&t=' + Date.now())
+          .then(function (r) { return r.json(); })
+          .then(function (st) {
+            if (!st) return reject(new Error('ia'));
+            if (st.status === 'pronto' && st.imagem) {
+              return resolve(st);
+            }
+            if (st.ok === false || st.status === 'erro') {
+              return reject(new Error(st.erro || 'ia'));
+            }
+            filaBadge.hidden = false;
+            if (st.status === 'gerando' || st.posicao === 0) {
+              filaBadge.textContent = '🎨 Sua vez! Gerando seu avatar agora na placa de vídeo...';
+            } else {
+              var est = Math.max(8, (st.posicao || 1) * 9);
+              filaBadge.textContent = '🎟️ Na fila da festa: posição ' + st.posicao + ' de ' + Math.max(st.posicao, st.totalFila || st.posicao) + ' (~' + est + 's)';
+            }
+            if (tentativas >= MAX_TENT) return reject(new Error('timeout'));
+            setTimeout(checa, 2000);
+          })
+          .catch(function () {
+            if (tentativas >= MAX_TENT) return reject(new Error('ia'));
+            setTimeout(checa, 2500);
+          });
+      }
+      setTimeout(checa, 1800);
+    });
+  }
+
   function processar(arquivo) {
-    if (!arquivo) return;
+    if (!arquivo || gerandoAgora) return;
+    gerandoAgora = true;
+    btnCamera.disabled = true;
+    btnGaleria.disabled = true;
+
     var nome = campoNome.value.trim() || 'Tropa do Lucas';
     try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
 
     boxResultado.classList.remove('ativa');
     boxEspera.classList.add('ativa');
+    filaBadge.hidden = false;
+    filaBadge.textContent = '📤 Enviando sua selfie para a fila...';
+
     var passo = 0;
     var timerMsg = setInterval(function () {
       passo = (passo + 1) % MENSAGENS_ESPERA.length;
@@ -342,10 +389,25 @@ input[type="file"]{display:none}
       });
     }).then(function (r) { return r.json(); })
       .then(function (res) {
-        if (!res || !res.ok || !res.imagem) {
+        if (!res || !res.ok) {
           throw new Error((res && res.erro) || 'ia');
         }
-        return carimbarEComprimir(res.imagem, res.mime || 'image/png');
+        if (res.status === 'pronto' && res.imagem) {
+          return res;
+        }
+        if (res.jobId) {
+          if (res.posicao > 0) {
+            var est = Math.max(8, res.posicao * 9);
+            filaBadge.textContent = '🎟️ Na fila da festa: posição ' + res.posicao + ' de ' + (res.totalFila || res.posicao) + ' (~' + est + 's)';
+          } else {
+            filaBadge.textContent = '🎨 Sua vez! Gerando seu avatar agora...';
+          }
+          return aguardarJob(res.jobId);
+        }
+        throw new Error('ia');
+      })
+      .then(function (resFinal) {
+        return carimbarEComprimir(resFinal.imagem, resFinal.mime || 'image/png');
       })
       .then(function (blobFinal) {
         blobFinalAtual = blobFinal;
@@ -374,14 +436,21 @@ input[type="file"]{display:none}
         }
       })
       .catch(function (err) {
-        var m = err && err.message === 'bloqueada'
-          ? 'A IA não conseguiu processar essa foto. Tente outra selfie bem iluminada!'
-          : 'Ops! Não deu para gerar agora. Tente novamente em instantes.';
-        mostraToast(m, 3800);
+        var code = err && err.message;
+        var m = code === 'fila-cheia'
+          ? '🎟️ A fila está cheia agora! Tente novamente em 1 minutinho.'
+          : (code === 'bloqueada'
+            ? 'A IA não conseguiu processar essa foto. Tente outra selfie bem iluminada!'
+            : 'Ops! Não deu para gerar agora. Tente novamente em instantes.');
+        mostraToast(m, 4200);
       })
       .finally(function () {
         clearInterval(timerMsg);
         boxEspera.classList.remove('ativa');
+        filaBadge.hidden = true;
+        gerandoAgora = false;
+        btnCamera.disabled = false;
+        btnGaleria.disabled = false;
       });
   }
 
