@@ -14,6 +14,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tema-mussa.css">
+<script>
+if (Date.now() <= Date.parse('2026-12-11T22:00:00-03:00') && location.search.indexOf('festa=1') === -1 && location.search.indexOf('fotos') === -1) {
+  location.replace('presenca.html');
+}
+</script>
 <script>window.addEventListener('error', function (e) { document.title = 'ERRO JS: ' + e.message; });</script>
 <style>
 /* ============================================================
@@ -541,7 +546,6 @@
       <p class="hero-data">📅 12/12/2026 · 🕐 13:00 · 📍 Guimi Buffet (Aclimação)</p>
       <p class="hero-sub">Faz o sinalzinho do M e entra nessa batalha de sabores! Confira o cardápio oficial da festa da Tropa do Lucas.</p>
       <div class="hero-ctas">
-        <a class="cta cta--capsula" href="presenca.html" data-ate-presenca>Confirmar presença <span class="seta">✅</span></a>
         <a class="cta" href="#entrada">Soltar o cardápio <span class="seta">🎤</span></a>
         <a class="cta cta--jogos" href="jogos.html">Arena de Jogos <span class="seta">🎮</span></a>
         <a class="cta cta--fotos" href="fotos.html">Fotos dos inscritos <span class="seta">📸</span></a>
@@ -566,7 +570,6 @@
 <!-- ==================== NAVEGAÇÃO ==================== -->
 <nav class="nav-cardapio" aria-label="Categorias do cardápio">
   <div class="nav-trilho">
-    <a class="nav-chip nav-chip--capsula" href="presenca.html" data-ate-presenca>✅ Confirmar Presença</a>
     <a class="nav-chip nav-chip--bolo" href="#local">📍 Como Chegar</a>
     <a class="nav-chip" href="#entrada">Entrada</a>
     <a class="nav-chip" href="#salgados">Salgados</a>
@@ -1113,11 +1116,6 @@
 <script>
 (function(){
   'use strict';
-  /* ---------- visibilidade automática da Confirmação de Presença até 11/12/2026 às 22:00 BRT ---------- */
-  if (Date.now() > Date.parse('2026-12-11T22:00:00-03:00')) {
-    document.querySelectorAll('[data-ate-presenca]').forEach(function (el) { el.remove(); });
-  }
-
   var reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (location.search.indexOf('fotos') !== -1) {
     reduzMovimento = true;
