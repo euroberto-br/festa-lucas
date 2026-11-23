@@ -11,15 +11,59 @@
  * Opcional (log de estatística): SUPABASE_URL + SUPABASE_SECRET_KEY
  */
 
-const PROMPT =
-  'Vibrant 2D street-cartoon character illustration of this exact person from the reference photo ' +
-  'in a fun Brazilian kids hip-hop YouTuber style: flat bold colors, clean dark comic outlines, ' +
-  'big expressive cartoon eyes and a joyful smile. Keep the person clearly recognizable: same face ' +
-  'features, skin tone, hair and expression, wearing a red baseball cap backwards over a white ' +
-  'bandana headband, stylish sunglasses resting on the cap, a red streetwear hoodie, and holding a ' +
-  'shiny golden microphone. Colorful concert rap-battle stage background with spotlights, golden ' +
-  'stars and musical notes in red, gold and purple. Keep the bottom 20% of the image as simple ' +
-  'clean background. Absolutely NO text, NO letters, NO words, NO logos and NO watermarks.';
+const ESTILOS = [
+  'bold 2D street-comic cartoon illustration with thick dark outlines and vibrant flat colors',
+  'vibrant 3D collectible vinyl-toy cartoon style (Pixar-like smooth lighting, playful proportions and glossy colors)',
+  'energetic Saturday-morning cartoon / pop-anime illustration with dynamic action lines and crisp shading',
+  'colorful urban graffiti sticker pop-art illustration with subtle comic halftone highlights',
+  'clean modern YouTuber mascot vector cartoon style with bold cel-shading and bright rim lighting'
+];
+
+const POSES = [
+  'holding a shiny golden microphone mid-rap while making a cool playful hand gesture toward the camera',
+  'spinning a glowing vinyl record on a cartoon DJ turntable with big headphones around the neck',
+  'jumping joyfully in mid-air with a colorful street skateboard and floating golden stars around',
+  'striking a superstar YouTuber pose proudly holding a shiny golden play-button trophy',
+  'carrying a retro cartoon boombox on one shoulder with musical notes bursting out',
+  'pointing happily toward the camera in an energetic rap-battle winner pose with sparkles around'
+];
+
+const FIGURINOS = [
+  'wearing a red baseball cap backwards over a white headband, stylish sunglasses resting on the cap, and a red streetwear hoodie',
+  'wearing a black-and-gold baseball cap backwards over a red bandana, cool tinted sunglasses, and a red-and-black bomber jacket',
+  'wearing a red backwards cap over a white bandana, neon-rimmed sunglasses on the cap, and an oversized graphic streetwear jersey with golden headphones',
+  'wearing a red-and-gold backwards cap over a white headband, stylish dark shades, and a red-and-white varsity jacket',
+  'wearing a bright red backwards cap over a patterned white bandana, cool cartoon sunglasses, and a vibrant yellow-and-red street hoodie'
+];
+
+const CENARIOS = [
+  'on a vibrant concert rap-battle stage with colorful spotlights, giant speakers and floating musical notes',
+  'in front of a bright colorful street-art graffiti wall at golden sunset with stars and dynamic paint splashes',
+  'inside a colorful kids YouTuber streaming studio with glowing neon RGB lights, floating musical notes and trophies',
+  'in a fun stylized cartoon desert sunset scene with golden skies, palm silhouettes, boombox and floating musical notes',
+  'at an explosive festive birthday concert with red and gold balloons, flying confetti and disco beams',
+  'on an energetic neon night street basketball court with cyan and magenta lights and glowing equalizer bars in the sky'
+];
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function montarPrompt() {
+  const estilo = pick(ESTILOS);
+  const pose = pick(POSES);
+  const figurino = pick(FIGURINOS);
+  const cenario = pick(CENARIOS);
+  return (
+    `Transform the person from the reference photo into a ${estilo}. ` +
+    'Keep the person clearly recognizable: preserve their exact face features, eyes, skin tone, hair color and joyful smile. ' +
+    `Show them ${pose}, ${figurino}. ` +
+    `Background setting: ${cenario}. ` +
+    'Kid-friendly, joyful, high quality framing (head and upper body nicely centered). ' +
+    'Keep the bottom 20% of the image clean and uncluttered for a caption badge. ' +
+    'Absolutely NO text, NO letters, NO numbers, NO words, NO logos and NO watermarks anywhere in the image.'
+  );
+}
 
 async function logUso(status, aparelho) {
   const url = process.env.SUPABASE_URL;
@@ -40,7 +84,7 @@ async function logUso(status, aparelho) {
 }
 
 /* ---------- 1. COMFYUI LOCAL (FLUX.2 Klein 4B NVFP4 via Cloudflare Tunnel) ---------- */
-async function gerarComfyUI(buffer, mime) {
+async function gerarComfyUI(buffer, mime, prompt) {
   const base = process.env.COMFYUI_URL.replace(/\/$/, '');
   const extraHeaders = {};
   if (process.env.COMFYUI_SECRET) extraHeaders['X-Comfy-Secret'] = process.env.COMFYUI_SECRET;
@@ -68,12 +112,12 @@ async function gerarComfyUI(buffer, mime) {
     '3': { class_type: 'VAELoader', inputs: { vae_name: 'flux2-vae.safetensors' } },
     '4': { class_type: 'LoadImage', inputs: { image: imgName } },
     '5': { class_type: 'VAEEncode', inputs: { pixels: ['4', 0], vae: ['3', 0] } },
-    '6': { class_type: 'CLIPTextEncode', inputs: { text: PROMPT, clip: ['2', 0] } },
+    '6': { class_type: 'CLIPTextEncode', inputs: { text: prompt, clip: ['2', 0] } },
     '7': { class_type: 'CLIPTextEncode', inputs: { text: '', clip: ['2', 0] } },
     '8': { class_type: 'ReferenceLatent', inputs: { conditioning: ['6', 0], latent: ['5', 0] } },
     '9': { class_type: 'ReferenceLatent', inputs: { conditioning: ['7', 0], latent: ['5', 0] } },
     '10': { class_type: 'EmptyFlux2LatentImage', inputs: { width: 1024, height: 1024, batch_size: 1 } },
-    '11': { class_type: 'Flux2Scheduler', inputs: { steps: 4, width: 1024, height: 1024 } },
+    '11': { class_type: 'Flux2Scheduler', inputs: { steps: 6, width: 1024, height: 1024 } },
     '12': { class_type: 'KSamplerSelect', inputs: { sampler_name: 'euler' } },
     '13': { class_type: 'RandomNoise', inputs: { noise_seed: seed } },
     '14': { class_type: 'CFGGuider', inputs: { model: ['1', 0], positive: ['8', 0], negative: ['9', 0], cfg: 1.0 } },
@@ -118,7 +162,7 @@ async function gerarComfyUI(buffer, mime) {
 }
 
 /* ---------- 2. HUGGING FACE INFERENCE PROVIDERS (FLUX.1-Kontext-dev) ---------- */
-async function gerarHuggingFace(imagemB64, mime) {
+async function gerarHuggingFace(imagemB64, mime, prompt) {
   const token = process.env.HF_TOKEN;
   const model = process.env.HF_MODEL || 'black-forest-labs/FLUX.1-Kontext-dev';
   const dataUri = `data:${mime};base64,${imagemB64}`;
@@ -127,11 +171,11 @@ async function gerarHuggingFace(imagemB64, mime) {
   const tentativas = [
     {
       url: 'https://router.huggingface.co/fal-ai/fal-ai/flux-kontext/dev',
-      body: { prompt: PROMPT, image_url: dataUri, num_inference_steps: 24, output_format: 'png' }
+      body: { prompt: prompt, image_url: dataUri, num_inference_steps: 24, output_format: 'png' }
     },
     {
       url: `https://router.huggingface.co/hf-inference/models/${model}`,
-      body: { inputs: PROMPT, parameters: { image: imagemB64 } }
+      body: { inputs: prompt, parameters: { image: imagemB64 } }
     }
   ];
 
@@ -210,9 +254,10 @@ module.exports = async function handler(req, res) {
     }
 
     const buffer = Buffer.from(imagem, 'base64');
+    const prompt = montarPrompt();
     const fila = [];
-    if (temComfy) fila.push(function () { return gerarComfyUI(buffer, mime); });
-    if (temHF) fila.push(function () { return gerarHuggingFace(imagem, mime); });
+    if (temComfy) fila.push(function () { return gerarComfyUI(buffer, mime, prompt); });
+    if (temHF) fila.push(function () { return gerarHuggingFace(imagem, mime, prompt); });
 
     let ultimoErro = null;
     for (const executar of fila) {
