@@ -19,7 +19,7 @@
 
   var audio = document.createElement('audio');
   audio.id = 'audioMussa';
-  audio.src = 'musica/mussa-style.mp3';
+  audio.src = 'musica/mussa-style.mp3?v=2';
   audio.preload = 'none';
   audio.loop = true;
   document.body.appendChild(audio);
