@@ -324,13 +324,19 @@ input[type="file"]{display:none}
     });
   }
 
+  var locaisIA = [];
+
   function subirGaleria(blob, nome) {
     var fd = new FormData();
     fd.append('file', blob, 'mussaverso.jpg');
     fd.append('upload_preset', UPLOAD_PRESET);
-    fd.append('asset_folder', TAG);
     fd.append('context', 'caption=' + (nome || 'Tropa do Lucas').replace(/[|=]/g, ' '));
-    return fetch(UPLOAD_URL, { method: 'POST', body: fd });
+    return fetch(UPLOAD_URL, { method: 'POST', body: fd }).then(function (r) {
+      return r.json().then(function (d) {
+        if (!r.ok) throw new Error((d && d.error && d.error.message) || ('HTTP ' + r.status));
+        return d;
+      });
+    });
   }
 
   function processar(arquivo) {
@@ -376,7 +382,18 @@ input[type="file"]{display:none}
         }
         mostraToast('🎨 Você entrou pro Mussaverso! Carimbo conquistado no Passaporte!', 3800);
         if (chkGaleria.checked) {
-          subirGaleria(blobFinal, nome).then(function () { setTimeout(carregarMural, 1500); }).catch(function () {});
+          subirGaleria(blobFinal, nome).then(function (up) {
+            locaisIA.unshift({
+              public_id: up.public_id,
+              version: up.version,
+              autor: nome,
+              expira: Date.now() + 180000
+            });
+            carregarMural();
+            mostraToast('🔥 Desenho publicado no Mural do Mussaverso!', 3200);
+          }).catch(function (errUp) {
+            mostraToast('⚠️ Desenho gerado, mas o mural retornou: ' + (errUp && errUp.message ? errUp.message : 'erro no Cloudinary'), 5000);
+          });
         }
       })
       .catch(function (err) {
@@ -405,7 +422,17 @@ input[type="file"]{display:none}
     fetch(LIST_URL + '?t=' + buster)
       .then(function (r) { return r.status === 404 ? { resources: [] } : r.json(); })
       .then(function (data) {
-        var lista = data.resources || [];
+        var agora = Date.now();
+        locaisIA = locaisIA.filter(function (l) { return l.expira > agora; });
+        var remotas = (data.resources || []).map(function (r) {
+          var autor = (r.context && r.context.custom && r.context.custom.caption) || 'Tropa do Lucas';
+          return { public_id: r.public_id, version: r.version, autor: autor };
+        });
+        var vistos = {};
+        var lista = [];
+        locaisIA.concat(remotas).forEach(function (it) {
+          if (!vistos[it.public_id]) { vistos[it.public_id] = true; lista.push(it); }
+        });
         contagem.hidden = false;
         contagem.textContent = lista.length + (lista.length === 1 ? ' desenho' : ' desenhos');
         if (!lista.length) {
@@ -414,7 +441,7 @@ input[type="file"]{display:none}
         }
         gradeIA.innerHTML = '';
         lista.forEach(function (r) {
-          var autor = (r.context && r.context.custom && r.context.custom.caption) || 'Tropa do Lucas';
+          var autor = r.autor || 'Tropa do Lucas';
           var d = document.createElement('div');
           d.className = 'item-ia';
           d.innerHTML =
