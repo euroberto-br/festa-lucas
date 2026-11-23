@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="theme-color" content="#151524">
+<link rel="icon" href="favicon.ico" sizes="any">
+<title>🔒 Lista de Confirmados — Festa Lucas Nery 7 anos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<style>
+body{min-height:100svh;padding:1.5rem 1rem 3rem;background:linear-gradient(180deg,#1B1033 0%,#151524 100%);color:var(--branco)}
+.wrap{max-width:1040px;margin:0 auto}
+.topo{text-align:center;margin-bottom:1.5rem}
+.topo h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.6rem);color:var(--ouro)}
+.topo p{font-weight:700;opacity:.85}
+
+.login-box{
+  max-width:420px;margin:2rem auto;background:var(--creme);color:var(--grafite);
+  border:4px solid var(--ouro);border-radius:28px;padding:1.8rem 1.4rem;text-align:center;
+  box-shadow:0 10px 0 #090912;
+}
+.login-box input{
+  width:100%;font-family:var(--texto);font-size:1.05rem;font-weight:800;
+  border:3px solid var(--grafite);border-radius:14px;padding:.72rem .9rem;margin:1rem 0;text-align:center;
+}
+.login-box .cta{width:100%}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.3rem}
+.stat{
+  background:rgba(255,255,255,.08);border:3px solid var(--ouro);border-radius:20px;
+  padding:.95rem;text-align:center;
+}
+.stat .num{font-family:var(--display);font-weight:800;font-size:2.1rem;color:var(--ouro);line-height:1}
+.stat .lbl{font-size:.86rem;font-weight:800;opacity:.9;margin-top:.2rem}
+
+.barra-acoes{
+  display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:1rem;
+}
+.barra-acoes input{
+  flex:1 1 220px;font-family:var(--texto);font-size:.95rem;font-weight:700;
+  border:3px solid var(--ouro);border-radius:14px;padding:.55rem .85rem;background:var(--branco);color:var(--grafite);
+}
+.barra-acoes .cta{font-size:.9rem;padding:.55rem 1.1rem}
+
+.tabela-wrap{
+  background:var(--creme);color:var(--grafite);border:4px solid var(--ouro);
+  border-radius:24px;overflow-x:auto;box-shadow:0 10px 0 #090912;
+}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:.75rem .9rem;text-align:left;border-bottom:2px solid #EFE4D6;vertical-align:top}
+th{background:#181826;color:var(--ouro);font-family:var(--display);font-weight:800;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.badge-num{
+  display:inline-block;background:var(--ouro);color:var(--grafite);
+  border:2px solid var(--grafite);border-radius:99px;padding:.1rem .55rem;font-weight:800;font-size:.82rem;
+}
+.vazio{text-align:center;padding:2rem;font-weight:800}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topo">
+    <h1>🔒 Painel Privado — Confirmados</h1>
+    <p>Festa Lucas Nery · 7 anos · 12/12/2026 às 13:00 · Guimi Buffet</p>
+  </header>
+
+  <section class="login-box" id="boxLogin">
+    <h2 style="font-family:var(--display);font-weight:800;font-size:1.5rem">Acesso Restrito</h2>
+    <p style="font-size:.92rem;font-weight:700;margin-top:.3rem">Digite sua chave de administrador configurada na Vercel (<code>ADMIN_KEY</code>).</p>
+    <form id="formLogin">
+      <input id="inChave" type="password" placeholder="Chave de acesso..." required autocomplete="current-password">
+      <button class="cta" type="submit">Entrar 🔓</button>
+    </form>
+  </section>
+
+  <section id="boxPainel" hidden>
+    <div class="stats">
+      <div class="stat"><div class="num" id="stFamilias">0</div><div class="lbl">Confirmações</div></div>
+      <div class="stat"><div class="num" id="stPessoas">0</div><div class="lbl">Total de Pessoas</div></div>
+      <div class="stat"><div class="num" id="stAdultos">0</div><div class="lbl">Adultos</div></div>
+      <div class="stat"><div class="num" id="stCriancas">0</div><div class="lbl">Crianças</div></div>
+    </div>
+
+    <div class="barra-acoes">
+      <input id="inBusca" type="search" placeholder="Filtrar por nome ou acompanhante...">
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="cta" id="btnAtualizar" type="button">↺ Atualizar</button>
+        <button class="cta cta--capsula" id="btnCsv" type="button">Exportar CSV 📊</button>
+        <button class="cta cta--ia" id="btnWpp" type="button">Copiar WhatsApp 📋</button>
+        <button class="cta cta--fotos" id="btnSair" type="button">Sair 🔒</button>
+      </div>
+    </div>
+
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Acompanhantes</th>
+            <th>Adultos</th>
+            <th>Crianças</th>
+            <th>Total</th>
+            <th>Observação</th>
+            <th>Confirmado em</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyLista">
+          <tr><td colspan="7" class="vazio">Carregando lista...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  var API_URL = '/api/presenca?listar=1';
+  var boxLogin = document.getElementById('boxLogin');
+  var boxPainel = document.getElementById('boxPainel');
+  var formLogin = document.getElementById('formLogin');
+  var inChave = document.getElementById('inChave');
+  var inBusca = document.getElementById('inBusca');
+  var tbody = document.getElementById('tbodyLista');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  var chaveAtual = '';
+  var dados = [];
+
+  function mostraToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('mostra');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('mostra'); }, ms || 3000);
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function fmtData(iso) {
+    try {
+      return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso || ''; }
+  }
+
+  function render() {
+    var q = (inBusca.value || '').trim().toLowerCase();
+    var filtrados = dados.filter(function (d) {
+      if (!q) return true;
+      return (d.nome || '').toLowerCase().indexOf(q) !== -1 ||
+             (d.acompanhantes_texto || '').toLowerCase().indexOf(q) !== -1 ||
+             (d.observacao || '').toLowerCase().indexOf(q) !== -1;
+    });
+
+    var totP = 0, totA = 0, totC = 0;
+    dados.forEach(function (d) {
+      totP += Number(d.total_pessoas) || 0;
+      totA += Number(d.total_adultos) || 0;
+      totC += Number(d.total_criancas) || 0;
+    });
+    document.getElementById('stFamilias').textContent = String(dados.length);
+    document.getElementById('stPessoas').textContent = String(totP);
+    document.getElementById('stAdultos').textContent = String(totA);
+    document.getElementById('stCriancas').textContent = String(totC);
+
+    if (!filtrados.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="vazio">Nenhuma confirmação encontrada ainda.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtrados.map(function (d) {
+      return '<tr>' +
+        '<td><strong>' + esc(d.nome) + '</strong></td>' +
+        '<td>' + esc(d.acompanhantes_texto || '—') + '</td>' +
+        '<td>' + (d.total_adultos || 0) + '</td>' +
+        '<td>' + (d.total_criancas || 0) + '</td>' +
+        '<td><span class="badge-num">' + (d.total_pessoas || 1) + '</span></td>' +
+        '<td>' + esc(d.observacao || '—') + '</td>' +
+        '<td style="white-space:nowrap">' + esc(fmtData(d.criado_em)) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function carregar(chave) {
+    fetch(API_URL + '&t=' + Date.now(), {
+      headers: { 'X-Admin-Key': chave }
+    }).then(function (r) {
+      return r.json().then(function (d) { return { status: r.status, dados: d }; });
+    }).then(function (res) {
+      if (res.status === 401) {
+        mostraToast('❌ Chave incorreta.');
+        try { sessionStorage.removeItem('festa-lucas-admin'); } catch (e) {}
+        return;
+      }
+      if (res.status === 503) {
+        mostraToast('🛠️ Configure ADMIN_KEY nas variáveis da Vercel!', 4200);
+        return;
+      }
+      if (!res.dados || !res.dados.ok) {
+        mostraToast('Erro ao carregar confirmados.');
+        return;
+      }
+      chaveAtual = chave;
+      try { sessionStorage.setItem('festa-lucas-admin', chave); } catch (e) {}
+      dados = res.dados.confirmados || [];
+      boxLogin.hidden = true;
+      boxPainel.hidden = false;
+      render();
+    }).catch(function () {
+      mostraToast('Erro de conexão ao buscar lista.');
+    });
+  }
+
+  formLogin.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var c = inChave.value.trim();
+    if (c) carregar(c);
+  });
+
+  inBusca.addEventListener('input', render);
+  document.getElementById('btnAtualizar').addEventListener('click', function () {
+    if (chaveAtual) { carregar(chaveAtual); mostraToast('Lista atualizada! ✅', 1800); }
+  });
+  document.getElementById('btnSair').addEventListener('click', function () {
+    chaveAtual = '';
+    try { sessionStorage.removeItem('festa-lucas-admin'); } catch (e) {}
+    boxPainel.hidden = true;
+    boxLogin.hidden = false;
+    inChave.value = '';
+  });
+
+  document.getElementById('btnCsv').addEventListener('click', function () {
+    var linhas = [['Nome', 'Acompanhantes', 'Adultos', 'Crianças', 'Total', 'Observação', 'Confirmado em']];
+    dados.forEach(function (d) {
+      linhas.push([
+        d.nome || '',
+        d.acompanhantes_texto || '',
+        d.total_adultos || 0,
+        d.total_criancas || 0,
+        d.total_pessoas || 1,
+        d.observacao || '',
+        fmtData(d.criado_em)
+      ]);
+    });
+    var csv = '\uFEFF' + linhas.map(function (l) {
+      return l.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+    }).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    a.download = 'confirmados-festa-lucas-7anos.csv';
+    a.click();
+    mostraToast('📊 CSV baixado! Abre direto no Excel.', 2600);
+  });
+
+  document.getElementById('btnWpp').addEventListener('click', function () {
+    var totP = 0, totA = 0, totC = 0;
+    var linhas = dados.map(function (d, i) {
+      totP += Number(d.total_pessoas) || 0;
+      totA += Number(d.total_adultos) || 0;
+      totC += Number(d.total_criancas) || 0;
+      return (i + 1) + '. *' + d.nome + '* (' + d.total_pessoas + 'p)' +
+        (d.acompanhantes_texto ? ' — ' + d.acompanhantes_texto : '');
+    });
+    var txt = '🎉 *Confirmados — Festa Lucas Nery (7 anos)*\n' +
+      'Total: *' + totP + ' pessoas* (' + totA + ' adultos + ' + totC + ' crianças)\n\n' +
+      linhas.join('\n');
+    navigator.clipboard.writeText(txt)
+      .then(function () { mostraToast('📋 Lista formatada copiada pro WhatsApp!', 2800); })
+      .catch(function () { mostraToast('Não foi possível copiar automaticamente.'); });
+  });
+
+  try {
+    var salva = sessionStorage.getItem('festa-lucas-admin');
+    if (salva) carregar(salva);
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

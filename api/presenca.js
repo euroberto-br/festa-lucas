@@ -3,11 +3,21 @@
  * Prazo limite: 11/12/2026 às 22:00 (horário de Brasília, UTC-03:00).
  */
 
+const crypto = require('crypto');
+
 const PRAZO_ISO = '2026-12-11T22:00:00-03:00';
 const PRAZO_MS = Date.parse(PRAZO_ISO);
 
 function limpa(v, max) {
   return String(v || '').trim().slice(0, max);
+}
+
+function chaveValida(informada, esperada) {
+  if (!informada || !esperada) return false;
+  const a = Buffer.from(String(informada));
+  const b = Buffer.from(String(esperada));
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }
 
 module.exports = async function handler(req, res) {
@@ -16,12 +26,42 @@ module.exports = async function handler(req, res) {
   const aberto = Date.now() <= PRAZO_MS;
 
   if (req.method === 'GET') {
+    // Listagem privada dos confirmados — exige ADMIN_KEY nas env vars da Vercel
+    if (req.query && req.query.listar === '1') {
+      const adminKey = process.env.ADMIN_KEY;
+      if (!adminKey) {
+        return res.status(503).json({ ok: false, erro: 'admin-key-nao-configurada' });
+      }
+      const recebida = req.headers['x-admin-key'] || '';
+      if (!chaveValida(recebida, adminKey)) {
+        return res.status(401).json({ ok: false, erro: 'nao-autorizado' });
+      }
+      if (!url || !key) {
+        return res.status(503).json({ ok: false, erro: 'supabase-nao-configurado' });
+      }
+      try {
+        const headers = { 'Content-Type': 'application/json', apikey: key };
+        if (!key.startsWith('sb_secret_')) headers.Authorization = `Bearer ${key}`;
+        const r = await fetch(
+          `${url.replace(/\/$/, '')}/rest/v1/presenca_confirmacoes?select=id,criado_em,nome,acompanhantes,acompanhantes_texto,total_adultos,total_criancas,total_pessoas,observacao&order=criado_em.desc&limit=500`,
+          { headers }
+        );
+        if (!r.ok) return res.status(502).json({ ok: false, erro: 'erro-supabase' });
+        const lista = await r.json();
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).json({ ok: true, confirmados: lista });
+      } catch (e) {
+        return res.status(500).json({ ok: false, erro: 'erro-interno' });
+      }
+    }
+
     return res.status(200).json({
       ok: true,
       servico: 'presenca-festa-lucas',
       aberto,
       prazo: PRAZO_ISO,
-      configurado: Boolean(url && key)
+      configurado: Boolean(url && key),
+      painelProtegido: Boolean(process.env.ADMIN_KEY)
     });
   }
 
