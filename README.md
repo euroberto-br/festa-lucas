@@ -42,8 +42,11 @@
    - **Output Directory**: `.`
 2. Em **Project Settings → Environment Variables**, adicione:
    - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `AZURE_API_KEY` *(opcional, apenas para o gerador de avatar em `mussa.html`)*
+   - `SUPABASE_SECRET_KEY`
+   - Para o gerador de avatar IA (`mussa.html`), escolha **um ou mais** provedores (ordem automática de fallback):
+     - **`COMFYUI_URL`** *(Grátis e ilimitado!)*: rode `cloudflared tunnel --url http://127.0.0.1:8188` no seu PC com ComfyUI (`flux-2-klein-4b-nvfp4`) e cole a URL HTTPS gerada.
+     - **`HF_TOKEN`** *(Hugging Face na nuvem)*: token com permissão *Inference Providers* (usa `FLUX.1-Kontext-dev`).
+     - **`AZURE_API_KEY`** *(opcional)*: Azure AI Foundry (`gpt-image-2`).
 3. Em **Project Settings → Domains → Add Domain**, digite **`festalucas.roberto.inf.br`**:
    - Com o domínio `roberto.inf.br` já gerenciado pela Vercel, o DNS e o certificado HTTPS são configurados automaticamente.
    - *(Se o DNS for externo, crie um registro `CNAME` apontando `festalucas` → `cname.vercel-dns.com`.)*
