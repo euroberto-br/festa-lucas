@@ -8,15 +8,21 @@
  */
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || 'znbneca7';
-const PASTAS_VALIDAS = { 'festa-lucas': true, 'festa-lucas-ia': true };
+const MAPA_PASTAS = {
+  'festa-lucas': { folder: 'festa-lucas', tags: ['festa_lucas', 'festa-lucas'] },
+  'festa_lucas': { folder: 'festa-lucas', tags: ['festa_lucas', 'festa-lucas'] },
+  'festa-lucas-ia': { folder: 'festa-lucas-ia', tags: ['festa_lucas_ia', 'festa-lucas-ia'] },
+  'festa_lucas_ia': { folder: 'festa-lucas-ia', tags: ['festa_lucas_ia', 'festa-lucas-ia'] }
+};
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, erro: 'metodo-nao-permitido' });
   }
 
-  const pasta = String((req.query && req.query.pasta) || '').trim();
-  if (!PASTAS_VALIDAS[pasta]) {
+  const chave = String((req.query && req.query.pasta) || '').trim();
+  const cfg = MAPA_PASTAS[chave];
+  if (!cfg) {
     return res.status(400).json({ ok: false, erro: 'pasta-invalida' });
   }
 
@@ -29,7 +35,7 @@ module.exports = async function handler(req, res) {
       const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
       const url =
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/resources/by_asset_folder` +
-        `?asset_folder=${encodeURIComponent(pasta)}&max_results=100&context=true&direction=desc`;
+        `?asset_folder=${encodeURIComponent(cfg.folder)}&max_results=100&context=true&direction=desc`;
       const r = await fetch(url, {
         headers: { Authorization: `Basic ${auth}` },
         signal: AbortSignal.timeout(10000)
@@ -50,20 +56,27 @@ module.exports = async function handler(req, res) {
     } catch (e) {}
   }
 
-  // 2. Fallback: listagem pública por tag (não exige API Secret)
+  // 2. Fallback: listagem pública por tag (tenta underline e hífen e mescla sem duplicar)
   try {
     const buster = Math.floor(Date.now() / 30000);
-    const r = await fetch(`https://res.cloudinary.com/${CLOUD_NAME}/image/list/${pasta}.json?t=${buster}`, {
-      signal: AbortSignal.timeout(8000)
+    const resultados = await Promise.all(cfg.tags.map(function (t) {
+      return fetch(`https://res.cloudinary.com/${CLOUD_NAME}/image/list/${t}.json?t=${buster}`, {
+        signal: AbortSignal.timeout(8000)
+      }).then(function (r) { return r.ok ? r.json() : { resources: [] }; })
+        .catch(function () { return { resources: [] }; });
+    }));
+    const vistos = {};
+    const resources = [];
+    resultados.forEach(function (d) {
+      (d.resources || []).forEach(function (it) {
+        if (!vistos[it.public_id]) {
+          vistos[it.public_id] = true;
+          resources.push(it);
+        }
+      });
     });
-    if (r.status === 404) {
-      return res.status(200).json({ ok: true, origem: 'tag', resources: [], precisaChavePasta: !(apiKey && apiSecret) });
-    }
-    if (r.ok) {
-      const data = await r.json();
-      res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=30');
-      return res.status(200).json({ ok: true, origem: 'tag', resources: data.resources || [] });
-    }
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=30');
+    return res.status(200).json({ ok: true, origem: 'tag', resources });
   } catch (e) {}
 
   return res.status(200).json({ ok: true, origem: 'vazio', resources: [] });
