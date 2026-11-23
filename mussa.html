@@ -330,6 +330,7 @@ input[type="file"]{display:none}
     var fd = new FormData();
     fd.append('file', blob, 'mussaverso.jpg');
     fd.append('upload_preset', UPLOAD_PRESET);
+    fd.append('tags', TAG);
     fd.append('context', 'caption=' + (nome || 'Tropa do Lucas').replace(/[|=]/g, ' '));
     return fetch(UPLOAD_URL, { method: 'POST', body: fd }).then(function (r) {
       return r.json().then(function (d) {
