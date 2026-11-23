@@ -147,8 +147,6 @@ input[type="file"]{display:none}
       <button class="cta cta--ia" id="btnGaleria" type="button">Escolher da galeria 🖼️</button>
     </div>
 
-    <p class="usos-info" id="usosInfo">Você tem 5 transformações disponíveis neste aparelho.</p>
-
     <div class="espera" id="boxEspera" aria-live="polite">
       <img src="img/mussa-mic.svg" alt="">
       <p id="msgEspera">Colocando o pano na cabeça e o bonézinho pra trás...</p>
@@ -190,7 +188,6 @@ input[type="file"]{display:none}
   var LIST_URL = '/api/galeria?pasta=' + TAG;
   var BASE_IMG = 'https://res.cloudinary.com/' + CLOUD_NAME + '/image/upload/';
 
-  var LIMITE_USOS = 5;
   var FRASES = [
     'Mussa Style!',
     'Tropa do Lucas!',
@@ -208,7 +205,6 @@ input[type="file"]{display:none}
   var chkGaleria = document.getElementById('chkGaleria');
   var inCamera = document.getElementById('inCamera');
   var inGaleria = document.getElementById('inGaleria');
-  var usosInfo = document.getElementById('usosInfo');
   var boxEspera = document.getElementById('boxEspera');
   var msgEspera = document.getElementById('msgEspera');
   var boxResultado = document.getElementById('boxResultado');
@@ -232,21 +228,6 @@ input[type="file"]{display:none}
   campoNome.addEventListener('change', function () {
     try { localStorage.setItem('festa-lucas-nome', campoNome.value.trim()); } catch (e) {}
   });
-
-  function usosFeitos() {
-    try { return parseInt(localStorage.getItem('festa-lucas-ia-usos') || '0', 10) || 0; } catch (e) { return 0; }
-  }
-  function marcaUso() {
-    try { localStorage.setItem('festa-lucas-ia-usos', String(usosFeitos() + 1)); } catch (e) {}
-    atualizaUsos();
-  }
-  function atualizaUsos() {
-    var restam = Math.max(0, LIMITE_USOS - usosFeitos());
-    usosInfo.textContent = restam > 0
-      ? 'Você tem ' + restam + ' de ' + LIMITE_USOS + ' transformações disponíveis neste aparelho.'
-      : 'Você já usou todas as ' + LIMITE_USOS + ' transformações neste aparelho!';
-  }
-  atualizaUsos();
 
   document.getElementById('btnCamera').addEventListener('click', function () { inCamera.click(); });
   document.getElementById('btnGaleria').addEventListener('click', function () { inGaleria.click(); });
@@ -342,10 +323,6 @@ input[type="file"]{display:none}
 
   function processar(arquivo) {
     if (!arquivo) return;
-    if (usosFeitos() >= LIMITE_USOS) {
-      mostraToast('Você já usou suas ' + LIMITE_USOS + ' transformações neste aparelho!');
-      return;
-    }
     var nome = campoNome.value.trim() || 'Tropa do Lucas';
     try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
 
@@ -372,7 +349,6 @@ input[type="file"]{display:none}
       })
       .then(function (blobFinal) {
         blobFinalAtual = blobFinal;
-        marcaUso();
         try { localStorage.setItem('festa-lucas-carimbo-ia', '1'); } catch (e2) {}
         var url = URL.createObjectURL(blobFinal);
         imgResultado.src = url;
