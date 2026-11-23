@@ -534,7 +534,6 @@
       <p class="hero-sub">Faz o sinalzinho do M e entra nessa batalha de sabores! Confira os 13 rounds oficiais do cardápio da Tropa do Lucas.</p>
       <div class="hero-ctas">
         <a class="cta" href="#entrada">Soltar o cardápio <span class="seta">🎤</span></a>
-        <a class="cta cta--ia" href="#local">Como chegar <span class="seta">📍</span></a>
       </div>
     </div>
     <div class="hero-retrato">
@@ -555,7 +554,6 @@
 <nav class="nav-cardapio" aria-label="Categorias do cardápio">
   <div class="nav-trilho">
     <a class="nav-chip" href="index.html?festa=1">← Início</a>
-    <a class="nav-chip nav-chip--bolo" href="#local">📍 Como Chegar</a>
     <a class="nav-chip" href="#entrada">Entrada</a>
     <a class="nav-chip" href="#salgados">Salgados</a>
     <a class="nav-chip" href="#fingerfoods">Finger Foods</a>
@@ -1031,27 +1029,6 @@
     </div>
   </article>
 
-  <!-- LOCAL DA FESTA / COMO CHEGAR -->
-  <article class="curso" id="local">
-    <div class="curso-card" style="--acento:var(--vermelho);flex-direction:column;text-align:center">
-      <span class="round-badge">📍 LOCAL DO SHOW</span>
-      <div class="curso-info" style="max-width:64ch;width:100%">
-        <p class="eyebrow">Como chegar</p>
-        <h2>Guimi Buffet 🗺️</h2>
-        <p class="desc"><strong>Rua Muniz de Souza, 1130 — Aclimação, São Paulo - SP · CEP 01534-001</strong></p>
-        <p class="nota">🌳 Em frente ao Parque da Aclimação · 📅 12/12/2026 às 13:00</p>
-        <div class="hero-ctas" style="justify-content:center;margin-top:1.1rem">
-          <a class="cta" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Guimi+Buffet,+Rua+Muniz+de+Souza,+1130+-+Aclimacao,+Sao+Paulo+-+SP">Google Maps 🗺️</a>
-          <a class="cta cta--ia" target="_blank" rel="noopener noreferrer" href="https://waze.com/ul?q=Guimi%20Buffet%20Rua%20Muniz%20de%20Souza%201130%20Sao%20Paulo&navigate=yes">Abrir no Waze 🚗</a>
-          <button class="cta cta--jogos" id="btnCopiarEndHome" type="button">Copiar endereço 📋</button>
-        </div>
-        <div style="margin-top:1.25rem;border-radius:22px;overflow:hidden;border:4px solid var(--grafite);box-shadow:0 6px 0 var(--grafite)">
-          <iframe title="Mapa do Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;height:280px;border:0;display:block" src="https://maps.google.com/maps?q=Guimi%20Buffet%2C%20Rua%20Muniz%20de%20Souza%2C%201130%20-%20Aclimacao%2C%20Sao%20Paulo%20-%20SP&t=&z=16&ie=UTF8&iwloc=&output=embed"></iframe>
-        </div>
-      </div>
-    </div>
-  </article>
-
 </main>
 
 <!-- ==================== RODAPÉ ==================== -->
@@ -1392,20 +1369,6 @@
     somPop();
     mostraToast('🎤 Os microfones se esconderam no palco de novo. Boa caça!');
   });
-
-  var btnCopiarEndHome = document.getElementById('btnCopiarEndHome');
-  if (btnCopiarEndHome) {
-    var END_GUIMI = 'Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo - SP, CEP 01534-001';
-    btnCopiarEndHome.addEventListener('click', function () {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(END_GUIMI)
-          .then(function () { mostraToast('📋 Endereço copiado! É só colar no Uber, 99 ou GPS.', 3000); })
-          .catch(function () { mostraToast(END_GUIMI, 4500); });
-      } else {
-        mostraToast(END_GUIMI, 4500);
-      }
-    });
-  }
 
   document.documentElement.setAttribute('data-js-ok', '1');
 })();
