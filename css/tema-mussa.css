@@ -157,6 +157,21 @@ button{font-family:inherit;cursor:pointer}
 }
 .toast.mostra{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ---------- Botão flutuante de Música Tema (Global) ---------- */
+.btn-musica{
+  position:fixed;bottom:14px;right:14px;z-index:70;
+  width:58px;height:58px;border-radius:50%;
+  background:var(--vermelho);color:var(--branco);border:4px solid var(--ouro);
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.35), 0 6px 0 var(--grafite), 0 12px 26px rgba(0,0,0,.52);
+  display:grid;place-items:center;
+  font-size:1.45rem;line-height:1;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn-musica:hover{transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.35), 0 4px 0 var(--grafite), 0 10px 20px rgba(0,0,0,.48)}
+.btn-musica:focus-visible{outline:4px solid var(--branco);outline-offset:3px}
+.btn-musica.tocando{animation:pulsa-musica .65s ease-in-out infinite;background:var(--ouro);color:var(--grafite);border-color:var(--grafite)}
+@keyframes pulsa-musica{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.12) rotate(5deg)}}
+
 /* ---------- Acessibilidade: skip link ---------- */
 .skip-link{
   position:absolute;left:-9999px;top:8px;z-index:200;
