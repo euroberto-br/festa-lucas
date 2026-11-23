@@ -187,7 +187,7 @@ input[type="file"]{display:none}
   var UPLOAD_PRESET = 'festa_lucas_ia';
   var TAG = 'festa-lucas-ia';
   var UPLOAD_URL = 'https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload';
-  var LIST_URL = 'https://res.cloudinary.com/' + CLOUD_NAME + '/image/list/' + TAG + '.json';
+  var LIST_URL = '/api/galeria?pasta=' + TAG;
   var BASE_IMG = 'https://res.cloudinary.com/' + CLOUD_NAME + '/image/upload/';
 
   var LIMITE_USOS = 5;
@@ -419,8 +419,8 @@ input[type="file"]{display:none}
   });
 
   function carregarMural() {
-    var buster = Math.floor(Date.now() / 30000);
-    fetch(LIST_URL + '?t=' + buster)
+    var buster = Math.floor(Date.now() / 15000);
+    fetch(LIST_URL + '&t=' + buster)
       .then(function (r) { return r.status === 404 ? { resources: [] } : r.json(); })
       .then(function (data) {
         var agora = Date.now();
