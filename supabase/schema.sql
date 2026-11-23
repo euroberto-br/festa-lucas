@@ -51,6 +51,19 @@ create table if not exists public.ia_geracoes (
   aparelho text not null default '' check (char_length(aparelho) <= 32)
 );
 
+-- 4. Confirmação de Presença (RSVP — aberto até 11/12/2026 às 22:00 BRT)
+create table if not exists public.presenca_confirmacoes (
+  id bigint generated always as identity primary key,
+  criado_em timestamptz not null default now(),
+  nome text not null check (char_length(trim(nome)) between 1 and 80),
+  acompanhantes jsonb not null default '[]'::jsonb,
+  acompanhantes_texto text not null default '',
+  total_adultos integer not null default 1 check (total_adultos between 0 and 20),
+  total_criancas integer not null default 0 check (total_criancas between 0 and 20),
+  total_pessoas integer not null default 1 check (total_pessoas between 1 and 25),
+  observacao text not null default '' check (char_length(observacao) <= 400)
+);
+
 -- ============================================================
 -- SEGURANÇA (Fail-Closed): RLS ativado sem políticas públicas!
 -- Somente as Serverless Functions da Vercel (via service_role)
@@ -59,3 +72,4 @@ create table if not exists public.ia_geracoes (
 alter table public.capsula_mensagens enable row level security;
 alter table public.ranking_placares enable row level security;
 alter table public.ia_geracoes enable row level security;
+alter table public.presenca_confirmacoes enable row level security;

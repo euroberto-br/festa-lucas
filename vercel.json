@@ -4,6 +4,7 @@
     "api/capsula.js": { "maxDuration": 15 },
     "api/ranking.js": { "maxDuration": 15 },
     "api/galeria.js": { "maxDuration": 15 },
+    "api/presenca.js": { "maxDuration": 15 },
     "api/mussa.js": { "maxDuration": 60 }
   },
   "headers": [
