@@ -60,6 +60,64 @@ tr:last-child td{border-bottom:none}
   border:2px solid var(--grafite);border-radius:99px;padding:.1rem .55rem;font-weight:800;font-size:.82rem;
 }
 .vazio{text-align:center;padding:2rem;font-weight:800}
+
+.acoes-cell{white-space:nowrap;display:flex;gap:.35rem}
+.btn-mini{
+  font-family:var(--texto);font-weight:800;font-size:.8rem;cursor:pointer;
+  border:2px solid var(--grafite);border-radius:10px;padding:.3rem .58rem;
+  transition:transform .1s ease;
+}
+.btn-mini:hover{transform:translateY(-1px)}
+.btn-edit{background:#FFE27A;color:var(--grafite)}
+.btn-del{background:#FFD6D6;color:#9B1515}
+.cta--novo{background:#23B866;color:#fff;border-color:#0F5E33}
+
+/* Modal de inclusão / edição */
+.modal-bg{
+  position:fixed;inset:0;z-index:200;background:rgba(10,8,20,.76);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;
+}
+.modal-bg.aberto{display:flex}
+.modal-card{
+  width:100%;max-width:540px;background:var(--creme);color:var(--grafite);
+  border:4px solid var(--ouro);border-radius:26px;padding:1.4rem 1.35rem;
+  box-shadow:0 14px 36px rgba(0,0,0,.45);max-height:92svh;overflow-y:auto;
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem}
+.modal-head h2{font-family:var(--display);font-weight:800;font-size:1.45rem;margin:0}
+.btn-fechar{
+  background:#EFE4D6;border:2px solid var(--grafite);border-radius:10px;
+  font-weight:800;font-size:1rem;width:36px;height:36px;cursor:pointer;
+}
+.campo{margin-bottom:.85rem}
+.campo label{display:block;font-weight:800;font-size:.88rem;margin-bottom:.28rem}
+.campo-linha{display:flex;gap:.5rem;align-items:center}
+.campo input,.campo select,.campo textarea{
+  width:100%;font-family:var(--texto);font-size:.95rem;font-weight:700;
+  border:2.5px solid var(--grafite);border-radius:12px;padding:.55rem .75rem;
+  background:var(--branco);color:var(--grafite);
+}
+.campo-linha select{width:auto;min-width:120px}
+.acomp-row{display:flex;gap:.45rem;align-items:center;margin-bottom:.45rem}
+.acomp-row input{flex:1}
+.acomp-row select{width:116px}
+.btn-rem{
+  background:#FFD6D6;color:#9B1515;border:2px solid var(--grafite);border-radius:10px;
+  font-weight:800;width:36px;height:38px;cursor:pointer;flex-shrink:0;
+}
+.btn-add-acomp{
+  background:#FFF2B2;color:var(--grafite);border:2px dashed var(--grafite);border-radius:12px;
+  font-family:var(--texto);font-weight:800;font-size:.86rem;padding:.45rem .8rem;cursor:pointer;
+}
+.resumo-modal{
+  background:#FFF7DF;border:2px solid var(--ouro);border-radius:12px;
+  padding:.55rem .8rem;font-weight:800;font-size:.9rem;margin:.7rem 0 1rem;
+}
+.modal-rodape{display:flex;gap:.6rem;justify-content:flex-end;flex-wrap:wrap}
+.btn-sec{
+  background:#E5DCCE;color:var(--grafite);border:3px solid var(--grafite);border-radius:14px;
+  font-family:var(--display);font-weight:800;font-size:.95rem;padding:.55rem 1.1rem;cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -89,6 +147,7 @@ tr:last-child td{border-bottom:none}
     <div class="barra-acoes">
       <input id="inBusca" type="search" placeholder="Filtrar por nome ou acompanhante...">
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="cta cta--novo" id="btnNovo" type="button">+ Adicionar convidado</button>
         <button class="cta" id="btnAtualizar" type="button">↺ Atualizar</button>
         <button class="cta cta--capsula" id="btnCsv" type="button">Exportar CSV 📊</button>
         <button class="cta cta--ia" id="btnWpp" type="button">Copiar WhatsApp 📋</button>
@@ -107,15 +166,56 @@ tr:last-child td{border-bottom:none}
             <th>Total</th>
             <th>Observação</th>
             <th>Confirmado em</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody id="tbodyLista">
-          <tr><td colspan="7" class="vazio">Carregando lista...</td></tr>
+          <tr><td colspan="8" class="vazio">Carregando lista...</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 </main>
+
+<div class="modal-bg" id="modalConvidado" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalTitulo">Adicionar convidado</h2>
+      <button type="button" class="btn-fechar" id="btnFecharModal" aria-label="Fechar">✕</button>
+    </div>
+    <form id="formModal">
+      <input type="hidden" id="mdId">
+      <div class="campo">
+        <label for="mdNome">Nome do convidado</label>
+        <div class="campo-linha">
+          <input id="mdNome" type="text" maxlength="80" placeholder="Nome completo..." required>
+          <select id="mdTipoTitular" aria-label="Tipo do convidado">
+            <option value="adulto">Adulto</option>
+            <option value="crianca">Criança</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Acompanhantes</label>
+        <div id="mdAcompLista"></div>
+        <button type="button" class="btn-add-acomp" id="btnMdAddAcomp">+ Adicionar acompanhante</button>
+      </div>
+
+      <div class="resumo-modal" id="mdResumo">Total: 1 pessoa (1 adulto)</div>
+
+      <div class="campo">
+        <label for="mdObs">Observação (opcional)</label>
+        <textarea id="mdObs" rows="2" maxlength="400" placeholder="Ex.: confirmação via WhatsApp, restrição alimentar..."></textarea>
+      </div>
+
+      <div class="modal-rodape">
+        <button type="button" class="btn-sec" id="btnCancelarModal">Cancelar</button>
+        <button type="submit" class="cta cta--novo" id="btnSalvarModal">Salvar convidado ✅</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -172,7 +272,7 @@ tr:last-child td{border-bottom:none}
     document.getElementById('stCriancas').textContent = String(totC);
 
     if (!filtrados.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="vazio">Nenhuma confirmação encontrada ainda.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="vazio">Nenhuma confirmação encontrada ainda.</td></tr>';
       return;
     }
     tbody.innerHTML = filtrados.map(function (d) {
@@ -184,6 +284,10 @@ tr:last-child td{border-bottom:none}
         '<td><span class="badge-num">' + (d.total_pessoas || 1) + '</span></td>' +
         '<td>' + esc(d.observacao || '—') + '</td>' +
         '<td style="white-space:nowrap">' + esc(fmtData(d.criado_em)) + '</td>' +
+        '<td><div class="acoes-cell">' +
+          '<button type="button" class="btn-mini btn-edit" data-acao="editar" data-id="' + esc(d.id) + '">✏️ Editar</button>' +
+          '<button type="button" class="btn-mini btn-del" data-acao="remover" data-id="' + esc(d.id) + '">🗑️ Remover</button>' +
+        '</div></td>' +
       '</tr>';
     }).join('');
   }
@@ -274,6 +378,196 @@ tr:last-child td{border-bottom:none}
     navigator.clipboard.writeText(txt)
       .then(function () { mostraToast('📋 Lista formatada copiada pro WhatsApp!', 2800); })
       .catch(function () { mostraToast('Não foi possível copiar automaticamente.'); });
+  });
+
+  /* ---------- CRUD Manual: Incluir, Editar e Remover ---------- */
+  var modal = document.getElementById('modalConvidado');
+  var modalTitulo = document.getElementById('modalTitulo');
+  var formModal = document.getElementById('formModal');
+  var mdId = document.getElementById('mdId');
+  var mdNome = document.getElementById('mdNome');
+  var mdTipoTitular = document.getElementById('mdTipoTitular');
+  var mdAcompLista = document.getElementById('mdAcompLista');
+  var mdResumo = document.getElementById('mdResumo');
+  var mdObs = document.getElementById('mdObs');
+  var btnSalvarModal = document.getElementById('btnSalvarModal');
+
+  function lerMdAcompanhantes() {
+    var lista = [];
+    mdAcompLista.querySelectorAll('.acomp-row').forEach(function (row) {
+      var n = row.querySelector('input').value.trim();
+      var t = row.querySelector('select').value;
+      if (n) lista.push({ nome: n, tipo: t });
+    });
+    return lista;
+  }
+
+  function atualizaMdResumo() {
+    var acomp = lerMdAcompanhantes();
+    var adultos = mdTipoTitular.value === 'crianca' ? 0 : 1;
+    var criancas = mdTipoTitular.value === 'crianca' ? 1 : 0;
+    acomp.forEach(function (a) {
+      if (a.tipo === 'crianca') criancas++;
+      else adultos++;
+    });
+    var total = adultos + criancas;
+    var partes = [];
+    if (adultos > 0) partes.push(adultos + (adultos === 1 ? ' adulto' : ' adultos'));
+    if (criancas > 0) partes.push(criancas + (criancas === 1 ? ' criança' : ' crianças'));
+    mdResumo.textContent = 'Total: ' + total + (total === 1 ? ' pessoa' : ' pessoas') + ' (' + partes.join(' + ') + ')';
+  }
+
+  function addMdAcompRow(nomeInit, tipoInit, focar) {
+    if (mdAcompLista.children.length >= 15) {
+      mostraToast('Limite de 15 acompanhantes por registro.');
+      return;
+    }
+    var row = document.createElement('div');
+    row.className = 'acomp-row';
+    row.innerHTML =
+      '<input type="text" maxlength="80" placeholder="Nome do acompanhante">' +
+      '<select aria-label="Tipo"><option value="adulto">Adulto</option><option value="crianca">Criança</option></select>' +
+      '<button type="button" class="btn-rem" aria-label="Remover">✕</button>';
+    var inp = row.querySelector('input');
+    var sel = row.querySelector('select');
+    if (nomeInit) inp.value = nomeInit;
+    if (tipoInit) sel.value = tipoInit;
+    inp.addEventListener('input', atualizaMdResumo);
+    sel.addEventListener('change', atualizaMdResumo);
+    row.querySelector('.btn-rem').addEventListener('click', function () {
+      row.remove();
+      atualizaMdResumo();
+    });
+    mdAcompLista.appendChild(row);
+    if (focar) inp.focus();
+    atualizaMdResumo();
+  }
+
+  function deduzTipoTitular(reg) {
+    var acomp = Array.isArray(reg.acompanhantes) ? reg.acompanhantes : [];
+    var acA = 0, acC = 0;
+    acomp.forEach(function (a) {
+      if (a && a.tipo === 'crianca') acC++;
+      else if (a && a.nome) acA++;
+    });
+    if ((Number(reg.total_adultos) || 0) > acA) return 'adulto';
+    if ((Number(reg.total_criancas) || 0) > acC) return 'crianca';
+    return 'adulto';
+  }
+
+  function abrirModal(reg) {
+    mdAcompLista.innerHTML = '';
+    if (reg) {
+      modalTitulo.textContent = 'Editar convidado';
+      mdId.value = String(reg.id);
+      mdNome.value = reg.nome || '';
+      mdTipoTitular.value = deduzTipoTitular(reg);
+      mdObs.value = reg.observacao || '';
+      var acomp = Array.isArray(reg.acompanhantes) ? reg.acompanhantes : [];
+      acomp.forEach(function (a) {
+        if (a && a.nome) addMdAcompRow(a.nome, a.tipo === 'crianca' ? 'crianca' : 'adulto', false);
+      });
+      btnSalvarModal.textContent = 'Salvar alterações ✅';
+    } else {
+      modalTitulo.textContent = 'Adicionar convidado';
+      mdId.value = '';
+      mdNome.value = '';
+      mdTipoTitular.value = 'adulto';
+      mdObs.value = '';
+      btnSalvarModal.textContent = 'Adicionar convidado ✅';
+    }
+    atualizaMdResumo();
+    modal.classList.add('aberto');
+    setTimeout(function () { mdNome.focus(); }, 30);
+  }
+
+  function fecharModal() {
+    modal.classList.remove('aberto');
+  }
+
+  document.getElementById('btnNovo').addEventListener('click', function () { abrirModal(null); });
+  document.getElementById('btnMdAddAcomp').addEventListener('click', function () { addMdAcompRow('', 'adulto', true); });
+  document.getElementById('btnFecharModal').addEventListener('click', fecharModal);
+  document.getElementById('btnCancelarModal').addEventListener('click', fecharModal);
+  mdTipoTitular.addEventListener('change', atualizaMdResumo);
+  modal.addEventListener('click', function (ev) { if (ev.target === modal) fecharModal(); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && modal.classList.contains('aberto')) fecharModal(); });
+
+  formModal.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var nome = mdNome.value.trim();
+    if (!nome) { mostraToast('Digite o nome do convidado.'); mdNome.focus(); return; }
+
+    var id = mdId.value.trim();
+    var ehEdicao = Boolean(id);
+    var payload = {
+      nome: nome,
+      tipoTitular: mdTipoTitular.value,
+      acompanhantes: lerMdAcompanhantes(),
+      observacao: mdObs.value.trim()
+    };
+    if (ehEdicao) payload.id = id;
+
+    btnSalvarModal.disabled = true;
+    btnSalvarModal.textContent = 'Salvando...';
+
+    fetch('/api/presenca', {
+      method: ehEdicao ? 'PATCH' : 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': chaveAtual },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().then(function (d) { return { ok: r.ok && d && d.ok, status: r.status, dados: d }; });
+    }).then(function (res) {
+      if (!res.ok) {
+        mostraToast(res.status === 401 ? '❌ Sessão expirada. Faça login novamente.' : 'Erro ao salvar convidado.', 3400);
+        return;
+      }
+      fecharModal();
+      mostraToast(ehEdicao ? '✅ Convidado atualizado!' : '✅ Convidado adicionado!', 2600);
+      carregar(chaveAtual);
+    }).catch(function () {
+      mostraToast('Erro de conexão ao salvar.');
+    }).finally(function () {
+      btnSalvarModal.disabled = false;
+      btnSalvarModal.textContent = ehEdicao ? 'Salvar alterações ✅' : 'Adicionar convidado ✅';
+    });
+  });
+
+  tbody.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('button[data-acao]');
+    if (!btn) return;
+    var id = btn.getAttribute('data-id');
+    var acao = btn.getAttribute('data-acao');
+    var reg = dados.find(function (d) { return String(d.id) === String(id); });
+    if (!reg) return;
+
+    if (acao === 'editar') {
+      abrirModal(reg);
+      return;
+    }
+
+    if (acao === 'remover') {
+      var okConf = window.confirm('Remover "' + reg.nome + '" (' + (reg.total_pessoas || 1) + ' pessoa(s)) da lista de confirmados?');
+      if (!okConf) return;
+      btn.disabled = true;
+      fetch('/api/presenca?id=' + encodeURIComponent(id), {
+        method: 'DELETE',
+        headers: { 'X-Admin-Key': chaveAtual }
+      }).then(function (r) {
+        return r.json().then(function (d) { return { ok: r.ok && d && d.ok, status: r.status }; });
+      }).then(function (res) {
+        if (!res.ok) {
+          mostraToast('Erro ao remover convidado.', 3200);
+          btn.disabled = false;
+          return;
+        }
+        mostraToast('🗑️ Convidado removido da lista.', 2600);
+        carregar(chaveAtual);
+      }).catch(function () {
+        mostraToast('Erro de conexão ao remover.');
+        btn.disabled = false;
+      });
+    }
   });
 
   try {
