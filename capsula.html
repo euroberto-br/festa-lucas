@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E62E2D">
+<title>📼 Mande sua Rima — Cápsula do Tempo do Lucas Nery</title>
+<meta name="description" content="Deixe uma rima, um recado ou um conselho selado na cápsula do tempo dos 7 anos do Lucas Nery.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<style>
+body{min-height:100svh;padding-bottom:3rem}
+.topo{
+  max-width:780px;margin:0 auto;padding:1.4rem 1.1rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;
+}
+.voltar{
+  font-family:var(--display);font-weight:800;font-size:.95rem;
+  color:var(--grafite);background:var(--ouro);text-decoration:none;
+  border:3px solid var(--grafite);border-radius:99px;padding:.4rem 1.05rem;
+  box-shadow:0 4px 0 var(--grafite);
+}
+.voltar:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--grafite)}
+.nav-mini{display:flex;gap:.45rem;flex-wrap:wrap}
+.nav-mini a{
+  font-family:var(--display);font-weight:700;font-size:.82rem;
+  color:var(--branco);background:rgba(21,21,36,.72);text-decoration:none;
+  border:2px solid rgba(255,255,255,.35);border-radius:99px;padding:.28rem .75rem;
+}
+
+.hero-pag{
+  text-align:center;color:var(--branco);
+  max-width:720px;margin:0 auto;padding:.6rem 1.1rem 1.8rem;
+}
+.hero-pag h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2rem,8.5vw,3.4rem);line-height:1;
+  text-shadow:0 5px 0 var(--grafite);margin:.5rem 0;
+}
+.hero-pag p{font-weight:700;font-size:1.05rem;opacity:.95}
+
+.caixa{
+  max-width:700px;margin:0 auto;padding:0 1.1rem;
+}
+.card-capsula{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
+  border:4px solid var(--grafite);border-radius:34px;
+  padding:2rem 1.5rem;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.9), 0 10px 0 var(--grafite), 0 26px 46px rgba(13,13,22,.45);
+}
+.fita-ilustra{width:170px;margin:0 auto 1.2rem}
+.aviso-selada{
+  background:#FFF3C4;border:3px dashed var(--laranja);border-radius:18px;
+  padding:.8rem 1rem;font-size:.9rem;font-weight:800;margin-bottom:1.4rem;text-align:center;
+}
+.campo{margin-bottom:1.15rem}
+.campo label{
+  display:block;font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:.35rem;
+}
+.campo input,.campo textarea{
+  width:100%;font-family:var(--texto);font-size:1rem;font-weight:700;
+  color:var(--grafite);background:var(--branco);
+  border:3px solid var(--grafite);border-radius:16px;padding:.72rem .95rem;
+  box-shadow:inset 0 2px 5px rgba(24,24,38,.1);
+}
+.campo textarea{min-height:150px;resize:vertical}
+.campo input:focus,.campo textarea:focus{outline:4px solid var(--ouro);outline-offset:1px}
+.grade-2{display:grid;grid-template-columns:1fr;gap:1rem}
+@media (min-width:600px){.grade-2{grid-template-columns:1fr 1fr}}
+
+.tipos{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem}
+.tipo-btn{
+  font-family:var(--display);font-weight:800;font-size:.88rem;
+  background:var(--branco);color:var(--grafite);
+  border:3px solid var(--grafite);border-radius:99px;padding:.38rem .92rem;
+  box-shadow:0 3px 0 var(--grafite);transition:transform .12s ease, background .12s ease;
+}
+.tipo-btn.ativo{background:var(--ouro);transform:translateY(2px);box-shadow:0 1px 0 var(--grafite)}
+
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contador-chars{font-size:.82rem;font-weight:800;opacity:.7;text-align:right;margin-top:.25rem}
+.acoes{text-align:center;margin-top:1.4rem}
+.acoes .cta{width:100%;max-width:360px}
+.acoes .cta[disabled]{opacity:.6;cursor:wait}
+
+.sucesso{
+  display:none;text-align:center;padding:1.2rem .6rem;
+}
+.sucesso.mostra{display:block}
+.sucesso h2{
+  font-family:var(--display);font-weight:800;font-size:1.9rem;
+  color:var(--vermelho);margin:.6rem 0 .4rem;
+}
+.sucesso p{font-weight:700;margin-bottom:1.2rem}
+.fita-voa{animation:voa-fita 2.2s ease-in-out infinite}
+@keyframes voa-fita{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="voltar" href="index.html">← Cardápio</a>
+  <nav class="nav-mini" aria-label="Outras páginas da festa">
+    <a href="jogos.html">🎮 Arena de Jogos</a>
+    <a href="fotos.html">📸 Fotos</a>
+    <a href="mussa.html">🎨 Mussaverso IA</a>
+  </nav>
+</header>
+
+<section class="hero-pag">
+  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">CÁPSULA DO TEMPO · LUCAS NERY 7 ANOS</p>
+  <h1>📼 Mande sua Rima!</h1>
+  <p>Grave uma mensagem, um conselho ou uma rima especial que ficará selada até o Lucas crescer.</p>
+</section>
+
+<main class="caixa">
+  <div class="card-capsula">
+    <svg class="fita-ilustra" viewBox="0 0 220 140" aria-hidden="true">
+      <rect x="10" y="12" width="200" height="116" rx="18" fill="#181826" stroke="#FFD23F" stroke-width="6"/>
+      <rect x="28" y="28" width="164" height="54" rx="10" fill="#E62E2D"/>
+      <circle cx="76" cy="55" r="16" fill="#FFFDF7" stroke="#181826" stroke-width="5"/>
+      <circle cx="144" cy="55" r="16" fill="#FFFDF7" stroke="#181826" stroke-width="5"/>
+      <rect x="96" y="47" width="28" height="16" rx="4" fill="#181826"/>
+      <polygon points="48,128 62,102 158,102 172,128" fill="#FFD23F"/>
+      <text x="110" y="121" text-anchor="middle" font-family="'Baloo 2', Arial, sans-serif" font-weight="800" font-size="14" fill="#181826">TROPA DO LUCAS • 2026</text>
+    </svg>
+
+    <div class="aviso-selada">
+      🔒 Sua mensagem fica <strong>selada no banco de dados dos papais</strong> — não aparece publicada no site!
+    </div>
+
+    <form id="formCapsula" novalidate>
+      <div class="grade-2">
+        <div class="campo">
+          <label for="nome">Seu nome *</label>
+          <input id="nome" name="nome" type="text" maxlength="80" placeholder="Ex.: Tia Carol" required>
+        </div>
+        <div class="campo">
+          <label for="relacao">O que você é do Lucas?</label>
+          <input id="relacao" name="relacao" type="text" maxlength="80" placeholder="Ex.: Amigo da escola, Tio, Avó...">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Qual o estilo da faixa?</label>
+        <div class="tipos" role="radiogroup" aria-label="Tipo de mensagem">
+          <button type="button" class="tipo-btn ativo" data-tipo="🎤 Rima pro Lucas">🎤 Rima pro Lucas</button>
+          <button type="button" class="tipo-btn" data-tipo="💌 Recado carinhoso">💌 Recado carinhoso</button>
+          <button type="button" class="tipo-btn" data-tipo="🧭 Conselho pro futuro">🧭 Conselho pro futuro</button>
+          <button type="button" class="tipo-btn" data-tipo="📖 História pra lembrar">📖 História pra lembrar</button>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="mensagem">Sua mensagem para o Lucas do futuro *</label>
+        <textarea id="mensagem" name="mensagem" maxlength="4000" placeholder="Escreva aqui sua rima ou recado de coração para o Lucas ler quando crescer..." required></textarea>
+        <div class="contador-chars"><span id="contaChars">0</span>/4000</div>
+      </div>
+
+      <!-- honeypot anti-robô -->
+      <div class="hp" aria-hidden="true">
+        <label for="siteRobo">Não preencha este campo</label>
+        <input id="siteRobo" name="siteRobo" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="acoes">
+        <button class="cta cta--capsula" id="btnEnviar" type="submit">Gravar fita na cápsula 📼</button>
+      </div>
+    </form>
+
+    <div class="sucesso" id="telaSucesso" aria-live="polite">
+      <div style="font-size:3.5rem" class="fita-voa">📼✨</div>
+      <h2>Fita gravada e selada!</h2>
+      <p>Sua mensagem entrou para a cápsula do tempo do Lucas Nery. Valeu por fazer parte da Tropa! 🎤💛</p>
+      <button class="cta" id="btnOutra" type="button">Gravar outra mensagem</button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  // Endpoint Serverless na Vercel conectado ao Supabase PostgreSQL
+  var API_URL = '/api/capsula';
+
+  var form = document.getElementById('formCapsula');
+  var campoNome = document.getElementById('nome');
+  var campoRelacao = document.getElementById('relacao');
+  var campoMsg = document.getElementById('mensagem');
+  var campoHp = document.getElementById('siteRobo');
+  var contaChars = document.getElementById('contaChars');
+  var btnEnviar = document.getElementById('btnEnviar');
+  var telaSucesso = document.getElementById('telaSucesso');
+  var btnOutra = document.getElementById('btnOutra');
+  var toast = document.getElementById('toast');
+  var tipoAtual = '🎤 Rima pro Lucas';
+  var toastTimer = null;
+
+  function mostraToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('mostra');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('mostra'); }, ms || 3000);
+  }
+
+  try {
+    campoNome.value = localStorage.getItem('festa-lucas-nome') || '';
+    campoRelacao.value = localStorage.getItem('festa-lucas-relacao') || '';
+  } catch (e) {}
+
+  document.querySelectorAll('.tipo-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.tipo-btn').forEach(function (x) { x.classList.remove('ativo'); });
+      b.classList.add('ativo');
+      tipoAtual = b.getAttribute('data-tipo');
+    });
+  });
+
+  campoMsg.addEventListener('input', function () {
+    contaChars.textContent = String(campoMsg.value.length);
+  });
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (campoHp.value) return;
+
+    var nome = campoNome.value.trim();
+    var relacao = campoRelacao.value.trim();
+    var mensagem = campoMsg.value.trim();
+
+    if (!nome) { mostraToast('Coloque seu nome antes de gravar! 🎤'); campoNome.focus(); return; }
+    if (!mensagem) { mostraToast('Escreva sua rima ou recado para o Lucas! 📼'); campoMsg.focus(); return; }
+
+    try {
+      localStorage.setItem('festa-lucas-nome', nome);
+      localStorage.setItem('festa-lucas-relacao', relacao);
+    } catch (e) {}
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Gravando fita... 📼';
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome: nome,
+        relacao: relacao,
+        tipo: tipoAtual,
+        mensagem: mensagem
+      })
+    }).then(function (r) {
+      return r.json().then(function (d) { return { ok: r.ok && d && d.ok, erro: d && d.erro }; });
+    }).then(function (res) {
+      if (!res.ok) {
+        if (res.erro === 'supabase-nao-configurado') {
+          mostraToast('🛠️ Configure SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY na Vercel!', 4200);
+        } else {
+          mostraToast('Ops! Não consegui gravar agora. Tente novamente.');
+        }
+        return;
+      }
+      try { localStorage.setItem('festa-lucas-carimbo-capsula', '1'); } catch (e2) {}
+      form.style.display = 'none';
+      telaSucesso.classList.add('mostra');
+      mostraToast('📼 Carimbo da Cápsula conquistado no Passaporte!', 3600);
+    }).catch(function () {
+      mostraToast('🛠️ Endpoint /api/capsula disponível após publicar na Vercel (ou via vercel dev).', 4000);
+    }).finally(function () {
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Gravar fita na cápsula 📼';
+    });
+  });
+
+  btnOutra.addEventListener('click', function () {
+    campoMsg.value = '';
+    contaChars.textContent = '0';
+    telaSucesso.classList.remove('mostra');
+    form.style.display = 'block';
+    campoMsg.focus();
+  });
+})();
+</script>
+</body>
+</html>

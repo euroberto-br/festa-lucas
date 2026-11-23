@@ -1,0 +1,6 @@
+Coloque aqui o arquivo MP3 da música tema com o nome:
+
+  mussa-style.mp3
+
+Enquanto este arquivo não estiver presente, o botão de música do site
+usa automaticamente uma batida hip-hop sintetizada pela Web Audio API.

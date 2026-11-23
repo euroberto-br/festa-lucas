@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Rival da Batalha de Rima">
+  <rect width="300" height="300" fill="#E6DCFF"/>
+  <circle cx="150" cy="150" r="120" fill="#8A4FFF" opacity=".2"/>
+  <g transform="translate(150,168)">
+    <!-- Cabelos coloridos cartoon -->
+    <circle cx="-64" cy="-34" r="28" fill="#3EC96B" stroke="#181826" stroke-width="6"/>
+    <circle cx="64" cy="-34" r="28" fill="#1CC6E8" stroke="#181826" stroke-width="6"/>
+    <!-- Roupa roxa -->
+    <path d="M-72 116 C-66 64 -34 48 0 48 C34 48 66 64 72 116 Z" fill="#8A4FFF" stroke="#181826" stroke-width="7"/>
+    <polygon points="0,48 -24,78 24,78" fill="#FFD23F" stroke="#181826" stroke-width="5"/>
+    <!-- Rosto divertido -->
+    <ellipse cx="0" cy="-22" rx="58" ry="62" fill="#FFFDF7" stroke="#181826" stroke-width="7"/>
+    <!-- Olhos -->
+    <circle cx="-22" cy="-30" r="9" fill="#181826"/>
+    <circle cx="22" cy="-30" r="9" fill="#181826"/>
+    <!-- Nariz vermelho -->
+    <circle cx="0" cy="-12" r="14" fill="#E62E2D" stroke="#181826" stroke-width="5"/>
+    <!-- Sorrisão -->
+    <path d="M-28 8 Q0 34 28 8" fill="none" stroke="#E62E2D" stroke-width="7" stroke-linecap="round"/>
+    <!-- Cartolinha torta -->
+    <rect x="-36" y="-114" width="72" height="44" rx="8" fill="#181826" stroke="#FFD23F" stroke-width="5"/>
+    <rect x="-50" y="-76" width="100" height="14" rx="7" fill="#FFD23F" stroke="#181826" stroke-width="5"/>
+  </g>
+</svg>

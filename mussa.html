@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E62E2D">
+<title>🎨 Vire do Mussaverso! — Lucas Nery faz 7! 🎤</title>
+<meta name="description" content="Mande uma selfie e vire um personagem cartoon do Mussaverso na festa de 7 anos do Lucas Nery!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<style>
+body{min-height:100svh;padding-bottom:3.5rem}
+.topo{
+  max-width:1020px;margin:0 auto;padding:1.4rem 1.1rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;
+}
+.voltar{
+  font-family:var(--display);font-weight:800;font-size:.95rem;
+  color:var(--grafite);background:var(--ouro);text-decoration:none;
+  border:3px solid var(--grafite);border-radius:99px;padding:.4rem 1.05rem;
+  box-shadow:0 4px 0 var(--grafite);
+}
+.nav-mini{display:flex;gap:.45rem;flex-wrap:wrap}
+.nav-mini a{
+  font-family:var(--display);font-weight:700;font-size:.82rem;
+  color:var(--branco);background:rgba(21,21,36,.72);text-decoration:none;
+  border:2px solid rgba(255,255,255,.35);border-radius:99px;padding:.28rem .75rem;
+}
+.hero-pag{
+  text-align:center;color:var(--branco);
+  max-width:740px;margin:0 auto;padding:.4rem 1.1rem 1.6rem;
+}
+.hero-pag h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2rem,8.5vw,3.4rem);line-height:1;
+  text-shadow:0 5px 0 var(--grafite);margin:.4rem 0;
+}
+.hero-pag p{font-weight:700;font-size:1.05rem;opacity:.95}
+
+.wrap{max-width:1020px;margin:0 auto;padding:0 1.1rem}
+.card-studio{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
+  border:4px solid var(--grafite);border-radius:34px;
+  padding:1.8rem 1.4rem;margin-bottom:2.2rem;
+  box-shadow:0 10px 0 var(--grafite), 0 26px 46px rgba(13,13,22,.45);
+}
+.campo{margin-bottom:1.1rem}
+.campo label{display:block;font-family:var(--display);font-weight:800;margin-bottom:.3rem}
+.campo input[type="text"]{
+  width:100%;font-family:var(--texto);font-size:1rem;font-weight:700;
+  color:var(--grafite);background:var(--branco);
+  border:3px solid var(--grafite);border-radius:16px;padding:.7rem .95rem;
+}
+.botoes-foto{display:flex;gap:.8rem;flex-wrap:wrap;margin:1rem 0}
+.botoes-foto .cta{flex:1 1 200px}
+input[type="file"]{display:none}
+.consent{
+  display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:.92rem;
+  background:#FFF3C4;border:2.5px dashed var(--laranja);border-radius:14px;padding:.65rem .9rem;
+}
+.consent input{width:20px;height:20px;accent-color:var(--vermelho)}
+.usos-info{font-size:.86rem;font-weight:800;opacity:.78;margin-top:.75rem;text-align:center}
+
+.espera{
+  display:none;text-align:center;padding:1.8rem 1rem;
+  background:#181826;color:var(--ouro);border-radius:24px;border:4px solid var(--ouro);margin-top:1.2rem;
+}
+.espera.ativa{display:block}
+.espera img{width:110px;margin:0 auto .8rem;animation:pula 1.2s ease-in-out infinite}
+@keyframes pula{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.espera p{font-family:var(--display);font-weight:800;font-size:1.15rem}
+
+.resultado{
+  display:none;margin-top:1.5rem;text-align:center;
+}
+.resultado.ativa{display:block}
+.resultado img{
+  width:min(100%,460px);margin:0 auto 1rem;
+  border-radius:26px;border:5px solid var(--grafite);
+  box-shadow:0 8px 0 var(--grafite);
+}
+.res-acoes{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+
+.galeria-head{
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+  color:var(--branco);margin-bottom:1.1rem;flex-wrap:wrap;
+}
+.galeria-head h2{font-family:var(--display);font-weight:800;font-size:1.7rem;text-shadow:0 3px 0 var(--grafite)}
+.contagem{
+  font-family:var(--display);font-weight:800;font-size:.9rem;
+  background:var(--ouro);color:var(--grafite);
+  border:3px solid var(--grafite);border-radius:99px;padding:.2rem .8rem;
+}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem}
+.item-ia{
+  background:var(--branco);border:4px solid var(--grafite);border-radius:22px;overflow:hidden;
+  box-shadow:0 7px 0 var(--grafite);
+}
+.item-ia img{width:100%;aspect-ratio:1;object-fit:cover}
+.item-ia .autor{
+  font-family:var(--display);font-weight:800;font-size:.84rem;
+  padding:.42rem .7rem;background:var(--creme);color:var(--grafite);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vazio{
+  grid-column:1/-1;text-align:center;color:var(--branco);
+  background:rgba(21,21,36,.65);border:3px dashed var(--ouro);
+  border-radius:24px;padding:2rem 1rem;font-weight:800;
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="voltar" href="index.html">← Cardápio</a>
+  <nav class="nav-mini" aria-label="Outras páginas da festa">
+    <a href="jogos.html">🎮 Arena de Jogos</a>
+    <a href="fotos.html">📸 Fotos</a>
+    <a href="capsula.html">📼 Cápsula</a>
+  </nav>
+</header>
+
+<section class="hero-pag">
+  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">ESTÚDIO IA · LUCAS NERY 7 ANOS</p>
+  <h1>🎨 Vire do Mussaverso!</h1>
+  <p>Tire uma selfie e a IA transforma você em um personagem cartoon do Mussa Style — pronto pra baixar e entrar no mural!</p>
+</section>
+
+<main class="wrap">
+  <section class="card-studio">
+    <div class="campo">
+      <label for="campoNome">Seu nome</label>
+      <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Lucas, Tia Ana, Pedro...">
+    </div>
+
+    <label class="consent">
+      <input id="chkGaleria" type="checkbox" checked>
+      Publicar meu desenho no mural "Tropa do Mussaverso" da festa
+    </label>
+
+    <div class="botoes-foto">
+      <input id="inCamera" type="file" accept="image/*" capture="user">
+      <input id="inGaleria" type="file" accept="image/*">
+      <button class="cta" id="btnCamera" type="button">Tirar selfie 🤳</button>
+      <button class="cta cta--ia" id="btnGaleria" type="button">Escolher da galeria 🖼️</button>
+    </div>
+
+    <p class="usos-info" id="usosInfo">Você tem 5 transformações disponíveis neste aparelho.</p>
+
+    <div class="espera" id="boxEspera" aria-live="polite">
+      <img src="img/mussa-mic.svg" alt="">
+      <p id="msgEspera">Colocando o pano na cabeça e o bonézinho pra trás...</p>
+    </div>
+
+    <div class="resultado" id="boxResultado">
+      <img id="imgResultado" src="" alt="Seu avatar no estilo Mussaverso">
+      <div class="res-acoes">
+        <a class="cta" id="btnBaixar" download="mussaverso-lucas-7anos.jpg" href="#">Baixar imagem ⬇️</a>
+        <button class="cta cta--jogos" id="btnCompartilhar" type="button" hidden>Compartilhar 📲</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Mural de desenhos do Mussaverso">
+    <div class="galeria-head">
+      <h2>Mural do Mussaverso 🔥</h2>
+      <span class="contagem" id="contagem" hidden>0 desenhos</span>
+    </div>
+    <div class="grade" id="gradeIA">
+      <div class="vazio">Carregando a Tropa desenhada... 🎨</div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  // Endpoint Serverless na Vercel (proxy seguro para Azure AI Foundry + log no Supabase)
+  var API_URL = '/api/mussa';
+
+  // Cloudinary — preset unsigned próprio para os desenhos IA
+  var CLOUD_NAME = 'znbneca7';
+  var UPLOAD_PRESET = 'festa_lucas_ia';
+  var TAG = 'festa-lucas-ia';
+  var UPLOAD_URL = 'https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload';
+  var LIST_URL = 'https://res.cloudinary.com/' + CLOUD_NAME + '/image/list/' + TAG + '.json';
+  var BASE_IMG = 'https://res.cloudinary.com/' + CLOUD_NAME + '/image/upload/';
+
+  var LIMITE_USOS = 5;
+  var FRASES = [
+    'Mussa Style!',
+    'Tropa do Lucas!',
+    'Batalha de Rima!',
+    'Faz o sinalzinho do M!'
+  ];
+  var MENSAGENS_ESPERA = [
+    'Colocando o pano na cabeça e o bonézinho pra trás...',
+    'Afinando o microfone dourado...',
+    'Soltando o beat no estúdio do Mussaverso...',
+    'Finalizando as cores street cartoon...'
+  ];
+
+  var campoNome = document.getElementById('campoNome');
+  var chkGaleria = document.getElementById('chkGaleria');
+  var inCamera = document.getElementById('inCamera');
+  var inGaleria = document.getElementById('inGaleria');
+  var usosInfo = document.getElementById('usosInfo');
+  var boxEspera = document.getElementById('boxEspera');
+  var msgEspera = document.getElementById('msgEspera');
+  var boxResultado = document.getElementById('boxResultado');
+  var imgResultado = document.getElementById('imgResultado');
+  var btnBaixar = document.getElementById('btnBaixar');
+  var btnCompartilhar = document.getElementById('btnCompartilhar');
+  var gradeIA = document.getElementById('gradeIA');
+  var contagem = document.getElementById('contagem');
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  var blobFinalAtual = null;
+
+  function mostraToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('mostra');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('mostra'); }, ms || 3200);
+  }
+
+  try { campoNome.value = localStorage.getItem('festa-lucas-nome') || ''; } catch (e) {}
+  campoNome.addEventListener('change', function () {
+    try { localStorage.setItem('festa-lucas-nome', campoNome.value.trim()); } catch (e) {}
+  });
+
+  function usosFeitos() {
+    try { return parseInt(localStorage.getItem('festa-lucas-ia-usos') || '0', 10) || 0; } catch (e) { return 0; }
+  }
+  function marcaUso() {
+    try { localStorage.setItem('festa-lucas-ia-usos', String(usosFeitos() + 1)); } catch (e) {}
+    atualizaUsos();
+  }
+  function atualizaUsos() {
+    var restam = Math.max(0, LIMITE_USOS - usosFeitos());
+    usosInfo.textContent = restam > 0
+      ? 'Você tem ' + restam + ' de ' + LIMITE_USOS + ' transformações disponíveis neste aparelho.'
+      : 'Você já usou todas as ' + LIMITE_USOS + ' transformações neste aparelho!';
+  }
+  atualizaUsos();
+
+  document.getElementById('btnCamera').addEventListener('click', function () { inCamera.click(); });
+  document.getElementById('btnGaleria').addEventListener('click', function () { inGaleria.click(); });
+
+  function prepararSelfie(arquivo) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      var url = URL.createObjectURL(arquivo);
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        var max = 1024;
+        var w = img.naturalWidth, h = img.naturalHeight;
+        if (w > max || h > max) {
+          var r = Math.min(max / w, max / h);
+          w = Math.round(w * r); h = Math.round(h * r);
+        }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        var dataUrl = c.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl.split(',')[1]);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('imagem')); };
+      img.src = url;
+    });
+  }
+
+  function carimbarEComprimir(b64, mime) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        var ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        var frase = FRASES[Math.floor(Math.random() * FRASES.length)];
+        var w = c.width, h = c.height;
+        var pillH = Math.round(h * 0.11);
+        var pillW = Math.round(w * 0.86);
+        var px = Math.round((w - pillW) / 2);
+        var py = Math.round(h - pillH - h * 0.035);
+
+        ctx.fillStyle = '#FFD23F';
+        ctx.strokeStyle = '#181826';
+        ctx.lineWidth = Math.max(4, Math.round(w * 0.008));
+        ctx.beginPath();
+        ctx.roundRect(px, py, pillW, pillH, Math.round(pillH / 2));
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#181826';
+        ctx.textAlign = 'center';
+        ctx.font = '800 ' + Math.round(pillH * 0.42) + 'px "Baloo 2", Arial, sans-serif';
+        ctx.fillText(frase, w / 2, py + Math.round(pillH * 0.48));
+        ctx.font = '800 ' + Math.round(pillH * 0.26) + 'px "Nunito", Arial, sans-serif';
+        ctx.fillText('Festa Lucas Nery - 7 anos (2026)', w / 2, py + Math.round(pillH * 0.82));
+
+        var qualidade = 0.88;
+        function tentaBlob() {
+          c.toBlob(function (blob) {
+            if (!blob) return reject(new Error('blob'));
+            if (blob.size <= 500000 || qualidade <= 0.5) {
+              resolve(blob);
+            } else {
+              qualidade -= 0.1;
+              tentaBlob();
+            }
+          }, 'image/jpeg', qualidade);
+        }
+        tentaBlob();
+      };
+      img.onerror = reject;
+      img.src = 'data:' + mime + ';base64,' + b64;
+    });
+  }
+
+  function subirGaleria(blob, nome) {
+    var fd = new FormData();
+    fd.append('file', blob, 'mussaverso.jpg');
+    fd.append('upload_preset', UPLOAD_PRESET);
+    fd.append('asset_folder', TAG);
+    fd.append('context', 'caption=' + (nome || 'Tropa do Lucas').replace(/[|=]/g, ' '));
+    return fetch(UPLOAD_URL, { method: 'POST', body: fd });
+  }
+
+  function processar(arquivo) {
+    if (!arquivo) return;
+    if (usosFeitos() >= LIMITE_USOS) {
+      mostraToast('Você já usou suas ' + LIMITE_USOS + ' transformações neste aparelho!');
+      return;
+    }
+    var nome = campoNome.value.trim() || 'Tropa do Lucas';
+    try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
+
+    boxResultado.classList.remove('ativa');
+    boxEspera.classList.add('ativa');
+    var passo = 0;
+    var timerMsg = setInterval(function () {
+      passo = (passo + 1) % MENSAGENS_ESPERA.length;
+      msgEspera.textContent = MENSAGENS_ESPERA[passo];
+    }, 3800);
+
+    prepararSelfie(arquivo).then(function (b64) {
+      return fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imagem: b64, mime: 'image/jpeg' })
+      });
+    }).then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok || !res.imagem) {
+          throw new Error((res && res.erro) || 'ia');
+        }
+        return carimbarEComprimir(res.imagem, res.mime || 'image/png');
+      })
+      .then(function (blobFinal) {
+        blobFinalAtual = blobFinal;
+        marcaUso();
+        try { localStorage.setItem('festa-lucas-carimbo-ia', '1'); } catch (e2) {}
+        var url = URL.createObjectURL(blobFinal);
+        imgResultado.src = url;
+        btnBaixar.href = url;
+        boxResultado.classList.add('ativa');
+        if (navigator.canShare && navigator.canShare({ files: [new File([blobFinal], 'mussaverso.jpg', { type: 'image/jpeg' })] })) {
+          btnCompartilhar.hidden = false;
+        }
+        mostraToast('🎨 Você entrou pro Mussaverso! Carimbo conquistado no Passaporte!', 3800);
+        if (chkGaleria.checked) {
+          subirGaleria(blobFinal, nome).then(function () { setTimeout(carregarMural, 1500); }).catch(function () {});
+        }
+      })
+      .catch(function (err) {
+        var m = err && err.message === 'bloqueada'
+          ? 'A IA não conseguiu processar essa foto. Tente outra selfie bem iluminada!'
+          : 'Ops! Não deu para gerar agora. Tente novamente em instantes.';
+        mostraToast(m, 3800);
+      })
+      .finally(function () {
+        clearInterval(timerMsg);
+        boxEspera.classList.remove('ativa');
+      });
+  }
+
+  inCamera.addEventListener('change', function () { processar(inCamera.files[0]); inCamera.value = ''; });
+  inGaleria.addEventListener('change', function () { processar(inGaleria.files[0]); inGaleria.value = ''; });
+
+  btnCompartilhar.addEventListener('click', function () {
+    if (!blobFinalAtual || !navigator.share) return;
+    var f = new File([blobFinalAtual], 'mussaverso-lucas-7anos.jpg', { type: 'image/jpeg' });
+    navigator.share({ files: [f], title: 'Virei do Mussaverso! — Lucas Nery 7 anos' }).catch(function () {});
+  });
+
+  function carregarMural() {
+    var buster = Math.floor(Date.now() / 30000);
+    fetch(LIST_URL + '?t=' + buster)
+      .then(function (r) { return r.status === 404 ? { resources: [] } : r.json(); })
+      .then(function (data) {
+        var lista = data.resources || [];
+        contagem.hidden = false;
+        contagem.textContent = lista.length + (lista.length === 1 ? ' desenho' : ' desenhos');
+        if (!lista.length) {
+          gradeIA.innerHTML = '<div class="vazio">Nenhum personagem gerado ainda — seja o primeiro do Mussaverso! 🎨🎤</div>';
+          return;
+        }
+        gradeIA.innerHTML = '';
+        lista.forEach(function (r) {
+          var autor = (r.context && r.context.custom && r.context.custom.caption) || 'Tropa do Lucas';
+          var d = document.createElement('div');
+          d.className = 'item-ia';
+          d.innerHTML =
+            '<img loading="lazy" src="' + BASE_IMG + 'c_fill,w_420,h_420,q_auto,f_auto/v' + r.version + '/' + r.public_id + '.jpg" alt="Desenho de ' + autor.replace(/"/g, '&quot;') + '">' +
+            '<div class="autor">🎨 ' + autor.replace(/</g, '&lt;') + '</div>';
+          gradeIA.appendChild(d);
+        });
+      })
+      .catch(function () {
+        gradeIA.innerHTML = '<div class="vazio">O mural do Mussaverso aparecerá aqui assim que os primeiros desenhos forem gerados! 🎨</div>';
+      });
+  }
+  carregarMural();
+  setInterval(carregarMural, 45000);
+})();
+</script>
+</body>
+</html>

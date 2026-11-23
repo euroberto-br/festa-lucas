@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E62E2D">
+<title>🎮 Arena de Jogos — Lucas Nery faz 7! 🔥</title>
+<meta name="description" content="4 jogos arcade 60fps inspirados em Subway Surfers, Sonic, Jetpack e Guitar Hero para a festa de 7 anos do Lucas Nery!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<style>
+body{min-height:100svh;padding-bottom:3.5rem}
+.topo{
+  max-width:1020px;margin:0 auto;padding:1.2rem 1rem .8rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;
+}
+.voltar{
+  font-family:var(--display);font-weight:800;font-size:.95rem;
+  color:var(--grafite);background:var(--ouro);text-decoration:none;
+  border:3px solid var(--grafite);border-radius:99px;padding:.38rem 1.05rem;
+  box-shadow:0 4px 0 var(--grafite);
+}
+.nav-mini{display:flex;gap:.45rem;flex-wrap:wrap}
+.nav-mini a{
+  font-family:var(--display);font-weight:700;font-size:.82rem;
+  color:var(--branco);background:rgba(21,21,36,.75);text-decoration:none;
+  border:2px solid rgba(255,255,255,.35);border-radius:99px;padding:.28rem .75rem;
+}
+.hero-pag{
+  text-align:center;color:var(--branco);
+  max-width:780px;margin:0 auto;padding:.3rem 1rem 1.2rem;
+}
+.hero-pag h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(1.9rem,8vw,3.3rem);line-height:1;
+  text-shadow:0 5px 0 var(--grafite);margin:.35rem 0;
+}
+.hero-pag p{font-weight:700;font-size:1rem;opacity:.95}
+
+.wrap{max-width:980px;margin:0 auto;padding:0 1rem;display:flex;flex-direction:column;gap:1.8rem}
+.bloco{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
+  border:4px solid var(--grafite);border-radius:32px;
+  padding:1.35rem 1.1rem;
+  box-shadow:0 10px 0 var(--grafite), 0 24px 44px rgba(13,13,22,.42);
+}
+.abas{display:flex;gap:.48rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+.aba{
+  font-family:var(--display);font-weight:800;font-size:.9rem;
+  background:var(--branco);color:var(--grafite);
+  border:3px solid var(--grafite);border-radius:99px;padding:.4rem .95rem;
+  box-shadow:0 4px 0 var(--grafite);transition:transform .12s ease;
+}
+.aba.ativa{background:var(--ouro);transform:translateY(2px);box-shadow:0 2px 0 var(--grafite)}
+
+.hud{
+  display:flex;align-items:center;justify-content:space-between;gap:.55rem;flex-wrap:wrap;
+  background:#151524;color:var(--ouro);border:3px solid var(--ouro);border-radius:20px;
+  padding:.58rem .95rem;font-family:var(--display);font-weight:800;margin-bottom:.75rem;
+}
+.hud-stats{display:flex;gap:.9rem;flex-wrap:wrap;align-items:center;font-size:.96rem}
+.hud-combo{
+  background:var(--vermelho);color:var(--branco);
+  border-radius:99px;padding:.1rem .6rem;font-size:.82rem;
+}
+.hud-btns{display:flex;gap:.45rem;flex-wrap:wrap}
+.btn-hud{
+  font-family:var(--display);font-weight:800;font-size:.84rem;
+  background:var(--vermelho);color:var(--branco);border:2.5px solid var(--ouro);
+  border-radius:99px;padding:.28rem .85rem;
+}
+.btn-hud--ouro{background:var(--ouro);color:var(--grafite);border-color:var(--branco)}
+
+.dica{font-size:.88rem;font-weight:800;text-align:center;margin-bottom:.7rem;color:#3B3B52}
+
+.arena-box{
+  position:relative;width:100%;max-width:760px;margin:0 auto;
+  border-radius:24px;border:4px solid var(--grafite);overflow:hidden;
+  background:#121220;box-shadow:0 8px 0 var(--grafite);
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+#gameCanvas{display:block;width:100%;height:auto;aspect-ratio:16/10;cursor:pointer}
+@media (max-width:600px){
+  #gameCanvas{aspect-ratio:4/3}
+}
+
+/* Controles táteis arcade abaixo do canvas (ótimo para celular!) */
+.controles{
+  display:flex;justify-content:center;gap:.65rem;flex-wrap:wrap;
+  margin-top:.85rem;
+}
+.ctrl-btn{
+  font-family:var(--display);font-weight:800;font-size:1.05rem;
+  min-width:74px;padding:.65rem 1.15rem;border-radius:18px;
+  background:var(--grafite);color:var(--ouro);border:3px solid var(--ouro);
+  box-shadow:0 5px 0 #090912;touch-action:manipulation;
+}
+.ctrl-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #090912;background:var(--vermelho);color:var(--branco)}
+.ctrl-btn--grande{min-width:160px;background:var(--vermelho);color:var(--branco)}
+
+.overlay{
+  position:absolute;inset:0;z-index:10;
+  background:rgba(13,13,22,.88);color:var(--branco);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:1.2rem;gap:.7rem;
+}
+.overlay h3{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,6vw,2.2rem);color:var(--ouro)}
+.overlay input{
+  width:min(280px,90%);font-family:var(--texto);font-size:1rem;font-weight:800;
+  border:3px solid var(--ouro);border-radius:14px;padding:.52rem .85rem;text-align:center;
+}
+.contagem-num{
+  position:absolute;inset:0;z-index:9;display:grid;place-items:center;
+  font-family:var(--display);font-weight:800;font-size:5.5rem;color:var(--ouro);
+  text-shadow:0 6px 0 var(--vermelho);pointer-events:none;
+}
+
+.bloco h2{font-family:var(--display);font-weight:800;font-size:1.65rem;text-align:center;margin-bottom:.75rem}
+.rank-lista{list-style:none;display:grid;gap:.45rem;margin-top:.75rem}
+.rank-lista li{
+  display:flex;justify-content:space-between;align-items:center;gap:.8rem;
+  background:var(--branco);border:2.5px solid var(--grafite);border-radius:14px;
+  padding:.5rem .9rem;font-weight:800;
+}
+
+/* Passaporte */
+.missoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.75rem;margin:1rem 0}
+.missao{
+  background:var(--branco);border:3px solid var(--grafite);border-radius:20px;
+  padding:.8rem .7rem;text-align:center;font-weight:800;opacity:.65;
+}
+.missao.feita{opacity:1;background:#FFF3C4;border-color:var(--verde);box-shadow:0 5px 0 var(--verde)}
+.missao .ico{font-size:1.9rem;margin-bottom:.2rem}
+.passaporte-wrap{text-align:center;margin-top:1rem}
+.passaporte-wrap input{
+  width:min(320px,100%);font-family:var(--texto);font-size:1rem;font-weight:800;
+  border:3px solid var(--grafite);border-radius:14px;padding:.55rem .9rem;margin-bottom:.8rem;text-align:center;
+}
+.passaporte-preview{
+  width:min(340px,100%);margin:1rem auto;border-radius:22px;
+  border:4px solid var(--grafite);box-shadow:0 8px 0 var(--grafite);
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="voltar" href="index.html">← Cardápio</a>
+  <nav class="nav-mini" aria-label="Outras páginas da festa">
+    <a href="ranking.html">📺 Telão</a>
+    <a href="fotos.html">📸 Fotos</a>
+    <a href="capsula.html">📼 Cápsula</a>
+    <a href="mussa.html">🎨 Mussaverso IA</a>
+  </nav>
+</header>
+
+<section class="hero-pag">
+  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">ARENA ARCADE 60 FPS · LUCAS NERY 7 ANOS</p>
+  <h1>🎮 Arena de Jogos</h1>
+  <p>4 jogos dinâmicos no estilo Subway Surfers, Sonic, Jetpack e Guitar Hero — jogue no celular ou teclado e domine o Ranking da Tropa!</p>
+</section>
+
+<main class="wrap">
+  <section class="bloco" aria-label="Arena de jogos arcade">
+    <div class="abas" role="tablist" aria-label="Escolha o jogo">
+      <button class="aba ativa" role="tab" aria-selected="true" data-jogo="runner">🏃 Mussa Surf</button>
+      <button class="aba" role="tab" aria-selected="false" data-jogo="sonic">💨 Lucas Dash</button>
+      <button class="aba" role="tab" aria-selected="false" data-jogo="flappy">🚀 Voo do Mic</button>
+      <button class="aba" role="tab" aria-selected="false" data-jogo="ritmo">🎸 Batalha Hero</button>
+    </div>
+
+    <div class="hud">
+      <div class="hud-stats">
+        <span>Pontos: <strong id="hudPontos">0</strong></span>
+        <span>Recorde: <strong id="hudRecorde">0</strong></span>
+        <span class="hud-combo" id="hudCombo" hidden>x1</span>
+        <span id="hudTempo">Modo Livre</span>
+      </div>
+      <div class="hud-btns">
+        <button class="btn-hud" id="btnSom" type="button" aria-pressed="true">🔊 Som</button>
+        <button class="btn-hud btn-hud--ouro" id="btnDesafio" type="button">⏱️ Desafio 30s</button>
+        <button class="btn-hud" id="btnLivre" type="button">↺ Livre</button>
+      </div>
+    </div>
+
+    <p class="dica" id="dicaJogo"></p>
+
+    <div class="arena-box" id="arenaBox">
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+    </div>
+
+    <div class="controles" id="controlesBar"></div>
+  </section>
+
+  <!-- RANKING DA TROPA -->
+  <section class="bloco" aria-label="Ranking da Tropa">
+    <h2>🏆 Ranking da Tropa</h2>
+    <div class="abas" id="abasRank">
+      <button class="aba ativa" data-rk="geral">Geral</button>
+      <button class="aba" data-rk="runner">Mussa Surf</button>
+      <button class="aba" data-rk="sonic">Lucas Dash</button>
+      <button class="aba" data-rk="flappy">Voo do Mic</button>
+      <button class="aba" data-rk="ritmo">Batalha Hero</button>
+    </div>
+    <ol class="rank-lista" id="rankLista">
+      <li><span>Carregando o Ranking da Tropa... 🏆</span></li>
+    </ol>
+  </section>
+
+  <!-- PASSAPORTE TROPA DO MUSSA -->
+  <section class="bloco" aria-label="Passaporte Tropa do Mussa">
+    <h2>🎫 Passaporte Tropa do Mussa</h2>
+    <p style="text-align:center;font-weight:700">Complete as 4 missões da festa para conquistar sua <strong>Placa Oficial de 1 Milhão</strong> personalizada!</p>
+    <div class="missoes" id="gradeMissoes">
+      <div class="missao" data-m="jogo"><div class="ico">🎮</div>Completar 1 desafio</div>
+      <div class="missao" data-m="foto"><div class="ico">📸</div>Enviar 1 foto</div>
+      <div class="missao" data-m="capsula"><div class="ico">📼</div>Gravar 1 rima</div>
+      <div class="missao" data-m="ia"><div class="ico">🎨</div>Virar do Mussaverso</div>
+    </div>
+
+    <div class="passaporte-wrap">
+      <input id="nomePassaporte" type="text" maxlength="40" placeholder="Seu nome na Placa VIP...">
+      <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
+        <button class="cta" id="btnGerarPassaporte" type="button">Gerar meu Passaporte 🏆</button>
+        <a class="cta cta--ia" id="btnBaixarPassaporte" href="#" download="passaporte-tropa-lucas.png" hidden>Baixar PNG ⬇️</a>
+      </div>
+      <img class="passaporte-preview" id="imgPassaporte" alt="Prévia do Passaporte Tropa do Mussa" hidden>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  // Endpoint Serverless na Vercel conectado ao Supabase PostgreSQL
+  var API_URL = '/api/ranking';
+
+  var canvas = document.getElementById('gameCanvas');
+  var ctx = canvas.getContext('2d');
+  var arenaBox = document.getElementById('arenaBox');
+  var controlesBar = document.getElementById('controlesBar');
+  var hudPontos = document.getElementById('hudPontos');
+  var hudRecorde = document.getElementById('hudRecorde');
+  var hudCombo = document.getElementById('hudCombo');
+  var hudTempo = document.getElementById('hudTempo');
+  var dicaJogo = document.getElementById('dicaJogo');
+  var rankLista = document.getElementById('rankLista');
+  var nomePassaporte = document.getElementById('nomePassaporte');
+  var toast = document.getElementById('toast');
+
+  var W = 800, H = 500;
+  var jogoAtual = 'runner';
+  var modo = 'livre'; // livre | contagem | desafio | fim
+  var pontos = 0, combo = 0, tempoRestante = 30;
+  var pausado = false;
+  var rafId = null, lastTs = 0, timerDesafio = null, timerContagem = null;
+  var shake = 0;
+  var particulas = [];
+  var flutuantes = [];
+  var toastTimer = null;
+
+  // Avatar real do Lucas cartoon Mussa Style pré-carregado para desenhar nos jogos!
+  var imgLucas = new Image();
+  imgLucas.src = 'img/lucas-mussa.jpg';
+
+  var DICAS = {
+    runner: 'Deslize (← →) ou use os botões para trocar de pista e ↑ para pular! Pegue 🎤💿⭐ e desvie das barreiras!',
+    sonic: 'Toque na tela, Espaço ou ↑ para dar Spin Jump (tem PULO DUPLO!). Pegue anéis dourados e pule nos robôs!',
+    flappy: 'Toque na tela ou Espaço para acionar o Jetpack do Lucas e passar entre as torres de caixas de som!',
+    ritmo: 'Toque nas 4 pistas (ou teclas A S D F) quando as notas chegarem na linha dourada para multiplicar o combo!'
+  };
+
+  function mostraToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('mostra');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('mostra'); }, ms || 2800);
+  }
+
+  /* ---------- Motor de Áudio Arcade (SFX ricos + BGM dinâmica) ---------- */
+  var ac = null;
+  var somLigado = true;
+  var noiseBuf = null;
+  var bgmStep = 0;
+  var bgmAcc = 0;
+  var bgmTempo = 0;
+  var btnSom = document.getElementById('btnSom');
+
+  btnSom.addEventListener('click', function () {
+    somLigado = !somLigado;
+    btnSom.textContent = somLigado ? '🔊 Som' : '🔇 Mudo';
+    btnSom.setAttribute('aria-pressed', String(somLigado));
+    if (somLigado) ensureAudio();
+  });
+
+  function ensureAudio() {
+    if (!somLigado) return null;
+    try {
+      if (!ac) {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+        // Buffer de ruído branco para caixa (snare), hi-hat e propulsor jetpack
+        noiseBuf = ac.createBuffer(1, ac.sampleRate * 0.25, ac.sampleRate);
+        var d = noiseBuf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
+      if (ac.state === 'suspended') ac.resume();
+      return ac;
+    } catch (e) { return null; }
+  }
+
+  function som(f1, f2, dur, tipo, vol) {
+    var ctxA = ensureAudio(); if (!ctxA) return;
+    var t = ctxA.currentTime;
+    var o = ctxA.createOscillator(), g = ctxA.createGain();
+    o.type = tipo || 'triangle';
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(Math.max(30, f2), t + dur);
+    g.gain.setValueAtTime(vol || 0.13, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(ctxA.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+
+  function playNoise(dur, freq, vol, hp) {
+    var ctxA = ensureAudio(); if (!ctxA || !noiseBuf) return;
+    var t = ctxA.currentTime;
+    var src = ctxA.createBufferSource();
+    src.buffer = noiseBuf;
+    var filt = ctxA.createBiquadFilter();
+    filt.type = hp ? 'highpass' : 'bandpass';
+    filt.frequency.setValueAtTime(freq, t);
+    var g = ctxA.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    src.connect(filt); filt.connect(g); g.connect(ctxA.destination);
+    src.start(t); src.stop(t + dur + 0.02);
+  }
+
+  function sfxMoeda() {
+    var ctxA = ensureAudio(); if (!ctxA) return;
+    var t = ctxA.currentTime;
+    [[987.77, 0, 0.08], [1318.51, 0.065, 0.18]].forEach(function (n) {
+      var o = ctxA.createOscillator(), g = ctxA.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(n[0], t + n[1]);
+      g.gain.setValueAtTime(0.001, t + n[1]);
+      g.gain.linearRampToValueAtTime(0.15, t + n[1] + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + n[1] + n[2]);
+      o.connect(g); g.connect(ctxA.destination);
+      o.start(t + n[1]); o.stop(t + n[1] + n[2] + 0.02);
+    });
+  }
+
+  function sfxTurbo() {
+    var ctxA = ensureAudio(); if (!ctxA) return;
+    var t = ctxA.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+      var o = ctxA.createOscillator(), g = ctxA.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(f, t + i * 0.055);
+      g.gain.setValueAtTime(0.14, t + i * 0.055);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.055 + 0.16);
+      o.connect(g); g.connect(ctxA.destination);
+      o.start(t + i * 0.055); o.stop(t + i * 0.055 + 0.18);
+    });
+  }
+
+  function sfxPulo(duplo) {
+    som(duplo ? 440 : 280, duplo ? 960 : 680, 0.14, 'triangle', 0.13);
+  }
+  function sfxJetpack() {
+    playNoise(0.11, 900, 0.09, false);
+    som(190, 340, 0.09, 'sine', 0.08);
+  }
+  function sfxPow() {
+    playNoise(0.12, 500, 0.14, false);
+    som(280, 740, 0.14, 'triangle', 0.16);
+  }
+  function sfxErro() {
+    playNoise(0.14, 300, 0.12, false);
+    som(185, 72, 0.22, 'sawtooth', 0.15);
+  }
+
+  // BGM procedural leve (hip-hop / arcade groove no ritmo de cada jogo!)
+  function tickBgm(dt) {
+    if (!somLigado || !ac || ac.state !== 'running') return;
+    bgmAcc += dt;
+    var stepDur = jogoAtual === 'ritmo' ? 0.24 : 0.145;
+    if (bgmAcc < stepDur) return;
+    bgmAcc -= stepDur;
+    var s = bgmStep % 16;
+    bgmStep++;
+
+    // Bumbo 808
+    if (s === 0 || s === 6 || s === 8 || s === 14) {
+      som(130, 42, 0.12, 'sine', jogoAtual === 'ritmo' ? 0.07 : 0.12);
+    }
+    // Caixa crocante
+    if (s === 4 || s === 12) {
+      playNoise(0.08, 1600, jogoAtual === 'ritmo' ? 0.035 : 0.06, false);
+    }
+    // Hi-hat
+    if (s % 2 === 0 && jogoAtual !== 'ritmo') {
+      playNoise(0.03, 6500, 0.028, true);
+    }
+    // Linha de baixo synth (não compete com o piano no modo ritmo)
+    if (jogoAtual !== 'ritmo') {
+      var bassLine = [110, 0, 110, 0, 130.81, 0, 146.83, 0, 110, 0, 164.81, 0, 146.83, 0, 130.81, 0];
+      var bf = bassLine[s];
+      if (bf) som(bf, bf * 0.99, 0.12, 'triangle', 0.055);
+    }
+  }
+
+  function getRecordes() {
+    try { return JSON.parse(localStorage.getItem('festa-lucas-recordes-v2') || '{}'); } catch (e) { return {}; }
+  }
+  function salvaRecorde(j, p) {
+    var r = getRecordes();
+    if (p > (r[j] || 0)) {
+      r[j] = p;
+      try { localStorage.setItem('festa-lucas-recordes-v2', JSON.stringify(r)); } catch (e) {}
+    }
+    hudRecorde.textContent = String(r[j] || 0);
+  }
+  function idAparelho() {
+    var id = '';
+    try { id = localStorage.getItem('festa-lucas-aparelho') || ''; } catch (e) {}
+    if (!id) {
+      id = 'dev-' + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem('festa-lucas-aparelho', id); } catch (e) {}
+    }
+    return id;
+  }
+
+  function addParticulas(x, y, cor, qtd) {
+    for (var i = 0; i < (qtd || 10); i++) {
+      var ang = Math.random() * Math.PI * 2;
+      var vel = 1.5 + Math.random() * 5;
+      particulas.push({
+        x: x, y: y,
+        vx: Math.cos(ang) * vel, vy: Math.sin(ang) * vel - 1.5,
+        r: 3 + Math.random() * 5, cor: cor, vida: 24 + Math.random() * 18
+      });
+    }
+  }
+  function addTexto(x, y, txt, cor) {
+    flutuantes.push({ x: x, y: y, txt: txt, cor: cor || '#FFD23F', vida: 38 });
+  }
+
+  function somaPontos(delta, x, y, label, semSom) {
+    if (delta > 0) {
+      combo++;
+      pontos += delta;
+      if (!semSom) {
+        if (delta >= 5) sfxTurbo();
+        else if (delta >= 4) sfxPow();
+        else sfxMoeda();
+      }
+      if (x != null) {
+        addParticulas(x, y, '#FFD23F', 12);
+        addTexto(x, y, label || ('+' + delta), '#FFD23F');
+      }
+    } else {
+      combo = 0;
+      pontos = Math.max(0, pontos + delta);
+      shake = 10;
+      if (!semSom) sfxErro();
+      if (x != null) {
+        addParticulas(x, y, '#FF4D4D', 14);
+        addTexto(x, y, label || String(delta), '#FF5A5A');
+      }
+    }
+    hudPontos.textContent = String(pontos);
+    if (combo >= 3) {
+      hudCombo.hidden = false;
+      hudCombo.textContent = 'COMBO x' + combo;
+    } else {
+      hudCombo.hidden = true;
+    }
+    salvaRecorde(jogoAtual, pontos);
+  }
+
+  function desenhaAvatar(x, y, raio, angulo, brilhoCor) {
+    ctx.save();
+    ctx.translate(x, y);
+    if (angulo) ctx.rotate(angulo);
+    if (brilhoCor) {
+      ctx.shadowColor = brilhoCor;
+      ctx.shadowBlur = 18;
+    }
+    ctx.beginPath();
+    ctx.arc(0, 0, raio, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fillStyle = '#E62E2D';
+    ctx.fill();
+    ctx.save();
+    ctx.clip();
+    if (imgLucas.complete && imgLucas.naturalWidth > 0) {
+      ctx.drawImage(imgLucas, -raio, -raio, raio * 2, raio * 2);
+    } else {
+      ctx.fillStyle = '#FFD23F';
+      ctx.font = '800 ' + Math.round(raio) + 'px "Baloo 2", sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('L', 0, 2);
+    }
+    ctx.restore();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = brilhoCor || '#FFD23F';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /* ============================================================
+     JOGO 1: MUSSA SURF (estilo Subway Surfers — 3 pistas 3D!)
+     ============================================================ */
+  var runner = {};
+  function initRunner() {
+    runner = {
+      lane: 1, targetX: W / 2, x: W / 2,
+      zJump: 0, vz: 0,
+      speed: 0.58, scroll: 0, spawnT: 0,
+      invuln: 0, turbo: 0,
+      objs: [] // { lane, z (0=horizonte .. 1=player), kind: 'coin'|'mic'|'star'|'barreira'|'rival' }
+    };
+  }
+  function runnerMove(dir) {
+    runner.lane = Math.max(0, Math.min(2, runner.lane + dir));
+    som(340, 460, 0.06, 'sine', 0.08);
+  }
+  function runnerJump() {
+    if (runner.zJump <= 1) {
+      runner.vz = 15.5;
+      sfxPulo(false);
+    }
+  }
+  function projLane(lane, z) {
+    var horizY = 128, baseY = 448;
+    var y = horizY + (baseY - horizY) * Math.pow(z, 1.45);
+    var spread = 56 + 210 * Math.pow(z, 1.35);
+    var x = W / 2 + (lane - 1) * spread;
+    var scale = 0.24 + 0.92 * Math.pow(z, 1.25);
+    return { x: x, y: y, scale: scale };
+  }
+  function updateRunner(dt) {
+    runner.speed = Math.min(1.18, runner.speed + dt * 0.015);
+    var spd = runner.speed * (runner.turbo > 0 ? 1.35 : 1);
+    runner.scroll = (runner.scroll + dt * spd * 3.2) % 1;
+    if (runner.invuln > 0) runner.invuln -= dt;
+    if (runner.turbo > 0) runner.turbo -= dt;
+
+    var p = projLane(runner.lane, 0.92);
+    runner.targetX = p.x;
+    runner.x += (runner.targetX - runner.x) * Math.min(1, dt * 16);
+
+    if (runner.zJump > 0 || runner.vz > 0) {
+      runner.zJump += runner.vz;
+      runner.vz -= 52 * dt;
+      if (runner.zJump <= 0) { runner.zJump = 0; runner.vz = 0; }
+    }
+
+    runner.spawnT -= dt;
+    if (runner.spawnT <= 0) {
+      runner.spawnT = Math.max(0.32, 0.72 - runner.speed * 0.28);
+      var lane = (Math.random() * 3) | 0;
+      var r = Math.random();
+      var kind = r < 0.34 ? 'barreira' : (r < 0.45 ? 'rival' : (r < 0.55 ? 'star' : (r < 0.75 ? 'mic' : 'coin')));
+      runner.objs.push({ lane: lane, z: 0.04, kind: kind, hit: false });
+      // Ocasionalmente coloca uma fileira de moedas noutra faixa
+      if (kind === 'barreira' && Math.random() < 0.65) {
+        var outra = (lane + 1 + ((Math.random() * 2) | 0)) % 3;
+        runner.objs.push({ lane: outra, z: 0.04, kind: 'coin', hit: false });
+      }
+    }
+
+    for (var i = runner.objs.length - 1; i >= 0; i--) {
+      var o = runner.objs[i];
+      o.z += dt * spd;
+      if (!o.hit && o.z >= 0.84 && o.z <= 1.02 && o.lane === runner.lane) {
+        var pos = projLane(o.lane, o.z);
+        if (o.kind === 'barreira' || o.kind === 'rival') {
+          if (runner.zJump > 38) {
+            // Pulou por cima da barreira!
+            o.hit = true;
+            somaPontos(2, pos.x, pos.y - 40, 'PULOU! +2');
+          } else if (runner.turbo > 0) {
+            o.hit = true;
+            somaPontos(3, pos.x, pos.y - 20, 'TURBO! +3');
+          } else if (runner.invuln <= 0) {
+            o.hit = true;
+            runner.invuln = 0.9;
+            somaPontos(-3, pos.x, pos.y - 20, 'BATEU! -3');
+          }
+        } else {
+          o.hit = true;
+          if (o.kind === 'star') {
+            runner.turbo = 3.5;
+            somaPontos(5, pos.x, pos.y - 30, '⭐ TURBO +5');
+          } else if (o.kind === 'mic') {
+            somaPontos(3, pos.x, pos.y - 25, '🎤 +3');
+          } else {
+            somaPontos(1, pos.x, pos.y - 20, '💿 +1');
+          }
+        }
+      }
+      if (o.z > 1.15 || o.hit) runner.objs.splice(i, 1);
+    }
+  }
+  function drawRunner() {
+    var t = bgmTempo;
+    // Céu noturno vibrante de festival urbano
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#120826'); g.addColorStop(0.24, '#5B186E'); g.addColorStop(0.32, '#E62E2D'); g.addColorStop(0.35, '#19192C'); g.addColorStop(1, '#0C0C16');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // Estrelas cintilantes no céu
+    for (var st = 0; st < 26; st++) {
+      var sx = (st * 97) % W, sy = (st * 41) % 105;
+      ctx.fillStyle = 'rgba(255,245,200,' + (0.35 + 0.55 * Math.abs(Math.sin(t * 2 + st))) + ')';
+      ctx.fillRect(sx, sy, 2.5, 2.5);
+    }
+
+    // Holofotes dinâmicos varrendo o céu
+    var sw1 = Math.sin(t * 1.4) * 90;
+    var sw2 = Math.cos(t * 1.1) * 90;
+    ctx.fillStyle = 'rgba(255,210,63,0.16)';
+    ctx.beginPath(); ctx.moveTo(220, 128); ctx.lineTo(140 + sw1, 0); ctx.lineTo(250 + sw1, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(28,198,232,0.16)';
+    ctx.beginPath(); ctx.moveTo(580, 128); ctx.lineTo(540 + sw2, 0); ctx.lineTo(660 + sw2, 0); ctx.closePath(); ctx.fill();
+
+    // Skyline urbano + equalizador pulsante no horizonte
+    ctx.fillStyle = '#140E26';
+    var predios = [[0,68,55],[58,86,44],[106,58,64],[174,80,48],[576,78,52],[632,54,66],[702,82,46],[752,64,50]];
+    predios.forEach(function (pr, idx) {
+      ctx.fillRect(pr[0], pr[1], pr[2], 130 - pr[1]);
+      ctx.fillStyle = idx % 2 === 0 ? 'rgba(255,210,63,0.55)' : 'rgba(28,198,232,0.55)';
+      for (var wy = pr[1] + 8; wy < 120; wy += 14) {
+        for (var wx = pr[0] + 8; wx < pr[0] + pr[2] - 10; wx += 14) {
+          ctx.fillRect(wx, wy, 6, 6);
+        }
+      }
+      ctx.fillStyle = '#140E26';
+    });
+    // Equalizador do palco ao centro
+    for (var eq = 0; eq < 11; eq++) {
+      var eh = 16 + Math.abs(Math.sin(t * 6 + eq * 0.7)) * 42;
+      ctx.fillStyle = eq % 2 === 0 ? 'rgba(255,210,63,0.45)' : 'rgba(230,46,45,0.45)';
+      ctx.fillRect(298 + eq * 19, 128 - eh, 13, eh);
+    }
+
+    // Pista 3D com bordas neon vermelhas/douradas
+    ctx.fillStyle = '#212138';
+    ctx.beginPath();
+    ctx.moveTo(W / 2 - 90, 128); ctx.lineTo(W / 2 + 90, 128);
+    ctx.lineTo(W / 2 + 375, H); ctx.lineTo(W / 2 - 375, H);
+    ctx.closePath(); ctx.fill();
+
+    ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(W / 2 - 90, 128); ctx.lineTo(W / 2 - 375, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(W / 2 + 90, 128); ctx.lineTo(W / 2 + 375, H); ctx.stroke();
+
+    // Linhas das 3 pistas + postes neon laterais passando em velocidade!
+    ctx.strokeStyle = 'rgba(255,210,63,0.48)'; ctx.lineWidth = 3;
+    [-1, 1].forEach(function (s) {
+      ctx.beginPath();
+      ctx.moveTo(W / 2 + s * 30, 128); ctx.lineTo(W / 2 + s * 124, H);
+      ctx.stroke();
+    });
+    for (var k = 0; k < 8; k++) {
+      var zz = ((k / 8) + runner.scroll * 0.25) % 1;
+      var py = 128 + (H - 128) * Math.pow(zz, 1.45);
+      var hw = 90 + 285 * Math.pow(zz, 1.35);
+      ctx.strokeStyle = 'rgba(255,255,255,' + (0.06 + zz * 0.16) + ')';
+      ctx.lineWidth = 2 + zz * 3;
+      ctx.beginPath(); ctx.moveTo(W / 2 - hw, py); ctx.lineTo(W / 2 + hw, py); ctx.stroke();
+
+      // Postes luminosos laterais
+      var postH = 18 + zz * 78;
+      ctx.fillStyle = k % 2 === 0 ? '#E62E2D' : '#1CC6E8';
+      ctx.fillRect(W / 2 - hw - 10 * zz - 3, py - postH, 4 + 4 * zz, postH);
+      ctx.fillRect(W / 2 + hw + 10 * zz - 1, py - postH, 4 + 4 * zz, postH);
+      ctx.fillStyle = '#FFD23F';
+      ctx.beginPath(); ctx.arc(W / 2 - hw - 10 * zz, py - postH, 4 + 5 * zz, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(W / 2 + hw + 10 * zz, py - postH, 4 + 5 * zz, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Objetos ordenados por profundidade
+    runner.objs.sort(function (a, b) { return a.z - b.z; });
+    runner.objs.forEach(function (o) {
+      var pos = projLane(o.lane, o.z);
+      var sz = 54 * pos.scale;
+      ctx.save();
+      ctx.translate(pos.x, pos.y);
+      if (o.kind === 'barreira') {
+        ctx.fillStyle = '#E62E2D';
+        ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = Math.max(2, 4 * pos.scale);
+        ctx.fillRect(-sz * 0.9, -sz * 0.8, sz * 1.8, sz * 0.8);
+        ctx.strokeRect(-sz * 0.9, -sz * 0.8, sz * 1.8, sz * 0.8);
+        ctx.fillStyle = '#FFD23F';
+        ctx.font = '800 ' + Math.round(sz * 0.48) + 'px "Baloo 2", sans-serif';
+        ctx.textAlign = 'center'; ctx.fillText('PULA!', 0, -sz * 0.28);
+      } else {
+        ctx.font = Math.round(sz * 1.05) + 'px Arial, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        var ico = o.kind === 'rival' ? '🤡' : (o.kind === 'star' ? '⭐' : (o.kind === 'mic' ? '🎤' : '💿'));
+        ctx.fillText(ico, 0, -sz * 0.45);
+      }
+      ctx.restore();
+    });
+
+    // Sombra + Jogador Lucas
+    var pBase = projLane(runner.lane, 0.92);
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.beginPath();
+    ctx.ellipse(runner.x, pBase.y + 8, Math.max(18, 42 - runner.zJump * 0.22), 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (!(runner.invuln > 0 && Math.floor(runner.invuln * 18) % 2 === 0)) {
+      desenhaAvatar(runner.x, pBase.y - 34 - runner.zJump, 38, 0, runner.turbo > 0 ? '#1CC6E8' : '#FFD23F');
+    }
+  }
+
+  /* ============================================================
+     JOGO 2: LUCAS DASH (estilo Sonic — Side-Scroller + Pulo Duplo!)
+     ============================================================ */
+  var sonic = {};
+  function initSonic() {
+    sonic = {
+      y: 380, vy: 0, jumps: 0, rot: 0,
+      groundY: 406, speed: 340, scroll: 0, spawnT: 0, invuln: 0,
+      objs: [] // { x, y, kind: 'ring'|'mic'|'spike'|'robo' }
+    };
+  }
+  function sonicJump() {
+    if (sonic.jumps < 2) {
+      sonic.vy = sonic.jumps === 0 ? -610 : -540;
+      sonic.jumps++;
+      sfxPulo(sonic.jumps === 2);
+      addParticulas(140, sonic.y + 24, '#1CC6E8', 9);
+    }
+  }
+  function updateSonic(dt) {
+    sonic.speed = Math.min(580, sonic.speed + dt * 11);
+    sonic.scroll += sonic.speed * dt;
+    if (sonic.invuln > 0) sonic.invuln -= dt;
+
+    sonic.y += sonic.vy * dt;
+    sonic.vy += 1550 * dt;
+    if (sonic.y >= sonic.groundY - 34) {
+      sonic.y = sonic.groundY - 34;
+      sonic.vy = 0;
+      sonic.jumps = 0;
+      sonic.rot += dt * sonic.speed * 0.02;
+    } else {
+      sonic.rot += dt * 15; // Spin Jump estilo Sonic!
+    }
+
+    sonic.spawnT -= dt;
+    if (sonic.spawnT <= 0) {
+      sonic.spawnT = Math.max(0.55, 1.25 - (sonic.speed - 340) * 0.002);
+      var r = Math.random();
+      if (r < 0.42) {
+        // Arco de 4 anéis dourados estilo Sonic!
+        for (var k = 0; k < 4; k++) {
+          sonic.objs.push({ x: W + 40 + k * 46, y: 270 - Math.sin((k / 3) * Math.PI) * 90, kind: 'ring' });
+        }
+      } else if (r < 0.68) {
+        sonic.objs.push({ x: W + 50, y: sonic.groundY - 24, kind: 'spike' });
+        sonic.objs.push({ x: W + 50, y: sonic.groundY - 125, kind: 'mic' });
+      } else {
+        sonic.objs.push({ x: W + 50, y: sonic.groundY - 30, kind: 'robo' });
+      }
+    }
+
+    for (var i = sonic.objs.length - 1; i >= 0; i--) {
+      var o = sonic.objs[i];
+      o.x -= sonic.speed * dt;
+      var dx = 140 - o.x, dy = sonic.y - o.y;
+      if (dx * dx + dy * dy < 2400) {
+        if (o.kind === 'ring') {
+          somaPontos(1, o.x, o.y, '⭕ +1');
+          sonic.objs.splice(i, 1); continue;
+        } else if (o.kind === 'mic') {
+          somaPontos(3, o.x, o.y, '🎤 +3');
+          sonic.objs.splice(i, 1); continue;
+        } else if (o.kind === 'robo' && sonic.vy > 0 && sonic.y < o.y - 6) {
+          // Esmagou o robô por cima igual Sonic!
+          sonic.vy = -490;
+          somaPontos(4, o.x, o.y, 'POW! +4');
+          sonic.objs.splice(i, 1); continue;
+        } else if (sonic.invuln <= 0) {
+          sonic.invuln = 0.9;
+          somaPontos(-3, o.x, o.y, 'AI! -3');
+          sonic.objs.splice(i, 1); continue;
+        }
+      }
+      if (o.x < -60) sonic.objs.splice(i, 1);
+    }
+  }
+  function drawSonic() {
+    var t = bgmTempo;
+    // Céu vibrante pôr-do-sol estilo Green Hill + Festival
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#0D47A1'); g.addColorStop(0.45, '#1CC6E8'); g.addColorStop(0.78, '#FF9E44'); g.addColorStop(1, '#461B6E');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // Sol brilhante ao fundo
+    ctx.fillStyle = 'rgba(255,240,150,0.9)';
+    ctx.beginPath(); ctx.arc(640, 108, 46, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,210,63,0.22)';
+    ctx.beginPath(); ctx.arc(640, 108, 72, 0, Math.PI * 2); ctx.fill();
+
+    // Camada 1: Nuvens fofas em paralaxe lenta
+    ctx.fillStyle = 'rgba(255,255,255,0.78)';
+    var offN = (sonic.scroll * 0.1) % 280;
+    for (var nx = -offN; nx < W + 280; nx += 280) {
+      ctx.beginPath();
+      ctx.arc(nx + 40, 84, 24, 0, Math.PI * 2);
+      ctx.arc(nx + 68, 76, 30, 0, Math.PI * 2);
+      ctx.arc(nx + 98, 84, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Camada 2: Montanhas geométricas distantes
+    var offM = (sonic.scroll * 0.2) % 240;
+    for (var mx = -offM; mx < W + 240; mx += 240) {
+      ctx.fillStyle = '#382B73';
+      ctx.beginPath(); ctx.moveTo(mx, sonic.groundY); ctx.lineTo(mx + 120, 210); ctx.lineTo(mx + 240, sonic.groundY); ctx.fill();
+      ctx.fillStyle = '#563D99';
+      ctx.beginPath(); ctx.moveTo(mx + 120, 210); ctx.lineTo(mx + 165, 275); ctx.lineTo(mx + 240, sonic.groundY); ctx.lineTo(mx + 120, sonic.groundY); ctx.fill();
+    }
+
+    // Camada 3: Coqueiros/palmeiras estilizadas + prédios street
+    var offP = (sonic.scroll * 0.45) % 260;
+    for (var px = -offP; px < W + 260; px += 260) {
+      ctx.fillStyle = '#25194A';
+      ctx.fillRect(px + 20, 285, 64, sonic.groundY - 285);
+      ctx.fillStyle = '#FFD23F';
+      ctx.fillRect(px + 30, 300, 12, 12); ctx.fillRect(px + 54, 300, 12, 12);
+      ctx.fillRect(px + 30, 326, 12, 12); ctx.fillRect(px + 54, 326, 12, 12);
+      // Coqueiro estilo Green Hill
+      ctx.fillStyle = '#7A451E';
+      ctx.fillRect(px + 166, 308, 12, sonic.groundY - 308);
+      ctx.fillStyle = '#2FB359';
+      ctx.beginPath(); ctx.ellipse(px + 150, 306, 26, 10, -0.35, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(px + 194, 306, 26, 10, 0.35, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(px + 172, 294, 24, 10, 0, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Chão quadriculado clássico estilo Green Hill
+    ctx.fillStyle = '#3EC96B';
+    ctx.fillRect(0, sonic.groundY, W, 16);
+    ctx.fillStyle = '#7AF09D';
+    ctx.fillRect(0, sonic.groundY, W, 5);
+    var tile = 44, offG = sonic.scroll % (tile * 2);
+    for (var gx = -offG; gx < W + tile * 2; gx += tile) {
+      var par = Math.floor((gx + offG) / tile) % 2 === 0;
+      ctx.fillStyle = par ? '#8B4513' : '#C26D27';
+      ctx.fillRect(gx, sonic.groundY + 16, tile, 40);
+      ctx.fillStyle = par ? '#C26D27' : '#8B4513';
+      ctx.fillRect(gx, sonic.groundY + 56, tile, 40);
+    }
+
+    // Objetos (anéis girando com brilho!)
+    sonic.objs.forEach(function (o) {
+      if (o.kind === 'ring') {
+        var rx = Math.max(5, Math.abs(Math.cos(t * 5 + o.x * 0.02)) * 16);
+        ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 6;
+        ctx.beginPath(); ctx.ellipse(o.x, o.y, rx, 16, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#FFF8CC'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(o.x, o.y, rx * 0.7, 11, 0, 0, Math.PI * 2); ctx.stroke();
+      } else {
+        ctx.font = '38px Arial, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(o.kind === 'mic' ? '🎤' : (o.kind === 'robo' ? '🤖' : '⚡'), o.x, o.y);
+      }
+    });
+
+    // Rastro de velocidade
+    ctx.fillStyle = 'rgba(28,198,232,0.34)';
+    ctx.beginPath(); ctx.arc(108, sonic.y, 26, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,210,63,0.22)';
+    ctx.beginPath(); ctx.arc(82, sonic.y, 18, 0, Math.PI * 2); ctx.fill();
+    if (!(sonic.invuln > 0 && Math.floor(sonic.invuln * 18) % 2 === 0)) {
+      desenhaAvatar(140, sonic.y, 34, sonic.jumps > 0 ? sonic.rot : 0, sonic.jumps > 0 ? '#1CC6E8' : '#FFD23F');
+    }
+  }
+
+  /* ============================================================
+     JOGO 3: VOO DO MIC (estilo Flappy / Jetpack entre Caixas de Som!)
+     ============================================================ */
+  var flappy = {};
+  function initFlappy() {
+    flappy = {
+      y: H / 2, vy: 0, speed: 245, spawnT: 0.4, invuln: 0,
+      pipes: [], notas: []
+    };
+  }
+  function flappyBoost() {
+    flappy.vy = -370;
+    sfxJetpack();
+    addParticulas(152, flappy.y + 18, '#FF7A1A', 8);
+    addParticulas(146, flappy.y + 22, '#FFD23F', 4);
+  }
+  function updateFlappy(dt) {
+    if (flappy.invuln > 0) flappy.invuln -= dt;
+    flappy.vy += 980 * dt;
+    flappy.y += flappy.vy * dt;
+    if (flappy.y < 32) { flappy.y = 32; flappy.vy = 0; }
+    if (flappy.y > H - 32) { flappy.y = H - 32; flappy.vy = -260; }
+
+    flappy.spawnT -= dt;
+    if (flappy.spawnT <= 0) {
+      flappy.spawnT = 1.45;
+      var gap = 166;
+      var topH = 65 + Math.random() * (H - gap - 130);
+      flappy.pipes.push({ x: W + 40, topH: topH, gap: gap, passou: false });
+      flappy.notas.push({ x: W + 75, y: topH + gap / 2, vivo: true });
+    }
+
+    for (var i = flappy.pipes.length - 1; i >= 0; i--) {
+      var p = flappy.pipes[i];
+      p.x -= flappy.speed * dt;
+      if (!p.passou && p.x + 70 < 170) {
+        p.passou = true;
+        somaPontos(2, 170, flappy.y - 36, '+2');
+      }
+      if (170 + 24 > p.x && 170 - 24 < p.x + 70) {
+        if ((flappy.y - 24 < p.topH || flappy.y + 24 > p.topH + p.gap) && flappy.invuln <= 0) {
+          flappy.invuln = 0.95;
+          somaPontos(-3, 170, flappy.y, 'BATEU! -3');
+        }
+      }
+      if (p.x < -90) flappy.pipes.splice(i, 1);
+    }
+
+    for (var j = flappy.notas.length - 1; j >= 0; j--) {
+      var n = flappy.notas[j];
+      n.x -= flappy.speed * dt;
+      var dx = 170 - n.x, dy = flappy.y - n.y;
+      if (n.vivo && dx * dx + dy * dy < 1800) {
+        n.vivo = false;
+        somaPontos(2, n.x, n.y, '🎵 +2');
+      }
+      if (n.x < -40 || !n.vivo) flappy.notas.splice(j, 1);
+    }
+  }
+  function drawFlappy() {
+    var t = bgmTempo;
+    // Céu de show noturno com aurora neon
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#14082E'); g.addColorStop(0.55, '#461B6E'); g.addColorStop(1, '#1A102E');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // Estrelas em paralaxe
+    for (var s = 0; s < 32; s++) {
+      var sx = ((s * 83) - t * (18 + (s % 3) * 14)) % W;
+      if (sx < 0) sx += W;
+      var sy = (s * 47) % (H - 120);
+      ctx.fillStyle = 'rgba(255,235,160,' + (0.3 + 0.6 * Math.abs(Math.sin(t * 2.5 + s))) + ')';
+      ctx.beginPath(); ctx.arc(sx, sy, 1.5 + (s % 2), 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Equalizador gigante suave no fundo
+    for (var e = 0; e < 24; e++) {
+      var eh = 24 + Math.abs(Math.sin(t * 4.5 + e * 0.55)) * 75;
+      ctx.fillStyle = e % 2 === 0 ? 'rgba(230,46,45,0.16)' : 'rgba(28,198,232,0.14)';
+      ctx.fillRect(e * 34 + 6, H - eh, 22, eh);
+    }
+
+    // Torres de Caixas de Som com VU-meter pulsante
+    flappy.pipes.forEach(function (p) {
+      ctx.fillStyle = '#1C1C32';
+      ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 4;
+      ctx.fillRect(p.x, 0, 74, p.topH);
+      ctx.strokeRect(p.x, 0, 74, p.topH);
+      ctx.fillRect(p.x, p.topH + p.gap, 74, H - (p.topH + p.gap));
+      ctx.strokeRect(p.x, p.topH + p.gap, 74, H - (p.topH + p.gap));
+
+      // LEDs VU-meter na lateral da torre
+      for (var ly = 14; ly < p.topH - 48; ly += 14) {
+        ctx.fillStyle = ly < 50 ? '#3EC96B' : (ly < 95 ? '#FFD23F' : '#E62E2D');
+        ctx.fillRect(p.x + 10, ly, 54, 6);
+      }
+      // Cone de alto-falante pulsante
+      var pulse = 18 + Math.sin(t * 14) * 2.2;
+      ctx.fillStyle = '#E62E2D';
+      ctx.beginPath(); ctx.arc(p.x + 37, p.topH - 26, pulse, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x + 37, p.topH + p.gap + 26, pulse, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#181826';
+      ctx.beginPath(); ctx.arc(p.x + 37, p.topH - 26, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x + 37, p.topH + p.gap + 26, 7, 0, Math.PI * 2); ctx.fill();
+    });
+
+    flappy.notas.forEach(function (n) {
+      ctx.font = '38px Arial, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🎵', n.x, n.y + Math.sin(t * 6 + n.x * 0.05) * 6);
+    });
+
+    if (!(flappy.invuln > 0 && Math.floor(flappy.invuln * 18) % 2 === 0)) {
+      desenhaAvatar(170, flappy.y, 30, Math.max(-0.4, Math.min(0.45, flappy.vy * 0.001)), '#FF7A1A');
+    }
+  }
+
+  /* ============================================================
+     JOGO 4: BATALHA HERO (estilo Piano Tiles — Músicas Reais + ADSR!)
+     ============================================================ */
+  var ritmo = {};
+  var CORES_PISTA = ['#E62E2D', '#FFD23F', '#1CC6E8', '#8A4FFF'];
+  var TECLAS_LABEL = ['A', 'S', 'D', 'F'];
+  var HIT_Y = 412;
+  var musicaAtual = 'parabens';
+
+  // Notas musicais em Hz
+  var N = {
+    C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+    C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00,
+    Bb4: 466.16, Eb5: 622.25
+  };
+
+  // Partituras: [notaHz, nomeNota, duracaoBatidas, pista(0..3)]
+  var MUSICAS = {
+    parabens: {
+      nome: '🎂 Parabéns pra Você',
+      bpm: 126,
+      notas: [
+        [N.C4,'Dó',0.75,0],[N.C4,'Dó',0.5,0],[N.D4,'Ré',1,1],[N.C4,'Dó',1,0],[N.F4,'Fá',1,2],[N.E4,'Mi',1.6,1],
+        [N.C4,'Dó',0.75,0],[N.C4,'Dó',0.5,0],[N.D4,'Ré',1,1],[N.C4,'Dó',1,0],[N.G4,'Sol',1,3],[N.F4,'Fá',1.6,2],
+        [N.C4,'Dó',0.75,0],[N.C4,'Dó',0.5,0],[N.C5,'Dó+',1,3],[N.A4,'Lá',1,2],[N.F4,'Fá',1,1],[N.E4,'Mi',1,0],[N.D4,'Ré',1.5,1],
+        [N.Bb4,'Sib',0.75,3],[N.Bb4,'Sib',0.5,3],[N.A4,'Lá',1,2],[N.F4,'Fá',1,1],[N.G4,'Sol',1,2],[N.F4,'Fá',1.8,1]
+      ]
+    },
+    mussa: {
+      nome: '🎤 Mussa Beat (Rap)',
+      bpm: 132,
+      notas: [
+        [N.A4,'Lá',0.75,0],[N.C5,'Dó',0.75,1],[N.E5,'Mi',0.75,2],[N.D5,'Ré',0.75,1],
+        [N.C5,'Dó',0.75,1],[N.A4,'Lá',0.75,0],[N.G4,'Sol',1.0,3],[N.A4,'Lá',1.0,0],
+        [N.A4,'Lá',0.75,0],[N.C5,'Dó',0.75,1],[N.E5,'Mi',0.75,2],[N.G5,'Sol',1.0,3],
+        [N.E5,'Mi',0.75,2],[N.D5,'Ré',0.75,1],[N.C5,'Dó',1.0,1],[N.A4,'Lá',1.2,0],
+        [N.E5,'Mi',0.75,2],[N.E5,'Mi',0.75,2],[N.D5,'Ré',0.75,1],[N.C5,'Dó',0.75,1],
+        [N.D5,'Ré',0.75,1],[N.C5,'Dó',0.75,1],[N.G4,'Sol',0.75,3],[N.A4,'Lá',1.4,0]
+      ]
+    },
+    brilha: {
+      nome: '⭐ Brilha Estrelinha',
+      bpm: 122,
+      notas: [
+        [N.C4,'Dó',1,0],[N.C4,'Dó',1,0],[N.G4,'Sol',1,2],[N.G4,'Sol',1,2],[N.A4,'Lá',1,3],[N.A4,'Lá',1,3],[N.G4,'Sol',1.6,2],
+        [N.F4,'Fá',1,1],[N.F4,'Fá',1,1],[N.E4,'Mi',1,0],[N.E4,'Mi',1,0],[N.D4,'Ré',1,1],[N.D4,'Ré',1,1],[N.C4,'Dó',1.6,0],
+        [N.G4,'Sol',1,2],[N.G4,'Sol',1,2],[N.F4,'Fá',1,1],[N.F4,'Fá',1,1],[N.E4,'Mi',1,0],[N.E4,'Mi',1,0],[N.D4,'Ré',1.6,1],
+        [N.G4,'Sol',1,2],[N.G4,'Sol',1,2],[N.F4,'Fá',1,1],[N.F4,'Fá',1,1],[N.E4,'Mi',1,0],[N.E4,'Mi',1,0],[N.D4,'Ré',1.6,1]
+      ]
+    },
+    arcade: {
+      nome: '🎮 Arcade 8-Bit',
+      bpm: 140,
+      notas: [
+        [N.E5,'Mi',0.7,2],[N.E5,'Mi',0.7,2],[N.E5,'Mi',1.0,2],[N.C5,'Dó',0.7,1],[N.E5,'Mi',1.0,2],[N.G5,'Sol',1.4,3],[N.G4,'Sol',1.4,0],
+        [N.C5,'Dó',1.0,1],[N.G4,'Sol',1.0,0],[N.E4,'Mi',1.0,0],[N.A4,'Lá',0.9,2],[N.B4,'Si',0.9,3],[N.Bb4,'Sib',0.7,2],[N.A4,'Lá',1.0,1],
+        [N.G4,'Sol',0.8,0],[N.E5,'Mi',0.8,2],[N.G5,'Sol',0.8,3],[N.A5,'Lá+',1.0,3],[N.F5,'Fá',0.8,2],[N.G5,'Sol',0.9,3],
+        [N.E5,'Mi',1.0,2],[N.C5,'Dó',0.8,1],[N.D5,'Ré',0.8,1],[N.B4,'Si',1.3,3]
+      ]
+    }
+  };
+
+  // Sintetizador de Piano com envelope ADSR + harmônico (timbre rico tipo Piano Tiles!)
+  function tocaPiano(freq, durSec) {
+    var ctxA = ensureAudio(); if (!ctxA) return;
+    try {
+      var now = ctxA.currentTime;
+      var dur = Math.max(0.22, durSec || 0.38);
+
+      var o1 = ctxA.createOscillator();
+      var o2 = ctxA.createOscillator();
+      var filt = ctxA.createBiquadFilter();
+      var g = ctxA.createGain();
+
+      o1.type = 'triangle';
+      o1.frequency.setValueAtTime(freq, now);
+      o2.type = 'sine';
+      o2.frequency.setValueAtTime(freq * 2, now);
+
+      filt.type = 'lowpass';
+      filt.frequency.setValueAtTime(Math.min(4800, freq * 5), now);
+      filt.frequency.exponentialRampToValueAtTime(Math.max(600, freq * 1.6), now + dur);
+
+      var g2 = ctxA.createGain();
+      g2.gain.setValueAtTime(0.18, now);
+
+      // Envelope ADSR percussivo de piano
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(0.28, now + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.09, now + 0.14);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dur + 0.18);
+
+      o1.connect(filt);
+      o2.connect(g2); g2.connect(filt);
+      filt.connect(g); g.connect(ctxA.destination);
+
+      o1.start(now); o2.start(now);
+      o1.stop(now + dur + 0.22); o2.stop(now + dur + 0.22);
+    } catch (e) {}
+  }
+
+  function initRitmo() {
+    var m = MUSICAS[musicaAtual] || MUSICAS.parabens;
+    ritmo = {
+      speed: 255,
+      velMult: 1,
+      voltas: 1,
+      noteIdx: 0,
+      spawnT: 0.25,
+      bpm: m.bpm,
+      notes: [], // { lane, y, h, freq, label, hit, missed }
+      flash: [0, 0, 0, 0],
+      errFlash: [0, 0, 0, 0]
+    };
+  }
+  function hitLane(lane) {
+    ritmo.flash[lane] = 0.18;
+    var bestIdx = -1, bestDist = 999;
+    for (var i = 0; i < ritmo.notes.length; i++) {
+      var n = ritmo.notes[i];
+      if (!n.hit && !n.missed && n.lane === lane) {
+        var centro = n.y + n.h * 0.5;
+        var d = Math.abs(centro - HIT_Y);
+        if (d < bestDist) { bestDist = d; bestIdx = i; }
+      }
+    }
+    var lx = 170 + lane * 153;
+    if (bestIdx !== -1 && bestDist < 96) {
+      var tile = ritmo.notes[bestIdx];
+      tile.hit = true;
+      tocaPiano(tile.freq, 0.42);
+      if (bestDist < 36) somaPontos(3, lx, HIT_Y - 18, '♪ PERFEITO +3', true);
+      else somaPontos(2, lx, HIT_Y - 18, '♪ BOM +2', true);
+    } else {
+      ritmo.errFlash[lane] = 0.22;
+      somaPontos(-1, lx, HIT_Y - 15, 'OPS! -1');
+    }
+  }
+  function updateRitmo(dt) {
+    for (var f = 0; f < 4; f++) {
+      if (ritmo.flash[f] > 0) ritmo.flash[f] -= dt;
+      if (ritmo.errFlash[f] > 0) ritmo.errFlash[f] -= dt;
+    }
+
+    var song = MUSICAS[musicaAtual] || MUSICAS.parabens;
+    var spd = ritmo.speed * ritmo.velMult;
+
+    ritmo.spawnT -= dt;
+    if (ritmo.spawnT <= 0) {
+      var item = song.notas[ritmo.noteIdx];
+      var beatSec = 60 / (song.bpm * ritmo.velMult);
+      var durBeats = item[2];
+      var tileH = Math.max(82, Math.min(138, Math.round(durBeats * 92)));
+      ritmo.notes.push({
+        lane: item[3],
+        y: -tileH - 8,
+        h: tileH,
+        freq: item[0],
+        label: item[1],
+        hit: false,
+        missed: false
+      });
+      ritmo.spawnT = durBeats * beatSec * 0.88;
+      ritmo.noteIdx++;
+      if (ritmo.noteIdx >= song.notas.length) {
+        ritmo.noteIdx = 0;
+        ritmo.voltas++;
+        ritmo.velMult = Math.min(1.6, ritmo.velMult + 0.12);
+        addTexto(W / 2, 110, '🔥 VELOCIDADE x' + ritmo.voltas + '!', '#FFD23F');
+      }
+    }
+
+    for (var i = ritmo.notes.length - 1; i >= 0; i--) {
+      var n = ritmo.notes[i];
+      n.y += spd * dt;
+      if (n.hit) {
+        n.h *= 0.84;
+        if (n.h < 12) { ritmo.notes.splice(i, 1); continue; }
+      }
+      if (!n.hit && !n.missed && n.y > HIT_Y + 72) {
+        n.missed = true;
+        if (modo === 'desafio') somaPontos(-1, 170 + n.lane * 153, HIT_Y, 'PERDEU -1');
+      }
+      if (n.y > H + 40) ritmo.notes.splice(i, 1);
+    }
+  }
+  function drawRitmo() {
+    var t = bgmTempo;
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#220B3D'); g.addColorStop(0.5, '#16102C'); g.addColorStop(1, '#0C0C18');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // Holofotes laterais de show + equalizador reagindo ao combo!
+    var sw = Math.sin(t * 1.6) * 45;
+    ctx.fillStyle = 'rgba(230,46,45,0.16)';
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(130 + sw, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(28,198,232,0.16)';
+    ctx.beginPath(); ctx.moveTo(W, 0); ctx.lineTo(W - 130 - sw, H); ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+
+    var eqBoost = Math.min(60, combo * 5);
+    for (var b = 0; b < 4; b++) {
+      var bh = 30 + eqBoost + Math.abs(Math.sin(t * 7 + b * 1.4)) * 45;
+      ctx.fillStyle = CORES_PISTA[b];
+      ctx.globalAlpha = 0.14;
+      ctx.fillRect(108 + b * 153, HIT_Y - bh, 124, bh);
+    }
+    ctx.globalAlpha = 1;
+
+    // Título da música tocando no topo
+    var song = MUSICAS[musicaAtual] || MUSICAS.parabens;
+    ctx.fillStyle = 'rgba(255,210,63,0.14)';
+    ctx.fillRect(100, 8, 600, 34);
+    ctx.fillStyle = '#FFD23F';
+    ctx.font = '800 18px "Baloo 2", sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(song.nome + '  •  VELOCIDADE x' + ritmo.voltas, W / 2, 25);
+
+    // 4 colunas estilo Piano Tiles
+    for (var i = 0; i < 4; i++) {
+      var x = 100 + i * 153;
+      ctx.fillStyle = ritmo.errFlash[i] > 0
+        ? 'rgba(230,46,45,0.35)'
+        : (ritmo.flash[i] > 0 ? 'rgba(255,210,63,0.2)' : 'rgba(255,255,255,0.04)');
+      ctx.fillRect(x, 48, 140, H - 48);
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 2;
+      ctx.strokeRect(x, 48, 140, H - 48);
+    }
+
+    // Faixa horizontal da Zona de Hit (dourada)
+    ctx.fillStyle = 'rgba(255,210,63,0.14)';
+    ctx.fillRect(100, HIT_Y - 38, 600, 76);
+    ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(100, HIT_Y); ctx.lineTo(700, HIT_Y); ctx.stroke();
+
+    // Tiles retangulares caindo (Piano Tiles!)
+    ritmo.notes.forEach(function (n) {
+      var x = 108 + n.lane * 153;
+      var wTile = 124;
+      ctx.save();
+      ctx.fillStyle = n.hit ? '#FFFFFF' : (n.missed ? 'rgba(120,120,140,0.4)' : CORES_PISTA[n.lane]);
+      ctx.strokeStyle = n.hit ? '#FFD23F' : '#FFFFFF';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.roundRect(x, n.y, wTile, n.h, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      // Brilho interno estilo tecla glossy
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      ctx.fillRect(x + 8, n.y + 6, wTile - 16, Math.min(18, n.h * 0.28));
+
+      if (!n.hit && n.h > 40) {
+        ctx.fillStyle = n.lane === 1 ? '#181826' : '#FFFFFF';
+        ctx.font = '800 22px "Baloo 2", sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('♪ ' + n.label, x + wTile / 2, n.y + n.h / 2);
+      }
+      ctx.restore();
+    });
+
+    // Teclas de piano na base
+    for (var k = 0; k < 4; k++) {
+      var kx = 104 + k * 153;
+      ctx.fillStyle = ritmo.flash[k] > 0 ? '#FFD23F' : 'rgba(21,21,36,0.88)';
+      ctx.strokeStyle = CORES_PISTA[k]; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.roundRect(kx, HIT_Y + 30, 132, 48, 12); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = ritmo.flash[k] > 0 ? '#181826' : '#FFFFFF';
+      ctx.font = '800 22px "Baloo 2", sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(TECLAS_LABEL[k], kx + 66, HIT_Y + 54);
+    }
+  }
+
+  /* ============================================================
+     LOOP PRINCIPAL 60 FPS + CONTROLES UNIFICADOS
+     ============================================================ */
+  function montaControles() {
+    controlesBar.innerHTML = '';
+    if (jogoAtual === 'runner') {
+      [
+        ['⬅️ Esq', function () { runnerMove(-1); }],
+        ['⬆️ Pular', runnerJump, 'ctrl-btn--grande'],
+        ['Dir ➡️', function () { runnerMove(1); }]
+      ].forEach(addCtrl);
+    } else if (jogoAtual === 'sonic') {
+      [['💨 PULAR / PULO DUPLO', sonicJump, 'ctrl-btn--grande']].forEach(addCtrl);
+    } else if (jogoAtual === 'flappy') {
+      [['🚀 IMPULSO JETPACK', flappyBoost, 'ctrl-btn--grande']].forEach(addCtrl);
+    } else if (jogoAtual === 'ritmo') {
+      // Seletor de músicas (Setlist estilo Piano Tiles)
+      var setlist = document.createElement('div');
+      setlist.style.cssText = 'width:100%;display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-bottom:.35rem';
+      Object.keys(MUSICAS).forEach(function (k) {
+        var mb = document.createElement('button');
+        mb.type = 'button';
+        mb.className = 'aba' + (k === musicaAtual ? ' ativa' : '');
+        mb.textContent = MUSICAS[k].nome;
+        mb.addEventListener('click', function () {
+          musicaAtual = k;
+          iniciaJogo('ritmo', modo === 'desafio' ? 'desafio' : 'livre');
+        });
+        setlist.appendChild(mb);
+      });
+      controlesBar.appendChild(setlist);
+
+      for (var i = 0; i < 4; i++) {
+        (function (lane) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'ctrl-btn';
+          b.style.borderColor = CORES_PISTA[lane];
+          b.style.background = CORES_PISTA[lane];
+          b.style.color = lane === 1 ? '#181826' : '#FFFFFF';
+          b.textContent = '♪ ' + TECLAS_LABEL[lane];
+          b.addEventListener('pointerdown', function (e) { e.preventDefault(); if (modo !== 'fim' && modo !== 'contagem') hitLane(lane); });
+          controlesBar.appendChild(b);
+        })(i);
+      }
+    }
+  }
+  function addCtrl(cfg) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ctrl-btn' + (cfg[2] ? ' ' + cfg[2] : '');
+    b.textContent = cfg[0];
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (modo !== 'fim' && modo !== 'contagem') cfg[1]();
+    });
+    controlesBar.appendChild(b);
+  }
+
+  // Swipe & toque direto no canvas
+  var touchX = 0, touchY = 0;
+  canvas.addEventListener('pointerdown', function (e) {
+    if (modo === 'fim' || modo === 'contagem') return;
+    var r = canvas.getBoundingClientRect();
+    var cx = (e.clientX - r.left) * (W / r.width);
+    touchX = e.clientX; touchY = e.clientY;
+
+    if (jogoAtual === 'sonic') sonicJump();
+    else if (jogoAtual === 'flappy') flappyBoost();
+    else if (jogoAtual === 'ritmo') {
+      var lane = Math.max(0, Math.min(3, Math.floor((cx - 100) / 153)));
+      hitLane(lane);
+    } else if (jogoAtual === 'runner') {
+      // Toque rápido nos terços laterais muda de pista; no centro pula
+      if (cx < W * 0.33) runnerMove(-1);
+      else if (cx > W * 0.67) runnerMove(1);
+      else runnerJump();
+    }
+  });
+  canvas.addEventListener('pointerup', function (e) {
+    if (jogoAtual !== 'runner' || modo === 'fim' || modo === 'contagem') return;
+    var dx = e.clientX - touchX, dy = e.clientY - touchY;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) runnerMove(dx > 0 ? 1 : -1);
+    else if (dy < -40) runnerJump();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (modo === 'fim' || modo === 'contagem' || document.activeElement.tagName === 'INPUT') return;
+    var k = e.key.toLowerCase();
+    if (jogoAtual === 'runner') {
+      if (k === 'arrowleft' || k === 'a') { e.preventDefault(); runnerMove(-1); }
+      if (k === 'arrowright' || k === 'd') { e.preventDefault(); runnerMove(1); }
+      if (k === 'arrowup' || k === 'w' || k === ' ') { e.preventDefault(); runnerJump(); }
+    } else if (jogoAtual === 'sonic') {
+      if (k === 'arrowup' || k === 'w' || k === ' ') { e.preventDefault(); sonicJump(); }
+    } else if (jogoAtual === 'flappy') {
+      if (k === 'arrowup' || k === 'w' || k === ' ') { e.preventDefault(); flappyBoost(); }
+    } else if (jogoAtual === 'ritmo') {
+      var map = { a: 0, s: 1, d: 2, f: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
+      if (map.hasOwnProperty(k)) { e.preventDefault(); hitLane(map[k]); }
+    }
+  });
+
+  function loop(ts) {
+    var dt = Math.min(0.05, (ts - lastTs) / 1000 || 0.016);
+    lastTs = ts;
+
+    if (!pausado && modo !== 'fim' && modo !== 'contagem') {
+      bgmTempo += dt;
+      tickBgm(dt);
+      if (jogoAtual === 'runner') updateRunner(dt);
+      else if (jogoAtual === 'sonic') updateSonic(dt);
+      else if (jogoAtual === 'flappy') updateFlappy(dt);
+      else if (jogoAtual === 'ritmo') updateRitmo(dt);
+    }
+
+    ctx.save();
+    if (shake > 0) {
+      ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+      shake *= 0.85;
+      if (shake < 0.5) shake = 0;
+    }
+
+    if (jogoAtual === 'runner') drawRunner();
+    else if (jogoAtual === 'sonic') drawSonic();
+    else if (jogoAtual === 'flappy') drawFlappy();
+    else if (jogoAtual === 'ritmo') drawRitmo();
+
+    // Partículas & textos flutuantes
+    for (var i = particulas.length - 1; i >= 0; i--) {
+      var p = particulas[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.16; p.vida--;
+      ctx.globalAlpha = Math.max(0, p.vida / 30);
+      ctx.fillStyle = p.cor;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      if (p.vida <= 0) particulas.splice(i, 1);
+    }
+    ctx.globalAlpha = 1;
+    for (var j = flutuantes.length - 1; j >= 0; j--) {
+      var f = flutuantes[j];
+      f.y -= 1.4; f.vida--;
+      ctx.globalAlpha = Math.max(0, f.vida / 30);
+      ctx.font = '800 24px "Baloo 2", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#181826'; ctx.fillText(f.txt, f.x + 2, f.y + 2);
+      ctx.fillStyle = f.cor; ctx.fillText(f.txt, f.x, f.y);
+      if (f.vida <= 0) flutuantes.splice(j, 1);
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function limpaOverlays() {
+    arenaBox.querySelectorAll('.overlay, .contagem-num').forEach(function (el) { el.remove(); });
+  }
+
+  function encerraDesafio() {
+    clearInterval(timerDesafio);
+    modo = 'fim';
+    try { localStorage.setItem('festa-lucas-carimbo-jogo', '1'); } catch (e) {}
+    atualizaMissoes();
+
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    var nomeSalvo = '';
+    try { nomeSalvo = localStorage.getItem('festa-lucas-nome') || ''; } catch (e) {}
+    ov.innerHTML =
+      '<h3>Fim de Round! 🏆</h3>' +
+      '<p style="font-size:1.25rem;font-weight:800">Você fez <strong>' + pontos + ' pts</strong>!</p>' +
+      '<input id="inNomeRank" type="text" maxlength="40" placeholder="Seu nome pro Ranking..." value="' + nomeSalvo.replace(/"/g, '&quot;') + '">' +
+      '<div style="display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center">' +
+        '<button class="cta" id="btnEnviaRank" type="button" disabled>Enviar pro ranking 🏆</button>' +
+        '<button class="cta cta--ia" id="btnDeNovo" type="button" disabled>Jogar de novo ↺</button>' +
+      '</div>';
+    arenaBox.appendChild(ov);
+
+    var bEnv = ov.querySelector('#btnEnviaRank');
+    var bNov = ov.querySelector('#btnDeNovo');
+    setTimeout(function () { bEnv.disabled = false; bNov.disabled = false; }, 1100);
+
+    bNov.addEventListener('click', function () { iniciaJogo(jogoAtual, 'desafio'); });
+    bEnv.addEventListener('click', function () {
+      var nome = ov.querySelector('#inNomeRank').value.trim();
+      if (!nome) { mostraToast('Digite seu nome primeiro! 🎤'); return; }
+      try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
+      nomePassaporte.value = nome;
+      bEnv.disabled = true; bEnv.textContent = 'Enviando...';
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nome, jogo: jogoAtual, pontos: Math.max(1, pontos), detalhe: '30s', aparelho: idAparelho() })
+      }).then(function (r) {
+        return r.json().then(function (d) { return { ok: r.ok && d && d.ok, erro: d && d.erro }; });
+      }).then(function (res) {
+        if (!res.ok) {
+          mostraToast(res.erro === 'supabase-nao-configurado' ? '🛠️ Configure o Supabase nas variáveis da Vercel!' : 'Não foi possível salvar o placar agora.', 3600);
+          bEnv.disabled = false; bEnv.textContent = 'Enviar pro ranking 🏆';
+          return;
+        }
+        mostraToast('🏆 Placar salvo no Ranking da Tropa!', 3200);
+        carregaRanking();
+      }).catch(function () {
+        mostraToast('🛠️ Ranking online funciona na Vercel (ou via vercel dev).', 3600);
+        bEnv.disabled = false; bEnv.textContent = 'Enviar pro ranking 🏆';
+      });
+    });
+  }
+
+  function iniciaJogo(nome, novoModo) {
+    clearInterval(timerDesafio);
+    clearInterval(timerContagem);
+    limpaOverlays();
+    jogoAtual = nome;
+    modo = novoModo;
+    pontos = 0; combo = 0; tempoRestante = 30; shake = 0;
+    particulas = []; flutuantes = [];
+    hudPontos.textContent = '0';
+    hudCombo.hidden = true;
+    hudRecorde.textContent = String(getRecordes()[nome] || 0);
+    dicaJogo.textContent = DICAS[nome];
+
+    if (nome === 'runner') initRunner();
+    else if (nome === 'sonic') initSonic();
+    else if (nome === 'flappy') initFlappy();
+    else if (nome === 'ritmo') initRitmo();
+    montaControles();
+
+    if (novoModo === 'desafio') {
+      modo = 'contagem';
+      hudTempo.textContent = '⏱️ 30s';
+      var n = 3;
+      var el = document.createElement('div');
+      el.className = 'contagem-num'; el.textContent = String(n);
+      arenaBox.appendChild(el);
+      som(330, 440, 0.12);
+      timerContagem = setInterval(function () {
+        n--;
+        if (n > 0) { el.textContent = String(n); som(330, 440, 0.12); }
+        else {
+          clearInterval(timerContagem);
+          el.remove();
+          modo = 'desafio';
+          som(520, 920, 0.18);
+          timerDesafio = setInterval(function () {
+            if (pausado) return;
+            tempoRestante--;
+            hudTempo.textContent = '⏱️ ' + tempoRestante + 's';
+            if (tempoRestante <= 0) encerraDesafio();
+          }, 1000);
+        }
+      }, 750);
+    } else {
+      hudTempo.textContent = 'Modo Livre';
+    }
+  }
+
+  document.querySelectorAll('.abas [data-jogo]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.abas [data-jogo]').forEach(function (x) {
+        x.classList.remove('ativa'); x.setAttribute('aria-selected', 'false');
+      });
+      b.classList.add('ativa'); b.setAttribute('aria-selected', 'true');
+      iniciaJogo(b.getAttribute('data-jogo'), 'livre');
+    });
+  });
+  document.getElementById('btnDesafio').addEventListener('click', function () { iniciaJogo(jogoAtual, 'desafio'); });
+  document.getElementById('btnLivre').addEventListener('click', function () { iniciaJogo(jogoAtual, 'livre'); });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (ents) { pausado = !ents[0].isIntersecting; }, { threshold: 0.15 }).observe(arenaBox);
+  }
+
+  /* ---------- RANKING ONLINE ---------- */
+  var dadosRank = { geral: [], porJogo: {} }, rkAtual = 'geral';
+  function desenhaRank() {
+    var itens = rkAtual === 'geral' ? (dadosRank.geral || []) : ((dadosRank.porJogo && dadosRank.porJogo[rkAtual]) || []);
+    if (!itens.length) {
+      rankLista.innerHTML = '<li><span>Nenhum placar ainda — encare o desafio de 30s! 🎤</span></li>';
+      return;
+    }
+    rankLista.innerHTML = '';
+    itens.forEach(function (it, i) {
+      var li = document.createElement('li');
+      var pts = rkAtual === 'geral' ? (it.total + ' pts') : (it.pontos + ' pts');
+      li.innerHTML = '<span>#' + (i + 1) + ' ' + String(it.nome || '').replace(/</g, '&lt;') + '</span><strong>' + pts + '</strong>';
+      rankLista.appendChild(li);
+    });
+  }
+  function carregaRanking() {
+    fetch(API_URL + '?t=' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+      .then(function (d) { if (d && d.ok) { dadosRank = d; desenhaRank(); } })
+      .catch(function () {
+        rankLista.innerHTML = '<li><span>Ranking online ativo ao publicar na Vercel + Supabase 🏆</span></li>';
+      });
+  }
+  document.querySelectorAll('#abasRank [data-rk]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('#abasRank [data-rk]').forEach(function (x) { x.classList.remove('ativa'); });
+      b.classList.add('ativa'); rkAtual = b.getAttribute('data-rk'); desenhaRank();
+    });
+  });
+  carregaRanking();
+  setInterval(carregaRanking, 45000);
+
+  /* ---------- PASSAPORTE TROPA DO MUSSA ---------- */
+  try { nomePassaporte.value = localStorage.getItem('festa-lucas-nome') || ''; } catch (e) {}
+  function statusMissoes() {
+    return {
+      jogo: !!localStorage.getItem('festa-lucas-carimbo-jogo'),
+      foto: !!localStorage.getItem('festa-lucas-carimbo-foto'),
+      capsula: !!localStorage.getItem('festa-lucas-carimbo-capsula'),
+      ia: !!localStorage.getItem('festa-lucas-carimbo-ia')
+    };
+  }
+  function atualizaMissoes() {
+    var st = statusMissoes();
+    document.querySelectorAll('#gradeMissoes .missao').forEach(function (el) {
+      el.classList.toggle('feita', !!st[el.getAttribute('data-m')]);
+    });
+  }
+  atualizaMissoes();
+
+  document.getElementById('btnGerarPassaporte').addEventListener('click', function () {
+    var nome = (nomePassaporte.value || '').trim() || 'Membro da Tropa';
+    try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
+    var st = statusMissoes();
+    var totalFeitas = ['jogo', 'foto', 'capsula', 'ia'].filter(function (k) { return st[k]; }).length;
+
+    var c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+    var gctx = c.getContext('2d');
+    var grad = gctx.createLinearGradient(0, 0, 0, 1350);
+    grad.addColorStop(0, '#E62E2D'); grad.addColorStop(0.55, '#461B6E'); grad.addColorStop(1, '#151524');
+    gctx.fillStyle = grad; gctx.fillRect(0, 0, 1080, 1350);
+    gctx.strokeStyle = '#FFD23F'; gctx.lineWidth = 22; gctx.strokeRect(44, 44, 992, 1262);
+    gctx.textAlign = 'center';
+    gctx.fillStyle = '#FFD23F'; gctx.font = '800 50px "Baloo 2", Arial, sans-serif'; gctx.fillText('PASSAPORTE OFICIAL', 540, 150);
+    gctx.fillStyle = '#FFFFFF'; gctx.font = '800 84px "Baloo 2", Arial, sans-serif'; gctx.fillText('TROPA DO LUCAS 7!', 540, 245);
+    gctx.fillStyle = '#FFD23F'; gctx.font = '700 34px "Nunito", Arial, sans-serif'; gctx.fillText('12/12/2026 • TEMA YOUTUBER MUSSA', 540, 310);
+
+    gctx.fillStyle = '#FFFDF7'; gctx.strokeStyle = '#181826'; gctx.lineWidth = 10;
+    gctx.beginPath(); gctx.roundRect(110, 380, 860, 210, 36); gctx.fill(); gctx.stroke();
+    gctx.fillStyle = '#E62E2D'; gctx.font = '800 32px "Nunito", Arial, sans-serif'; gctx.fillText('INSCRITO VIP', 540, 448);
+    gctx.fillStyle = '#181826'; gctx.font = '800 66px "Baloo 2", Arial, sans-serif'; gctx.fillText(nome.slice(0, 22), 540, 535);
+
+    var labels = [['🎮', 'Arena de Jogos', st.jogo], ['📸', 'Mural Fotos', st.foto], ['📼', 'Cápsula Rima', st.capsula], ['🎨', 'Mussaverso IA', st.ia]];
+    labels.forEach(function (item, idx) {
+      var col = idx % 2, row = Math.floor(idx / 2);
+      var bx = 130 + col * 430, by = 640 + row * 220;
+      gctx.fillStyle = item[2] ? '#FFD23F' : 'rgba(255,255,255,.15)';
+      gctx.strokeStyle = item[2] ? '#3EC96B' : 'rgba(255,255,255,.35)'; gctx.lineWidth = 8;
+      gctx.beginPath(); gctx.roundRect(bx, by, 390, 180, 28); gctx.fill(); gctx.stroke();
+      gctx.fillStyle = item[2] ? '#181826' : '#FFFFFF';
+      gctx.font = '800 58px Arial, sans-serif'; gctx.fillText(item[0], bx + 195, by + 84);
+      gctx.font = '800 34px "Baloo 2", Arial, sans-serif'; gctx.fillText(item[1] + (item[2] ? ' ✅' : ''), bx + 195, by + 145);
+    });
+
+    gctx.fillStyle = '#FFD23F'; gctx.font = '800 44px "Baloo 2", Arial, sans-serif';
+    gctx.fillText(totalFeitas === 4 ? '🏆 PLACA DE 1 MILHÃO DESBLOQUEADA! 🏆' : ('MISSÕES CONCLUÍDAS: ' + totalFeitas + '/4'), 540, 1175);
+    gctx.fillStyle = '#FFFFFF'; gctx.font = '700 30px "Nunito", Arial, sans-serif';
+    gctx.fillText('Pano na cabeça, bonézinho pra trás — Mussa Style!', 540, 1245);
+
+    var url = c.toDataURL('image/png');
+    var prev = document.getElementById('imgPassaporte');
+    var dl = document.getElementById('btnBaixarPassaporte');
+    prev.src = url; prev.hidden = false;
+    dl.href = url;
+    dl.download = 'passaporte-tropa-lucas-' + nome.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+    dl.hidden = false;
+    mostraToast('🎫 Passaporte da Tropa gerado!', 3200);
+  });
+
+  // Inicializa jogo conforme ?jogo=...
+  var qJogo = (location.search.match(/jogo=([a-z]+)/) || [])[1];
+  if (qJogo && DICAS[qJogo]) {
+    var bInit = document.querySelector('.abas [data-jogo="' + qJogo + '"]');
+    if (bInit) bInit.click(); else iniciaJogo(qJogo, 'livre');
+  } else {
+    iniciaJogo('runner', 'livre');
+  }
+  rafId = requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

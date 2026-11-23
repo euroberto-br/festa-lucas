@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#151524">
+<title>🏆 Telão — Ranking da Tropa · Lucas Nery 7 anos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<style>
+body{
+  min-height:100svh;display:flex;flex-direction:column;
+  color:var(--branco);padding:1.4rem 1.8rem;
+  background:radial-gradient(circle at 50% 0%, #461B6E 0%, #151524 68%);
+}
+.head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  max-width:1200px;width:100%;margin:0 auto 1.2rem;
+}
+.head h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(1.8rem,4.5vw,3.1rem);color:var(--ouro);
+  text-shadow:0 4px 0 var(--grafite-escuro);
+}
+.badge-vista{
+  font-family:var(--display);font-weight:800;font-size:clamp(1.1rem,2.4vw,1.6rem);
+  background:var(--vermelho);color:var(--branco);
+  border:4px solid var(--ouro);border-radius:99px;padding:.35rem 1.4rem;
+  box-shadow:0 6px 0 var(--grafite-escuro);
+}
+.painel{
+  flex:1;max-width:1200px;width:100%;margin:0 auto;
+  background:rgba(255,255,255,.06);border:4px solid rgba(255,210,63,.55);
+  border-radius:32px;padding:1.4rem 1.6rem;
+  box-shadow:0 18px 46px rgba(0,0,0,.5);
+}
+.lista{list-style:none;display:grid;gap:.7rem}
+.linha{
+  display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:1rem;
+  background:rgba(21,21,36,.86);border:3px solid rgba(255,255,255,.16);
+  border-radius:18px;padding:.7rem 1.2rem;
+  font-family:var(--display);font-weight:800;font-size:clamp(1.15rem,2.5vw,1.65rem);
+}
+.linha:nth-child(1){background:linear-gradient(90deg,rgba(255,210,63,.28),rgba(21,21,36,.9));border-color:var(--ouro)}
+.linha:nth-child(2){border-color:#D9E2EC}
+.linha:nth-child(3){border-color:#F49B33}
+.pos{text-align:center;color:var(--ouro)}
+.pts{color:var(--ouro);white-space:nowrap}
+.vazio{
+  text-align:center;padding:3rem 1rem;font-family:var(--display);
+  font-weight:800;font-size:1.4rem;color:var(--ouro);
+}
+.rodape{
+  max-width:1200px;width:100%;margin:1rem auto 0;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;
+  font-weight:800;opacity:.82;font-size:.95rem;
+}
+.dots{display:flex;gap:.5rem}
+.dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.28)}
+.dot.ativo{background:var(--ouro);transform:scale(1.25)}
+</style>
+</head>
+<body>
+<header class="head">
+  <h1>🏆 Ranking da Tropa · Lucas 7!</h1>
+  <span class="badge-vista" id="tituloVista">🏆 Ranking Geral</span>
+</header>
+
+<main class="painel">
+  <ol class="lista" id="listaRanking">
+    <li class="vazio">Carregando o placar da Arena de Jogos... 🎤</li>
+  </ol>
+</main>
+
+<footer class="rodape">
+  <span>Jogue pelo celular na Arena de Jogos e apareça no telão! 🎮</span>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  // Endpoint Serverless na Vercel conectado ao Supabase PostgreSQL
+  var API_URL = '/api/ranking';
+  var apiOk = true;
+
+  var VISTAS = [
+    { chave: 'geral', titulo: '🏆 Ranking Geral' },
+    { chave: 'runner', titulo: '🏃 Mussa Surf' },
+    { chave: 'sonic', titulo: '💨 Lucas Dash' },
+    { chave: 'flappy', titulo: '🚀 Voo do Mic' },
+    { chave: 'ritmo', titulo: '🎸 Batalha Hero' }
+  ];
+  var dados = { geral: [], porJogo: { runner: [], sonic: [], flappy: [], ritmo: [] } };
+  var idx = 0;
+
+  var lista = document.getElementById('listaRanking');
+  var tituloVista = document.getElementById('tituloVista');
+  var dots = document.getElementById('dots');
+
+  function desenhaDots() {
+    dots.innerHTML = '';
+    VISTAS.forEach(function (_, i) {
+      var s = document.createElement('span');
+      s.className = 'dot' + (i === idx ? ' ativo' : '');
+      dots.appendChild(s);
+    });
+  }
+
+  function render() {
+    var v = VISTAS[idx];
+    tituloVista.textContent = v.titulo;
+    desenhaDots();
+
+    if (!apiOk) {
+      lista.innerHTML = '<li class="vazio">Conecte o Supabase nas variáveis da Vercel 🛠️<br>(SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY)</li>';
+      return;
+    }
+
+    var itens = v.chave === 'geral' ? (dados.geral || []) : ((dados.porJogo && dados.porJogo[v.chave]) || []);
+    if (!itens.length) {
+      lista.innerHTML = '<li class="vazio">Nenhum placar ainda nesta categoria — bora jogar na Arena de Jogos! 🎤</li>';
+      return;
+    }
+
+    lista.innerHTML = '';
+    var medalhas = ['🥇', '🥈', '🥉'];
+    itens.forEach(function (item, i) {
+      var li = document.createElement('li');
+      li.className = 'linha';
+      var valor = v.chave === 'geral'
+        ? (item.total + ' pts')
+        : (item.pontos + ' pts' + (item.detalhe ? ' (' + item.detalhe + ')' : ''));
+      li.innerHTML =
+        '<span class="pos">' + (medalhas[i] || (i + 1) + 'º') + '</span>' +
+        '<span>' + String(item.nome || '').replace(/</g, '&lt;') + '</span>' +
+        '<span class="pts">' + valor + '</span>';
+      lista.appendChild(li);
+    });
+  }
+
+  function busca() {
+    fetch(API_URL + '?t=' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+      .then(function (d) {
+        if (d && d.ok) { apiOk = true; dados = d; render(); }
+        else { apiOk = false; render(); }
+      })
+      .catch(function () { apiOk = false; render(); });
+  }
+
+  busca();
+  setInterval(busca, 30000);
+  setInterval(function () { idx = (idx + 1) % VISTAS.length; render(); }, 10000);
+})();
+</script>
+</body>
+</html>

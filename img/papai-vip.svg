@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" role="img" aria-label="Camarote VIP dos Papais">
+  <rect width="300" height="300" fill="#151524"/>
+  <circle cx="150" cy="150" r="118" fill="#FFD23F" opacity=".16"/>
+  <!-- Coroa VIP -->
+  <polygon points="78,128 96,70 128,104 150,58 172,104 204,70 222,128" fill="#FFD23F" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="78" y="128" width="144" height="22" rx="8" fill="#E62E2D" stroke="#FFFFFF" stroke-width="5"/>
+  <!-- Óculos escuros dourados -->
+  <rect x="66" y="168" width="74" height="44" rx="14" fill="#232338" stroke="#FFD23F" stroke-width="6"/>
+  <rect x="160" y="168" width="74" height="44" rx="14" fill="#232338" stroke="#FFD23F" stroke-width="6"/>
+  <line x1="140" y1="186" x2="160" y2="186" stroke="#FFD23F" stroke-width="7"/>
+  <!-- Selo VIP -->
+  <rect x="86" y="232" width="128" height="38" rx="19" fill="#FFD23F"/>
+  <text x="150" y="259" text-anchor="middle" font-family="'Baloo 2', Arial, sans-serif" font-weight="800" font-size="24" fill="#181826">VIP 18+</text>
+</svg>
