@@ -51,7 +51,7 @@ create table if not exists public.ia_geracoes (
   aparelho text not null default '' check (char_length(aparelho) <= 32)
 );
 
--- 4. Confirmação de Presença (RSVP — aberto até 11/12/2026 às 22:00 BRT)
+-- 4. Confirmação de Presença (RSVP — aberto até 09/12/2026 às 23:00 BRT)
 create table if not exists public.presenca_confirmacoes (
   id bigint generated always as identity primary key,
   criado_em timestamptz not null default now(),
