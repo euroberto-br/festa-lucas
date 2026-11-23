@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#E62E2D">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Lucas Nery faz 7! 🎤 Cardápio da Festa — Tema Mussa</title>
+<meta name="description" content="Cardápio interativo da festa de 7 anos do Lucas Nery — dia 12/12/2026 às 13h. Pano na cabeça, bonézinho pra trás, é o Mussa Style!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tema-mussa.css">
+<script>window.addEventListener('error', function (e) { document.title = 'ERRO JS: ' + e.message; });</script>
+<style>
+/* ============================================================
+   AMBIENTE DO PALCO: notas musicais, estrelas + holofotes
+   ============================================================ */
+.palco-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.particula-som{
+  position:absolute;bottom:-60px;
+  font-family:var(--display);font-weight:800;
+  color:rgba(255,210,63,.55);
+  text-shadow:0 2px 10px rgba(0,0,0,.25);
+  animation:subir-som linear infinite;opacity:0;
+  user-select:none;
+}
+@keyframes subir-som{
+  0%{transform:translateY(0) translateX(0) rotate(-10deg);opacity:0}
+  10%{opacity:.65}
+  90%{opacity:.45}
+  100%{transform:translateY(-112vh) translateX(4vw) rotate(16deg);opacity:0}
+}
+.holofotes{
+  position:absolute;inset:0 0 auto 0;height:115vh;
+  background:
+    linear-gradient(108deg, transparent 12%, rgba(255,210,63,.22) 19%, transparent 26%),
+    linear-gradient(100deg, transparent 46%, rgba(255,255,255,.16) 52%, transparent 58%),
+    linear-gradient(92deg, transparent 74%, rgba(28,198,232,.18) 80%, transparent 86%);
+  mask-image:linear-gradient(180deg,#000 28%,transparent 96%);
+  -webkit-mask-image:linear-gradient(180deg,#000 28%,transparent 96%);
+}
+
+/* ============================================================
+   HERO — Palco de Abertura
+   ============================================================ */
+.hero{
+  position:relative;z-index:1;
+  min-height:100svh;
+  display:grid;place-items:center;
+  padding:2.5rem 1.2rem 5.4rem;
+}
+.hero-grade{
+  display:flex;flex-direction:column;align-items:center;gap:2.1rem;
+  max-width:1060px;width:100%;
+}
+.hero-texto{text-align:center;max-width:35rem}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--display);font-weight:800;
+  color:var(--grafite);background:var(--ouro);
+  border:3px solid var(--grafite);border-radius:99px;
+  padding:.32rem 1.15rem;
+  font-size:clamp(.84rem,3.1vw,1.02rem);letter-spacing:.03em;
+  box-shadow:0 5px 0 var(--grafite);
+  animation:balancar 4.5s ease-in-out infinite;
+}
+@keyframes balancar{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.hero h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2.45rem,10vw,5.8rem);
+  line-height:.95;margin:1.15rem 0 .65rem;color:var(--branco);
+  text-shadow:
+    0 .05em 0 var(--grafite),
+    0 .12em 0 rgba(13,13,22,.85),
+    0 .22em 1.6rem rgba(13,13,22,.45);
+}
+.hero h1 .sete{
+  display:inline-block;color:var(--ouro);
+  transform:rotate(7deg) scale(1.16);
+  text-shadow:0 .05em 0 var(--vermelho-escuro), 0 .12em 0 var(--grafite);
+  animation:pulinho 2.5s ease-in-out infinite;
+}
+@keyframes pulinho{0%,100%{transform:rotate(7deg) scale(1.16)}50%{transform:rotate(7deg) scale(1.26)}}
+.hero-data{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(.95rem,3.6vw,1.12rem);
+  color:var(--branco);background:rgba(21,21,36,.78);
+  border:3px solid var(--ouro);border-radius:99px;
+  padding:.35rem 1.1rem;margin-bottom:1rem;
+  box-shadow:0 4px 0 rgba(13,13,22,.5);
+}
+.hero-sub{
+  font-size:clamp(1rem,3.9vw,1.24rem);font-weight:800;color:var(--creme);
+  text-shadow:0 2px 8px rgba(13,13,22,.35);
+  max-width:34ch;margin:0 auto 1.6rem;
+}
+.hero-ctas{display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap}
+.cta .seta{animation:desce 1.6s ease-in-out infinite;display:inline-block}
+@keyframes desce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* retrato: Palco Mussa + foto do Lucas */
+.hero-retrato{position:relative;width:min(78vw,390px)}
+.hero-quadro{
+  width:100%;height:auto;border-radius:34px;
+  border:7px solid var(--branco);
+  box-shadow:0 11px 0 var(--grafite), 0 30px 55px rgba(13,13,22,.5);
+  transform:rotate(-2.2deg);
+  animation:flutuar 6s ease-in-out infinite;
+}
+.hero-bolha-lucas{
+  position:absolute;bottom:-24px;left:-22px;
+  width:42%;aspect-ratio:1;
+  animation:flutuar 5s ease-in-out infinite reverse;
+}
+.hero-bolha-lucas img{
+  width:100%;height:100%;object-fit:cover;border-radius:50%;
+  border:6px solid var(--ouro);
+  box-shadow:0 0 0 4px var(--grafite), 0 14px 30px rgba(13,13,22,.5);
+  background:var(--grafite);
+}
+.selo-7{
+  position:absolute;top:-16px;right:-14px;
+  width:clamp(74px,20vw,94px);aspect-ratio:1;border-radius:50%;
+  background:var(--ouro);border:5px solid var(--grafite);
+  display:grid;place-items:center;text-align:center;
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(.86rem,2.6vw,1.02rem);line-height:1.05;
+  color:var(--grafite);transform:rotate(9deg);
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.55), 0 6px 0 var(--grafite), 0 14px 22px rgba(13,13,22,.45);
+  animation:balancar 3.8s ease-in-out infinite;
+}
+@keyframes flutuar{0%,100%{transform:translateY(0) rotate(-2.2deg)}50%{transform:translateY(-12px) rotate(-1.2deg)}}
+
+@media (min-width:880px){
+  .hero-grade{flex-direction:row;justify-content:space-between;gap:3rem}
+  .hero-texto{text-align:left}
+  .hero-sub{margin-left:0}
+  .hero-ctas{justify-content:flex-start}
+}
+
+.onda-divisor{display:block;width:100%;height:64px;position:absolute;bottom:-2px;left:0}
+
+/* ============================================================
+   NAVEGAÇÃO GRUDADA (estilo barra de capítulos YouTube)
+   ============================================================ */
+.nav-cardapio{
+  position:sticky;top:0;z-index:50;
+  background:rgba(21,21,36,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:3px solid rgba(255,210,63,.45);
+  box-shadow:0 12px 26px rgba(9,9,18,.45);
+  padding:.58rem .65rem;
+}
+.nav-trilho{
+  display:flex;gap:.42rem;overflow-x:auto;scrollbar-width:none;
+  max-width:1120px;margin:0 auto;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-trilho::-webkit-scrollbar{display:none}
+.nav-chip{
+  flex:0 0 auto;
+  font-family:var(--display);font-weight:700;font-size:.86rem;
+  color:var(--branco);text-decoration:none;
+  background:rgba(255,255,255,.12);
+  border:2px solid rgba(255,255,255,.32);
+  border-radius:99px;padding:.3rem .88rem;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.18), 0 3px 0 rgba(9,9,18,.5);
+  transition:background .2s ease, transform .2s ease;
+  white-space:nowrap;
+}
+.nav-chip:hover{background:rgba(255,255,255,.26);transform:translateY(-2px)}
+.nav-chip:focus-visible{outline:3px solid var(--ouro);outline-offset:2px}
+.nav-chip--bolo{background:var(--ouro);color:var(--grafite);border-color:var(--branco)}
+.nav-chip--fotos{background:var(--rosa);color:var(--branco);border-color:var(--branco)}
+.nav-chip--capsula{background:var(--verde);color:var(--grafite);border-color:var(--branco)}
+.nav-chip--ia{background:var(--ciano);color:var(--grafite);border-color:var(--branco)}
+.nav-chip--jogos{background:var(--roxo);color:var(--branco);border-color:var(--branco)}
+
+/* ============================================================
+   CARDÁPIO — Show / Batalha de Rima (ROUND 01 -> ROUND 13)
+   ============================================================ */
+.cardapio{
+  position:relative;z-index:1;
+  max-width:1060px;margin:0 auto;
+  padding:3.6rem 1.1rem 2.5rem;
+  display:flex;flex-direction:column;gap:2.6rem;
+}
+.cardapio-titulo{text-align:center;color:var(--branco)}
+.cardapio-titulo .mini{
+  font-family:var(--display);font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  font-size:.84rem;color:var(--ouro);
+}
+.cardapio-titulo h2{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2rem,8vw,3.3rem);
+  text-shadow:0 4px 0 rgba(13,13,22,.55);
+}
+
+.curso{scroll-margin-top:78px}
+.curso-card{
+  --acento:var(--vermelho);
+  --edge:var(--edge-clara);
+  --gloss:rgba(255,255,255,.95);
+  --sombra-int:rgba(24,24,38,.07);
+  --ambiente:rgba(13,13,22,.42);
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:1.35rem;
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
+  border:4px solid var(--grafite);
+  border-radius:36px;
+  padding:2.1rem 1.35rem 2.15rem;
+  box-shadow:
+    inset 0 3px 0 var(--gloss),
+    inset 0 -7px 0 var(--sombra-int),
+    0 10px 0 var(--grafite),
+    0 28px 46px var(--ambiente);
+  opacity:0;transform:translateY(38px) rotate(-.6deg);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.curso-card.visivel{
+  opacity:1;transform:translateY(0) rotate(0);
+  transition:opacity .7s ease, transform .45s ease, box-shadow .45s ease;
+}
+@media (hover:hover) and (pointer:fine){
+  .curso-card.visivel:hover{
+    transform:translateY(-5px);
+    box-shadow:
+      inset 0 3px 0 var(--gloss),
+      inset 0 -7px 0 var(--sombra-int),
+      0 15px 0 var(--grafite),
+      0 36px 58px var(--ambiente);
+  }
+}
+
+.round-badge{
+  position:absolute;top:-17px;left:22px;
+  font-family:var(--display);font-weight:800;font-size:.86rem;letter-spacing:.05em;
+  background:var(--grafite);color:var(--ouro);
+  border:3px solid var(--ouro);
+  padding:.22rem .88rem;border-radius:99px;
+  box-shadow:0 4px 0 var(--edge-escura), 0 9px 14px rgba(13,13,22,.35);
+}
+
+/* vitrine do personagem */
+.curso-vitrine{position:relative;flex:0 0 auto;width:min(56vw,215px)}
+.bolha-perso{
+  position:relative;
+  width:100%;aspect-ratio:1;border-radius:50%;
+  background:var(--branco);
+  border:6px solid var(--acento);
+  box-shadow:0 0 0 4px var(--grafite), 0 10px 0 rgba(13,13,22,.18), 0 20px 34px rgba(13,13,22,.28);
+  overflow:hidden;display:grid;place-items:center;
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+  transition:transform .2s ease;
+}
+.bolha-perso::after{
+  content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+    radial-gradient(58% 36% at 30% 16%, rgba(255,255,255,.45), rgba(255,255,255,0) 62%),
+    radial-gradient(72% 46% at 50% 110%, rgba(13,13,22,.22), rgba(13,13,22,0) 55%);
+}
+.bolha-perso img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.curso-card.visivel .bolha-perso{animation:flutua-perso 5.6s ease-in-out infinite}
+@keyframes flutua-perso{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.bolha-perso.mexe{animation:sacode .52s ease !important}
+@keyframes sacode{
+  0%,100%{transform:rotate(0) scale(1)}
+  25%{transform:rotate(-8deg) scale(1.07)}
+  55%{transform:rotate(7deg) scale(1.07)}
+  80%{transform:rotate(-3deg) scale(1.02)}
+}
+.perso-tag{
+  position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);
+  font-family:var(--display);font-weight:800;font-size:.78rem;
+  background:var(--acento);color:var(--branco);
+  border:2.5px solid var(--grafite);
+  padding:.18rem .82rem;border-radius:99px;white-space:nowrap;
+  box-shadow:0 3px 0 var(--grafite), 0 8px 14px rgba(13,13,22,.26);
+}
+.perso-tag--escuro{color:var(--grafite)}
+.prato-sticker{
+  position:absolute;top:-14px;right:-16px;
+  width:clamp(66px,18vw,84px);aspect-ratio:1;
+  background:var(--branco);border-radius:50%;
+  border:3.5px dashed var(--acento);
+  display:grid;place-items:center;padding:9px;
+  box-shadow:0 5px 0 rgba(13,13,22,.18), 0 12px 18px rgba(13,13,22,.25);
+  transform:rotate(8deg);
+}
+.curso-card.visivel .prato-sticker{animation:balancar 5s ease-in-out infinite}
+
+/* texto do curso */
+.curso-info{max-width:56ch}
+.eyebrow{
+  font-family:var(--display);font-weight:800;
+  color:var(--acento);letter-spacing:.12em;text-transform:uppercase;
+  font-size:.78rem;
+}
+.curso-info h2{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(1.75rem,7vw,2.4rem);
+  line-height:1.05;margin:.15rem 0 .5rem;
+  text-shadow:.13rem .13rem 0 color-mix(in srgb, var(--acento) 26%, transparent);
+}
+.desc{font-size:1.02rem;font-weight:700}
+.itens{
+  list-style:none;display:flex;flex-wrap:wrap;justify-content:center;
+  gap:.44rem;margin-top:1rem;
+}
+.itens li{
+  font-size:.86rem;font-weight:800;
+  background:var(--branco);color:var(--grafite);
+  border:2px solid var(--acento);
+  padding:.3rem .82rem;border-radius:99px;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.9),
+    0 3px 0 color-mix(in srgb, var(--acento) 42%, transparent);
+}
+.itens li.top{background:var(--ouro);border-color:var(--grafite)}
+.nota{
+  display:inline-block;margin-top:1.1rem;
+  font-size:.86rem;font-weight:800;
+  background:rgba(24,24,38,.08);border-radius:14px;
+  padding:.5rem 1rem;
+  box-shadow:inset 0 2px 5px rgba(24,24,38,.16), inset 0 -1px 0 rgba(255,255,255,.7);
+}
+
+@media (min-width:780px){
+  .curso-card{
+    flex-direction:row;text-align:left;
+    gap:2.6rem;padding:2.4rem 2.6rem;
+  }
+  .curso:nth-of-type(even) .curso-card{flex-direction:row-reverse}
+  .curso-info{flex:1}
+  .itens{justify-content:flex-start}
+}
+
+/* --- variante: Camarote VIP dos Papais (18+) --- */
+.curso-card--papais{
+  background:linear-gradient(180deg,#232338 0%,#141422 100%);
+  border-color:var(--ouro);
+  color:#F8EBD2;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.12), 0 10px 0 #08080F, 0 28px 46px rgba(0,0,0,.55);
+}
+.curso-card--papais h2{color:var(--ouro);text-shadow:.14rem .14rem 0 rgba(0,0,0,.45)}
+.curso-card--papais .eyebrow{color:var(--ouro)}
+.curso-card--papais .desc{color:#F8EBD2}
+.curso-card--papais .itens li{
+  background:rgba(255,255,255,.1);color:#F8EBD2;border-color:rgba(255,210,63,.45);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.14), 0 3px 0 rgba(0,0,0,.35);
+}
+.curso-card--papais .nota{
+  background:rgba(0,0,0,.32);color:var(--ouro);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.4), inset 0 -1px 0 rgba(255,255,255,.1);
+}
+.curso-card--papais .round-badge{background:var(--ouro);color:var(--grafite);border-color:var(--branco)}
+.curso-card--papais .bolha-perso,.curso-card--papais .prato-sticker{background:#1D1D30}
+
+/* --- variante: BOLO, o gran finale (7 velas!) --- */
+.curso-card--bolo{
+  flex-direction:column !important;text-align:center;
+  background:linear-gradient(165deg,#FFF9E6,#FFE699);
+  border:5px dashed var(--vermelho);
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.8), 0 10px 0 var(--grafite), 0 28px 50px rgba(13,13,22,.48);
+}
+.curso-card--bolo .itens{justify-content:center}
+.curso-card--bolo h2{font-size:clamp(2rem,8.5vw,3rem)}
+.curso-card--bolo .curso-info{max-width:60ch}
+.faixa-parabens{
+  font-family:var(--display);font-weight:800;
+  display:inline-block;
+  background:var(--vermelho);color:var(--branco);
+  border:3px solid var(--grafite);
+  padding:.35rem 1.35rem;border-radius:99px;
+  transform:rotate(-2deg);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.32), 0 5px 0 var(--grafite), 0 12px 20px rgba(13,13,22,.28);
+  font-size:clamp(.95rem,3.6vw,1.15rem);
+  margin-bottom:1rem;
+}
+.velas{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:1rem 0 .5rem;flex-wrap:wrap}
+.vela{width:12px;height:46px;border-radius:6px;position:relative;border:2px solid var(--grafite)}
+.vela:nth-child(1){background:var(--vermelho)}
+.vela:nth-child(2){background:var(--ouro);height:54px}
+.vela:nth-child(3){background:var(--ciano)}
+.vela:nth-child(4){background:var(--roxo);height:60px}
+.vela:nth-child(5){background:var(--verde)}
+.vela:nth-child(6){background:var(--laranja);height:54px}
+.vela:nth-child(7){background:var(--rosa)}
+.vela::before{
+  content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:3px;height:8px;background:var(--grafite);border-radius:2px;
+}
+.vela::after{
+  content:"";position:absolute;top:-24px;left:50%;transform:translateX(-50%) scale(0);
+  width:15px;height:21px;
+  background:radial-gradient(circle at 50% 72%, #FFF5B8 28%, var(--laranja) 64%, transparent 72%);
+  border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+  transition:transform .5s ease .25s;
+}
+.festejar .vela::after{transform:translateX(-50%) scale(1);animation:tremula 1.05s ease-in-out infinite alternate}
+.festejar .vela:nth-child(even)::after{animation-delay:.22s}
+.festejar .vela:nth-child(3n)::after{animation-delay:.45s}
+@keyframes tremula{from{transform:translateX(-50%) scale(1) rotate(-4deg)}to{transform:translateX(-52%) scale(1.12) rotate(4deg)}}
+
+/* ============================================================
+   CAÇA AOS 7 MICROFONES DOURADOS
+   ============================================================ */
+.mic-escondido{
+  position:absolute;width:48px;height:56px;
+  background:none;border:none;padding:0;
+  z-index:3;
+  filter:drop-shadow(0 4px 8px rgba(13,13,22,.4));
+  animation:flutua-mic 4s ease-in-out infinite;
+  transition:transform .32s ease, opacity .42s ease;
+}
+@keyframes flutua-mic{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-8px) rotate(8deg)}}
+.mic-escondido:hover{transform:scale(1.18)}
+.mic-escondido:focus-visible{outline:3px solid var(--ouro);outline-offset:3px;border-radius:50%}
+.mic-escondido.achado{transform:scale(0) rotate(40deg);opacity:0;pointer-events:none}
+
+.contador-mics{
+  position:fixed;bottom:14px;left:12px;z-index:60;
+  display:flex;align-items:center;gap:.45rem;
+  font-family:var(--display);font-weight:800;font-size:.92rem;
+  background:rgba(21,21,36,.92);color:var(--ouro);
+  border:3px solid var(--ouro);
+  border-radius:99px;padding:.34rem .9rem;
+  backdrop-filter:blur(6px);
+  box-shadow:0 4px 0 var(--edge-escura), 0 10px 18px rgba(9,9,18,.45);
+}
+.contador-mics svg{width:22px;height:26px}
+.reinicia-mics{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--ouro);color:var(--grafite);
+  border:2px solid var(--grafite);
+  font-size:1rem;line-height:1;font-weight:800;
+  display:grid;place-items:center;padding:0;
+  margin-left:.15rem;
+  transition:transform .2s ease;
+}
+.reinicia-mics:hover{transform:rotate(-90deg)}
+.reinicia-mics:focus-visible{outline:3px solid var(--branco);outline-offset:2px}
+
+/* ============================================================
+   BOTÃO DE BATIDA / MÚSICA
+   ============================================================ */
+.btn-musica{
+  position:fixed;bottom:14px;right:12px;z-index:60;
+  width:58px;height:58px;border-radius:50%;
+  background:var(--vermelho);color:var(--branco);border:4px solid var(--ouro);
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.35), 0 6px 0 var(--grafite), 0 12px 24px rgba(13,13,22,.45);
+  display:grid;place-items:center;
+  font-size:1.5rem;line-height:1;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn-musica:hover{transform:translateY(2px);box-shadow:inset 0 3px 0 rgba(255,255,255,.35), 0 4px 0 var(--grafite), 0 10px 20px rgba(13,13,22,.45)}
+.btn-musica:focus-visible{outline:4px solid var(--branco);outline-offset:3px}
+.btn-musica.tocando{animation:bate 0.65s ease-in-out infinite;background:var(--ouro);color:var(--grafite);border-color:var(--grafite)}
+@keyframes bate{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.12) rotate(5deg)}}
+
+/* ============================================================
+   TRILHA DO SHOW (barra de progresso estilo Player YouTube / DJ)
+   ============================================================ */
+.trilha{display:none}
+@media (min-width:1180px){
+  .trilha{
+    position:fixed;right:24px;top:50%;transform:translateY(-50%);
+    z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .trilha-linha{
+    position:relative;width:6px;height:56vh;border-radius:6px;
+    background:rgba(255,255,255,.22);
+    border:1px solid rgba(255,255,255,.3);
+  }
+  .trilha-progresso{
+    position:absolute;left:0;top:0;width:100%;height:0;border-radius:6px;
+    background:linear-gradient(180deg, var(--ouro), var(--vermelho));
+  }
+  .trilha-cursor{
+    position:absolute;left:50%;top:0;transform:translate(-50%,-50%) rotate(-12deg);
+    width:44px;max-width:none;height:auto;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,.45));
+    transition:top .16s ease-out;
+  }
+  .trilha-label{
+    font-family:var(--display);font-weight:800;font-size:.8rem;color:var(--ouro);
+    background:rgba(21,21,36,.85);border:2px solid var(--ouro);
+    padding:.16rem .65rem;border-radius:99px;
+  }
+}
+
+/* ============================================================
+   RODAPÉ DO SHOW
+   ============================================================ */
+.rodape-show{
+  position:relative;z-index:1;text-align:center;color:var(--branco);
+  padding:3.2rem 1.3rem 5.4rem;
+}
+.rodape-show .cenario{width:min(420px,84%);margin:0 auto 1.4rem;opacity:.95}
+.rodape-show h2{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(1.5rem,6.5vw,2.4rem);margin-bottom:.5rem;
+}
+.rodape-show p{max-width:48ch;margin:0 auto;font-weight:700;opacity:.94}
+.rodape-show .bordao{
+  font-family:var(--display);font-weight:800;color:var(--ouro);
+  font-size:1.12rem;letter-spacing:.04em;margin-top:1.35rem;
+}
+.rodape-show .credito{font-size:.76rem;opacity:.62;margin-top:1.8rem;font-weight:700}
+
+#confete{position:fixed;inset:0;z-index:65;pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  .curso-card{opacity:1;transform:none}
+  .particula-som{display:none}
+  .vela::after{transform:translateX(-50%) scale(1)}
+}
+.sem-animacao .curso-card{opacity:1;transform:none}
+.sem-animacao .vela::after{transform:translateX(-50%) scale(1)}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#conteudo-cardapio">Pular para o cardápio</a>
+
+<div class="palco-bg" id="palcoBg" aria-hidden="true"><div class="holofotes"></div></div>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero" id="topo">
+  <div class="hero-grade">
+    <div class="hero-texto">
+      <p class="hero-eyebrow">🎤 Pano na cabeça, bonézinho pra trás — Mussa Style!</p>
+      <h1>Lucas Nery faz <span class="sete">7!</span></h1>
+      <p class="hero-data">📅 12/12/2026 · 🕐 13:00 · 📍 Guimi Buffet (Aclimação)</p>
+      <p class="hero-sub">Faz o sinalzinho do M e entra nessa batalha de sabores! Confira o cardápio oficial da festa da Tropa do Lucas.</p>
+      <div class="hero-ctas">
+        <a class="cta" href="#entrada">Soltar o cardápio <span class="seta">🎤</span></a>
+        <a class="cta cta--jogos" href="jogos.html">Arena de Jogos <span class="seta">🎮</span></a>
+        <a class="cta cta--fotos" href="fotos.html">Fotos dos inscritos <span class="seta">📸</span></a>
+        <a class="cta cta--capsula" href="capsula.html">Mande sua rima <span class="seta">📼</span></a>
+        <a class="cta cta--ia" href="mussa.html">Vire do Mussaverso <span class="seta">🎨</span></a>
+      </div>
+    </div>
+    <div class="hero-retrato">
+      <img class="hero-quadro" src="img/hero-mussa.svg" alt="Palco do Mussa Style comemorando os 7 anos do Lucas Nery" width="600" height="680">
+      <div class="hero-bolha-lucas">
+        <img src="img/lucas.jpg" alt="Lucas Nery, o aniversariante de 7 anos">
+      </div>
+      <span class="selo-7">7<br>anos</span>
+    </div>
+  </div>
+  <svg class="onda-divisor" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,44 L120,22 L240,48 L360,18 L480,46 L600,24 L720,50 L840,20 L960,46 L1080,22 L1200,48 L1320,24 L1440,42 L1440,70 L0,70 Z" fill="rgba(21,21,36,.24)"/>
+    <path d="M0,56 L180,36 L360,58 L540,34 L720,58 L900,36 L1080,58 L1260,38 L1440,54 L1440,70 L0,70 Z" fill="rgba(21,21,36,.18)"/>
+  </svg>
+</header>
+
+<!-- ==================== NAVEGAÇÃO ==================== -->
+<nav class="nav-cardapio" aria-label="Categorias do cardápio">
+  <div class="nav-trilho">
+    <a class="nav-chip" href="index.html?festa=1">← Início</a>
+    <a class="nav-chip nav-chip--bolo" href="#local">📍 Como Chegar</a>
+    <a class="nav-chip" href="#entrada">Entrada</a>
+    <a class="nav-chip" href="#salgados">Salgados</a>
+    <a class="nav-chip" href="#fingerfoods">Finger Foods</a>
+    <a class="nav-chip" href="#lanchonete">Lanchonete</a>
+    <a class="nav-chip" href="#picnic">Pic-nic Kids</a>
+    <a class="nav-chip" href="#salada">Salada</a>
+    <a class="nav-chip" href="#pratoquente">Prato Quente</a>
+    <a class="nav-chip" href="#sobremesas">Sobremesas</a>
+    <a class="nav-chip" href="#docinhos">Docinhos</a>
+    <a class="nav-chip" href="#bebidas">Bebidas</a>
+    <a class="nav-chip" href="#papais">Camarote 18+</a>
+    <a class="nav-chip nav-chip--bolo" href="#bolo">🎂 Bolo</a>
+    <a class="nav-chip" href="#tchau">Encerramento</a>
+    <a class="nav-chip nav-chip--jogos" href="jogos.html">🎮 Arena de Jogos</a>
+    <a class="nav-chip nav-chip--fotos" href="fotos.html">📸 Fotos</a>
+    <a class="nav-chip nav-chip--capsula" href="capsula.html">📼 Cápsula</a>
+    <a class="nav-chip nav-chip--ia" href="mussa.html">🎨 Mussaverso IA</a>
+  </div>
+</nav>
+
+<!-- ==================== CARDÁPIO (13 ROUNDS) ==================== -->
+<main class="cardapio" id="conteudo-cardapio">
+  <div class="cardapio-titulo">
+    <p class="mini">Solta o beat que o show começou</p>
+    <h2>O cardápio da festa 🎤</h2>
+  </div>
+
+  <!-- ROUND 01: ENTRADA -->
+  <article class="curso" id="entrada">
+    <div class="curso-card" style="--acento:var(--laranja)">
+      <span class="round-badge">ROUND 01</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/malucao.svg" alt="Malucão abrindo o show"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M40 66 L100 66 L91 122 L49 122 Z" fill="#E62E2D" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M44 76 L96 76 L94 88 L46 88 Z" fill="rgba(255,255,255,.35)"/>
+            <rect x="50" y="22" width="13" height="52" rx="6.5" fill="#FFD23F" stroke="#B07A00" stroke-width="4" transform="rotate(-8 56 48)"/>
+            <rect x="64" y="16" width="13" height="58" rx="6.5" fill="#FFE066" stroke="#B07A00" stroke-width="4"/>
+            <rect x="78" y="22" width="13" height="52" rx="6.5" fill="#FFD23F" stroke="#B07A00" stroke-width="4" transform="rotate(8 84 48)"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Malucão abre o show</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Aquecendo o microfone</p>
+        <h2>Entrada</h2>
+        <p class="desc">Para abrir o apetite no melhor estilo Festa Boteco:</p>
+        <ul class="itens">
+          <li class="top">Cuscuz paulista veg com vinagrete e couve crisp</li>
+          <li class="top">Mandioca com carne seca ao cream cheese</li>
+        </ul>
+      </div>
+      <button class="mic-escondido" data-mic style="top:-20px;left:8%" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 02: SALGADOS (23 variedades) -->
+  <article class="curso" id="salgados">
+    <div class="curso-card" style="--acento:var(--vermelho)">
+      <span class="round-badge">ROUND 02</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/mussa-classico.svg" alt="Mussa Clássico"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M70 16 C48 44 34 74 36 98 C38 114 52 124 70 124 C88 124 102 114 104 98 C106 74 92 44 70 16 Z" fill="#F5A623" stroke="#9C5D06" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M40 102 C48 112 58 118 70 118 C82 118 92 112 100 102" fill="none" stroke="#9C5D06" stroke-width="5" stroke-linecap="round"/>
+            <path d="M60 34 C54 44 49 54 47 64" stroke="rgba(255,255,255,.6)" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Mussa na voz!</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Os hits da festa</p>
+        <h2>Salgados</h2>
+        <p class="desc">Uma playlist completa de 23 salgadinhos fresquinhos passando no repeat a festa inteira:</p>
+        <ul class="itens">
+          <li class="top">Coxinha de frango</li>
+          <li class="top">Coxinha de costelinha ao barbecue</li>
+          <li>Bolinha de queijo</li>
+          <li>Bolinha de cenoura com gorgonzola</li>
+          <li>Quiche de peito de peru</li>
+          <li>Croquete de carne</li>
+          <li>Esfiha de carne</li>
+          <li>Esfiha de frango</li>
+          <li>Empada de palmito</li>
+          <li>Pastel de brócolis</li>
+          <li>Pastel de calabresa com queijo</li>
+          <li>Bolinha de mandioquinha com provolone</li>
+          <li>Kibe de carne</li>
+          <li>Espetinho de frango</li>
+          <li>Mini pizza</li>
+          <li>Tartelete de catupiry com tomate seco e rúcula</li>
+          <li>Risolis de presunto e queijo</li>
+          <li>Risolis de palmito</li>
+          <li>Croquete de bacalhau</li>
+          <li>Bolinha de carne seca com abóbora</li>
+          <li>Crespim de milho com queijo</li>
+          <li>Bolinho de pernil</li>
+          <li>Bolinho de cheddar com bacon</li>
+          <li>Bolinha de catupiry com damasco</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- ROUND 03: FINGER FOODS -->
+  <article class="curso" id="fingerfoods">
+    <div class="curso-card" style="--acento:var(--rosa)">
+      <span class="round-badge">ROUND 03</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/mussa-mina.svg" alt="Mussa Mina"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <line x1="70" y1="14" x2="70" y2="126" stroke="#8A5A33" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="70" cy="44" r="17" fill="#E62E2D" stroke="#181826" stroke-width="4"/>
+            <circle cx="70" cy="78" r="16" fill="#FFF6E0" stroke="#C5A770" stroke-width="4"/>
+            <circle cx="70" cy="110" r="15" fill="#3EC96B" stroke="#1E7D3F" stroke-width="4"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Mussa Mina</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Estilo gourmet</p>
+        <h2>Finger Foods</h2>
+        <p class="desc">Mordidinhas cheias de estilo para curtir sem perder um segundo da batalha:</p>
+        <ul class="itens">
+          <li class="top">Camarão com maionese de wasabi</li>
+          <li>Batatinhas com cheddar e bacon</li>
+          <li>Espetinho caprese com molho pesto</li>
+          <li>Espetinho de queijo coalho com calabresa e cebolinha</li>
+          <li>Mini kafta ao molho tahine</li>
+          <li>Espetinho de berinjela com tomate seco e iogurte com hortelã</li>
+          <li>Dadinho de tapioca com geleia de jalapeño</li>
+          <li>Bolinho de feijoada com molho de pimenta</li>
+          <li>Mini dog gourmet com barbecue e batata palha</li>
+          <li>Coxinha creme com maionese de fumaça</li>
+        </ul>
+      </div>
+      <button class="mic-escondido" data-mic style="bottom:-18px;right:6%" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 04: LANCHONETE -->
+  <article class="curso" id="lanchonete">
+    <div class="curso-card" style="--acento:var(--ouro-escuro)">
+      <span class="round-badge">ROUND 04</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/mussa-mic.svg" alt="Mussa no microfone"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M32 64 C32 34 108 34 108 64 Z" fill="#F5A623" stroke="#9C5D06" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M34 64 L106 64 L106 68 L98 78 L88 68 L78 78 L68 68 L58 78 L48 68 L42 78 L34 68 Z" fill="#3EC96B" stroke="#1E7D3F" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="34" y="76" width="72" height="14" rx="7" fill="#8C5A3B" stroke="#4D2E1A" stroke-width="4"/>
+            <path d="M36 94 L104 94 C104 110 36 110 36 94 Z" fill="#F5A623" stroke="#9C5D06" stroke-width="4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Batalha do Lanche</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Cantinho da lanchonete</p>
+        <h2>Lanchonete</h2>
+        <p class="desc">A lanchonete oficial dos inscritos, turbinada para todas as idades:</p>
+        <ul class="itens">
+          <li class="top">X-burguer</li>
+          <li>Crepe de chocolate com morango</li>
+          <li>Crepe de presunto e queijo</li>
+          <li>Mini hot dog</li>
+          <li>Pipoca</li>
+          <li>Suco de uva</li>
+          <li>Suco de laranja</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- ROUND 05: PIC-NIC KIDS -->
+  <article class="curso" id="picnic">
+    <div class="curso-card" style="--acento:var(--ciano)">
+      <span class="round-badge">ROUND 05</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/baby-mussa.svg" alt="Baby Mussa"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M34 62 L106 62 L98 118 L42 118 Z" fill="#B07B4F" stroke="#6E4420" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M34 62 L106 62 L102 76 L38 76 Z" fill="#8A5A33"/>
+            <path d="M46 62 C46 30 94 30 94 62" fill="none" stroke="#6E4420" stroke-width="7" stroke-linecap="round"/>
+            <path d="M42 88 L98 88 M46 102 L94 102 M56 76 L54 118 M70 76 L70 118 M84 76 L86 118" stroke="rgba(255,255,255,.35)" stroke-width="4"/>
+          </svg>
+        </div>
+        <span class="perso-tag perso-tag--escuro">Baby Mussa Kids</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Cardápio da garotada</p>
+        <h2>Pic-nic Kids</h2>
+        <p class="desc">Feito sob medida para a tropa pequena recarregar a energia entre as brincadeiras:</p>
+        <ul class="itens">
+          <li class="top">Batata smile</li>
+          <li>Coxinha</li>
+          <li>Bolinha de queijo</li>
+          <li>Enroladinho de salsicha</li>
+          <li>Pipoca</li>
+          <li>Suco de uva</li>
+          <li>Suco de laranja</li>
+        </ul>
+      </div>
+      <button class="mic-escondido" data-mic style="top:34%;right:-14px" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 06: SALADA -->
+  <article class="curso" id="salada">
+    <div class="curso-card" style="--acento:var(--verde)">
+      <span class="round-badge">ROUND 06</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/rival-palhaco.svg" alt="Rival da Batalha de Rima"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <ellipse cx="52" cy="62" rx="16" ry="12" fill="#3EC96B" stroke="#1E7D3F" stroke-width="4"/>
+            <ellipse cx="76" cy="54" rx="18" ry="13" fill="#6BE092" stroke="#1E7D3F" stroke-width="4"/>
+            <ellipse cx="96" cy="64" rx="13" ry="10" fill="#2FB359" stroke="#1E7D3F" stroke-width="4"/>
+            <rect x="56" y="64" width="30" height="6" rx="3" fill="#FF7A1A" stroke="#A64800" stroke-width="3" transform="rotate(-10 71 67)"/>
+            <path d="M30 72 L110 72 C110 102 92 118 70 118 C48 118 30 102 30 72 Z" fill="#1CC6E8" stroke="#181826" stroke-width="5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="perso-tag perso-tag--escuro">Pausa na batalha</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Fôlego leve</p>
+        <h2>Salada</h2>
+        <p class="desc">Mix de folhas verdes, manga e cenoura ralada com molho de mostarda e mel — refrescante como uma rima no tempo certo.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- ROUND 07: PRATO QUENTE -->
+  <article class="curso" id="pratoquente">
+    <div class="curso-card" style="--acento:var(--vermelho)">
+      <span class="round-badge">ROUND 07</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/mussa-classico.svg" alt="Mussa apresentando o prato principal"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M56 22 C51 32 61 36 56 46 M84 18 C79 28 89 32 84 42" stroke="#9AB6CE" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="70" cy="96" rx="52" ry="16" fill="#fff" stroke="#181826" stroke-width="4"/>
+            <circle cx="48" cy="80" r="18" fill="#FFE9B8" stroke="#C99414" stroke-width="4"/>
+            <circle cx="92" cy="80" r="18" fill="#FFE9B8" stroke="#C99414" stroke-width="4"/>
+            <circle cx="70" cy="72" r="20" fill="#FFF1CC" stroke="#C99414" stroke-width="4"/>
+            <path d="M34 76 Q70 52 106 76" stroke="#E62E2D" stroke-width="8" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Drop Principal</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">O prato principal · Festa Boteco</p>
+        <h2>Prato Quente</h2>
+        <p class="desc"><strong>Feijoada light</strong> caprichada, o refrão mais esperado do almoço — servida com acompanhamentos completos:</p>
+        <ul class="itens">
+          <li class="top">Feijoada light</li>
+          <li>Arroz branco</li>
+          <li>Couve na manteiga</li>
+          <li>Farofa de mandioca flocada</li>
+          <li>Banana da terra salteada no melaço de cana</li>
+          <li>Torresmo</li>
+        </ul>
+      </div>
+      <button class="mic-escondido" data-mic style="bottom:-18px;left:12%" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 08: SOBREMESAS -->
+  <article class="curso" id="sobremesas">
+    <div class="curso-card" style="--acento:var(--laranja)">
+      <span class="round-badge">ROUND 08</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/mussa-mina.svg" alt="Mussa Mina nas sobremesas"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <rect x="42" y="16" width="13" height="62" rx="6.5" fill="#D89720" stroke="#8F5E0C" stroke-width="4" transform="rotate(-9 48 47)"/>
+            <rect x="63" y="10" width="13" height="68" rx="6.5" fill="#E0A32E" stroke="#8F5E0C" stroke-width="4"/>
+            <rect x="84" y="16" width="13" height="62" rx="6.5" fill="#D89720" stroke="#8F5E0C" stroke-width="4" transform="rotate(9 90 47)"/>
+            <path d="M40 88 L100 88 L92 124 L48 124 Z" fill="#F44E8B" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+            <ellipse cx="70" cy="88" rx="31" ry="8" fill="#6B4226" stroke="#181826" stroke-width="3"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Bônus Doce</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">A recompensa doce</p>
+        <h2>Sobremesas</h2>
+        <p class="desc">Depois dos salgados, o beat vira doce e ninguém fica parado:</p>
+        <ul class="itens">
+          <li class="top">Churros gourmet com doce de leite e paçoca</li>
+          <li>Pastelzinho de chocolate</li>
+          <li>Pudim de leite condensado com chantilly</li>
+          <li>Carrinho de sorvete com 10 sabores de picolé</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- ROUND 09: DOCINHOS -->
+  <article class="curso" id="docinhos">
+    <div class="curso-card" style="--acento:var(--roxo)">
+      <span class="round-badge">ROUND 09</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/baby-mussa.svg" alt="Baby Mussa na mesa de docinhos"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <circle cx="70" cy="66" r="34" fill="#6B4226" stroke="#181826" stroke-width="5"/>
+            <path d="M50 52 l10 4 M64 42 l8 -3 M82 50 l9 4 M56 72 l9 4 M78 72 l10 -3 M68 60 l8 3" stroke="#FFD23F" stroke-width="4" stroke-linecap="round"/>
+            <path d="M42 92 L98 92 L90 124 L50 124 Z" fill="#8A4FFF" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="perso-tag">Top 10 Docinhos</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Mesa de doces</p>
+        <h2>Docinhos</h2>
+        <p class="desc">O Top 10 mais disputado do palco, do brigadeiro clássico ao ouro branco:</p>
+        <ul class="itens">
+          <li class="top">Brigadeiro</li>
+          <li>Beijinho</li>
+          <li>Bicho de pé</li>
+          <li>Brigadeiro Nescauball</li>
+          <li>Leite Ninho</li>
+          <li>Ouro branco crocante</li>
+          <li>Sensação</li>
+          <li>Cajuzinho</li>
+          <li>Negresco</li>
+          <li>Docinho de limão</li>
+        </ul>
+      </div>
+      <button class="mic-escondido" data-mic style="top:-18px;right:14%" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 10: BEBIDAS -->
+  <article class="curso" id="bebidas">
+    <div class="curso-card" style="--acento:var(--azul)">
+      <span class="round-badge">ROUND 10</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/dj-mussa.svg" alt="DJ na pick-up soltando os refrescos"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M82 14 L96 20 L80 62 L68 56 Z" fill="#E62E2D" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M44 42 L100 42 L92 124 L52 124 Z" fill="rgba(200,236,250,.75)" stroke="#181826" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M48 66 L96 66 L91 118 L53 118 Z" fill="#FF7A1A"/>
+            <circle cx="42" cy="40" r="13" fill="#FFD23F" stroke="#181826" stroke-width="4"/>
+          </svg>
+        </div>
+        <span class="perso-tag">DJ na Pick-up</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Para hidratar a voz</p>
+        <h2>Bebidas</h2>
+        <p class="desc">Refrescos geladinhos para cantar parabéns e rimar até o final:</p>
+        <ul class="itens">
+          <li class="top">Refrigerante normal</li>
+          <li class="top">Refrigerante zero</li>
+          <li>Água mineral</li>
+          <li>Água com gás</li>
+          <li>Suco de uva (Lanchonete / Pic-nic)</li>
+          <li>Suco de laranja (Lanchonete / Pic-nic)</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!-- ROUND 11: PAPAIS (18+) -->
+  <article class="curso" id="papais">
+    <div class="curso-card curso-card--papais" style="--acento:var(--ouro)">
+      <span class="round-badge">ROUND 11</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/papai-vip.svg" alt="Camarote VIP dos adultos"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M76 68 C92 68 92 96 76 96" stroke="#D49B00" stroke-width="8" fill="none"/>
+            <rect x="34" y="52" width="46" height="62" rx="8" fill="#FFD23F" stroke="#D49B00" stroke-width="5"/>
+            <path d="M30 44 L84 44 L84 54 L30 54 Z" fill="#fff"/>
+            <circle cx="40" cy="40" r="8" fill="#fff"/><circle cx="56" cy="35" r="10" fill="#fff"/><circle cx="72" cy="40" r="8" fill="#fff"/>
+            <path d="M92 56 L120 56 C120 74 92 74 92 56 Z" fill="#E62E2D" stroke="#FFFFFF" stroke-width="3"/>
+            <line x1="106" y1="73" x2="106" y2="100" stroke="#FFFFFF" stroke-width="4"/>
+            <path d="M96 102 L116 102" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="perso-tag perso-tag--escuro">Camarote VIP</span>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Enquanto a tropa brinca</p>
+        <h2>Camarote dos Papais 🍻</h2>
+        <p class="desc">Os adultos também brindam os 7 anos do Lucas Nery:</p>
+        <ul class="itens">
+          <li>Cerveja gelada</li>
+          <li>Vinho tinto seco</li>
+        </ul>
+        <span class="nota">🔞 Exclusivo para maiores de 18 anos.</span>
+      </div>
+      <button class="mic-escondido" data-mic style="bottom:-18px;right:10%" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 12: O BOLO (GRAN FINALE — 7 VELAS) -->
+  <article class="curso" id="bolo">
+    <div class="curso-card curso-card--bolo" style="--acento:var(--vermelho)">
+      <span class="round-badge">GRAN FINALE · ROUND 12</span>
+      <div class="curso-vitrine">
+        <div class="bolha-perso" data-perso><img src="img/lucas.jpg" alt="Lucas Nery, o aniversariante"></div>
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <ellipse cx="70" cy="122" rx="52" ry="9" fill="#fff" stroke="#181826" stroke-width="3"/>
+            <rect x="46" y="62" width="48" height="28" rx="7" fill="#FFE9B8" stroke="#181826" stroke-width="4"/>
+            <rect x="34" y="88" width="72" height="32" rx="8" fill="#E62E2D" stroke="#181826" stroke-width="4"/>
+            <path d="M34 92 C40 106 46 106 52 92 C58 106 64 106 70 92 C76 106 82 106 88 92 C94 106 100 106 106 94 L106 88 L34 88 Z" fill="#FFD23F"/>
+            <rect x="52" y="42" width="6" height="22" rx="3" fill="#1CC6E8"/>
+            <rect x="67" y="36" width="6" height="28" rx="3" fill="#FFD23F"/>
+            <rect x="82" y="42" width="6" height="22" rx="3" fill="#3EC96B"/>
+            <ellipse cx="55" cy="35" rx="4.5" ry="7" fill="#FF7A1A"/>
+            <ellipse cx="70" cy="29" rx="4.5" ry="7" fill="#FF7A1A"/>
+            <ellipse cx="85" cy="35" rx="4.5" ry="7" fill="#FF7A1A"/>
+          </svg>
+        </div>
+        <span class="perso-tag">O aniversariante!</span>
+      </div>
+      <div class="curso-info">
+        <span class="faixa-parabens">🎉 Parabéns, Lucas Nery! 🎉</span>
+        <p class="eyebrow">A hora do parabéns</p>
+        <h2>O Bolo do Lucas 🎂</h2>
+        <div class="velas" aria-hidden="true">
+          <span class="vela"></span><span class="vela"></span><span class="vela"></span><span class="vela"></span><span class="vela"></span><span class="vela"></span><span class="vela"></span>
+        </div>
+        <p class="desc">Bolo sabor <strong>Belga</strong> — sete velinhas acesas, um super desejo e a Tropa do Mussa inteira cantando parabéns!</p>
+      </div>
+      <button class="mic-escondido" data-mic style="top:22%;left:-14px" aria-label="Microfone dourado escondido! Toque para coletar">
+        <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#181826" stroke="#FFFFFF" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+      </button>
+    </div>
+  </article>
+
+  <!-- ROUND 13: ENCERRAMENTO -->
+  <article class="curso" id="tchau">
+    <div class="curso-card" style="--acento:var(--roxo)">
+      <span class="round-badge">ROUND 13 · BIS</span>
+      <div class="curso-vitrine" style="width:min(74vw,300px)">
+        <img src="img/tropa-mussa.svg" alt="Placa Tropa do Lucas 7 anos" style="border-radius:24px;border:5px solid var(--grafite);box-shadow:0 10px 24px rgba(13,13,22,.35)">
+        <div class="prato-sticker" aria-hidden="true">
+          <svg viewBox="0 0 140 140">
+            <path d="M58 26 C53 36 63 40 58 50 M82 22 C77 32 87 36 82 46" stroke="#9AB6CE" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="70" cy="112" rx="46" ry="10" fill="#fff" stroke="#181826" stroke-width="3"/>
+            <path d="M96 66 C112 68 112 88 94 92" stroke="#181826" stroke-width="8" fill="none"/>
+            <path d="M40 58 L100 58 L94 108 L46 108 Z" fill="#E62E2D" stroke="#181826" stroke-width="4" stroke-linejoin="round"/>
+            <ellipse cx="70" cy="58" rx="30" ry="7" fill="#6B4226" stroke="#181826" stroke-width="3"/>
+          </svg>
+        </div>
+      </div>
+      <div class="curso-info">
+        <p class="eyebrow">Antes de fechar a live</p>
+        <h2>Encerramento</h2>
+        <p class="desc">Um cafezinho quentinho nos bastidores para fechar o show com carinho e agradecer a presença de toda a tropa.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- LOCAL DA FESTA / COMO CHEGAR -->
+  <article class="curso" id="local">
+    <div class="curso-card" style="--acento:var(--vermelho);flex-direction:column;text-align:center">
+      <span class="round-badge">📍 LOCAL DO SHOW</span>
+      <div class="curso-info" style="max-width:64ch;width:100%">
+        <p class="eyebrow">Como chegar</p>
+        <h2>Guimi Buffet 🗺️</h2>
+        <p class="desc"><strong>Rua Muniz de Souza, 1130 — Aclimação, São Paulo - SP · CEP 01534-001</strong></p>
+        <p class="nota">🌳 Em frente ao Parque da Aclimação · 📅 12/12/2026 às 13:00</p>
+        <div class="hero-ctas" style="justify-content:center;margin-top:1.1rem">
+          <a class="cta" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Guimi+Buffet,+Rua+Muniz+de+Souza,+1130+-+Aclimacao,+Sao+Paulo+-+SP">Google Maps 🗺️</a>
+          <a class="cta cta--ia" target="_blank" rel="noopener noreferrer" href="https://waze.com/ul?q=Guimi%20Buffet%20Rua%20Muniz%20de%20Souza%201130%20Sao%20Paulo&navigate=yes">Abrir no Waze 🚗</a>
+          <button class="cta cta--jogos" id="btnCopiarEndHome" type="button">Copiar endereço 📋</button>
+        </div>
+        <div style="margin-top:1.25rem;border-radius:22px;overflow:hidden;border:4px solid var(--grafite);box-shadow:0 6px 0 var(--grafite)">
+          <iframe title="Mapa do Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;height:280px;border:0;display:block" src="https://maps.google.com/maps?q=Guimi%20Buffet%2C%20Rua%20Muniz%20de%20Souza%2C%201130%20-%20Aclimacao%2C%20Sao%20Paulo%20-%20SP&t=&z=16&ie=UTF8&iwloc=&output=embed"></iframe>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</main>
+
+<!-- ==================== RODAPÉ ==================== -->
+<footer class="rodape-show">
+  <svg class="cenario" viewBox="0 0 460 90" aria-hidden="true">
+    <rect x="20" y="54" width="18" height="30" rx="5" fill="#FFD23F" opacity=".8"/>
+    <rect x="48" y="34" width="18" height="50" rx="5" fill="#E62E2D" opacity=".85"/>
+    <rect x="76" y="46" width="18" height="38" rx="5" fill="#1CC6E8" opacity=".8"/>
+    <rect x="104" y="22" width="18" height="62" rx="5" fill="#3EC96B" opacity=".8"/>
+    <rect x="132" y="40" width="18" height="44" rx="5" fill="#F44E8B" opacity=".8"/>
+    <rect x="310" y="40" width="18" height="44" rx="5" fill="#F44E8B" opacity=".8"/>
+    <rect x="338" y="22" width="18" height="62" rx="5" fill="#3EC96B" opacity=".8"/>
+    <rect x="366" y="46" width="18" height="38" rx="5" fill="#1CC6E8" opacity=".8"/>
+    <rect x="394" y="34" width="18" height="50" rx="5" fill="#E62E2D" opacity=".85"/>
+    <rect x="422" y="54" width="18" height="30" rx="5" fill="#FFD23F" opacity=".8"/>
+    <circle cx="230" cy="48" r="30" fill="#FFD23F" stroke="#181826" stroke-width="5"/>
+    <text x="230" y="58" text-anchor="middle" font-family="'Baloo 2', Arial, sans-serif" font-weight="800" font-size="30" fill="#181826">M</text>
+  </svg>
+  <h2>Show encerrado com chave de ouro! 🏆</h2>
+  <p>A família do Lucas Nery agradece por celebrar esses 7 anos com a gente. Dia 12/12/2026 às 13h é dia de festa no Mussa Style!</p>
+  <p class="bordao">Faz o sinalzinho do M — Tropa do Lucas! 🎤🔥</p>
+  <p class="credito">Feito com 💛 para o Lucas Nery · 7 anos · 2026</p>
+  <a class="cta cta--topo" href="#topo">Voltar pro palco <span class="seta">🎤⬆️</span></a>
+</footer>
+
+<!-- ==================== FIXOS ==================== -->
+<div class="trilha" aria-hidden="true">
+  <div class="trilha-linha">
+    <div class="trilha-progresso" id="trilhaProgresso"></div>
+    <img class="trilha-cursor" id="cursorShow" src="img/microfone-trilha.svg" alt="">
+  </div>
+  <span class="trilha-label" id="trilhaLabel">R01</span>
+</div>
+
+<div class="contador-mics" id="contadorMics">
+  <svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="48" width="20" height="44" rx="8" fill="#FFFFFF" stroke="#181826" stroke-width="4"/><circle cx="40" cy="30" r="22" fill="#FFD23F" stroke="#181826" stroke-width="5"/><line x1="19" y1="30" x2="61" y2="30" stroke="#181826" stroke-width="4"/></svg>
+  <span id="placarMics" role="status" aria-live="polite">0/7</span>
+  <button class="reinicia-mics" id="btnReiniciaMics" type="button" aria-label="Recomeçar a caça aos microfones dourados">↺</button>
+</div>
+
+<button class="btn-musica" id="btnMusica" aria-label="Tocar batida Mussa Style" aria-pressed="false">🎵</button>
+<audio id="audioMussa" src="musica/mussa-style.mp3" preload="auto" loop></audio>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="confete" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+  'use strict';
+  var reduzMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (location.search.indexOf('fotos') !== -1) {
+    reduzMovimento = true;
+    document.body.classList.add('sem-animacao');
+    var rolagem = location.search.match(/rolagem=(\d+)/);
+    if (rolagem) {
+      window.addEventListener('load', function () {
+        window.scrollTo(0, parseInt(rolagem[1], 10));
+      });
+    }
+  }
+
+  /* ---------- toast ---------- */
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+  function mostraToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('mostra');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('mostra'); }, ms || 2600);
+  }
+
+  /* ---------- partículas musicais no fundo ---------- */
+  if (!reduzMovimento) {
+    var bg = document.getElementById('palcoBg');
+    var simbolos = ['♪', '♫', '★', '🎤', '✦'];
+    for (var i = 0; i < 16; i++) {
+      var s = document.createElement('span');
+      s.className = 'particula-som';
+      s.textContent = simbolos[i % simbolos.length];
+      s.style.fontSize = (18 + Math.random() * 24) + 'px';
+      s.style.left = (Math.random() * 96) + 'vw';
+      s.style.animationDuration = (9 + Math.random() * 13) + 's';
+      s.style.animationDelay = (Math.random() * 11) + 's';
+      bg.appendChild(s);
+    }
+  }
+
+  /* ---------- revelar cartões ---------- */
+  var cards = document.querySelectorAll('.curso-card');
+  if ('IntersectionObserver' in window && !reduzMovimento) {
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    cards.forEach(function (c) { io.observe(c); });
+  } else {
+    cards.forEach(function (c) { c.classList.add('visivel'); });
+  }
+
+  /* ---------- trilha do show (R01 -> R13) ---------- */
+  var cursorShow = document.getElementById('cursorShow');
+  var trilhaProgresso = document.getElementById('trilhaProgresso');
+  var trilhaLabel = document.getElementById('trilhaLabel');
+  function atualizaTrilha() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    if (cursorShow) cursorShow.style.top = (p * 100) + '%';
+    if (trilhaProgresso) trilhaProgresso.style.height = (p * 100) + '%';
+    if (trilhaLabel) {
+      var r = Math.max(1, Math.min(13, Math.round(1 + p * 12)));
+      trilhaLabel.textContent = 'R' + (r < 10 ? '0' + r : r);
+    }
+  }
+  window.addEventListener('scroll', atualizaTrilha, { passive: true });
+  window.addEventListener('resize', atualizaTrilha);
+  atualizaTrilha();
+
+  /* ---------- Web Audio: efeitos + batida hip-hop boom-bap fallback ---------- */
+  var ctxAudio = null;
+  function audio() {
+    if (!ctxAudio) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) ctxAudio = new AC();
+    }
+    if (ctxAudio && ctxAudio.state === 'suspended') ctxAudio.resume();
+    return ctxAudio;
+  }
+
+  function somPop() {
+    var ac = audio(); if (!ac) return;
+    var t = ac.currentTime;
+    var o = ac.createOscillator();
+    var g = ac.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(320, t);
+    o.frequency.exponentialRampToValueAtTime(880, t + 0.08);
+    g.gain.setValueAtTime(0.14, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + 0.18);
+  }
+
+  function kick(t) {
+    var ac = audio(); if (!ac) return;
+    var o = ac.createOscillator();
+    var g = ac.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(145, t);
+    o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+    g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + 0.2);
+  }
+
+  function snare(t) {
+    var ac = audio(); if (!ac) return;
+    var o = ac.createOscillator();
+    var g = ac.createGain();
+    o.type = 'square';
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(110, t + 0.09);
+    g.gain.setValueAtTime(0.11, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.11);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + 0.12);
+  }
+
+  function synthBass(freq, t, dur) {
+    var ac = audio(); if (!ac) return;
+    var o = ac.createOscillator();
+    var g = ac.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+
+  var tocando = false, beatTimer = null;
+  var btnMusica = document.getElementById('btnMusica');
+  var audioMussa = document.getElementById('audioMussa');
+  var mp3Falhou = false;
+  audioMussa.addEventListener('error', function () { mp3Falhou = true; });
+
+  function tocaBeat() {
+    var ac = audio(); if (!ac) return;
+    var t = ac.currentTime + 0.05;
+    var step = 0.25; // ~120 BPM groove
+    var kicks = [0, 2.5, 4, 6.5];
+    var snares = [2, 6];
+    var bass = [[110, 0, 0.35], [130.81, 2.5, 0.3], [146.83, 4, 0.35], [130.81, 6, 0.35]];
+    kicks.forEach(function (k) { kick(t + k * step); });
+    snares.forEach(function (s) { snare(t + s * step); });
+    bass.forEach(function (b) { synthBass(b[0], t + b[1] * step, b[2]); });
+    beatTimer = setTimeout(function () { if (tocando) tocaBeat(); }, 8 * step * 1000);
+  }
+
+  btnMusica.addEventListener('click', function () {
+    tocando = !tocando;
+    btnMusica.classList.toggle('tocando', tocando);
+    btnMusica.setAttribute('aria-pressed', String(tocando));
+    btnMusica.textContent = tocando ? '🔊' : '🎵';
+    btnMusica.setAttribute('aria-label', tocando ? 'Parar a batida' : 'Tocar batida Mussa Style');
+    if (tocando) {
+      if (mp3Falhou) { tocaBeat(); }
+      else {
+        audioMussa.currentTime = 0;
+        var p = audioMussa.play();
+        if (p && p.catch) p.catch(function () { mp3Falhou = true; if (tocando) tocaBeat(); });
+      }
+    } else {
+      audioMussa.pause();
+      if (beatTimer) { clearTimeout(beatTimer); beatTimer = null; }
+    }
+  });
+
+  /* ---------- personagens que reagem ---------- */
+  document.querySelectorAll('[data-perso]').forEach(function (p) {
+    p.addEventListener('click', function () {
+      p.classList.remove('mexe');
+      void p.offsetWidth;
+      p.classList.add('mexe');
+      somPop();
+    });
+  });
+
+  /* ---------- confete ---------- */
+  var canvas = document.getElementById('confete');
+  var cx = canvas.getContext('2d');
+  var particulas = [];
+  var CORES = ['#E62E2D', '#FFD23F', '#FFFFFF', '#FF7A1A', '#1CC6E8', '#8A4FFF', '#3EC96B', '#F44E8B'];
+  var animando = false;
+
+  function dimensiona() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  dimensiona();
+  window.addEventListener('resize', dimensiona);
+
+  function estoura(x, y, qtd) {
+    if (reduzMovimento) return;
+    for (var i = 0; i < qtd; i++) {
+      particulas.push({
+        x: x, y: y,
+        vx: (Math.random() - 0.5) * 11,
+        vy: -Math.random() * 10 - 3,
+        w: 6 + Math.random() * 6,
+        h: 4 + Math.random() * 5,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.3,
+        cor: CORES[(Math.random() * CORES.length) | 0],
+        vida: 90 + Math.random() * 50
+      });
+    }
+    if (!animando) { animando = true; requestAnimationFrame(passo); }
+  }
+
+  function passo() {
+    cx.clearRect(0, 0, canvas.width, canvas.height);
+    particulas = particulas.filter(function (p) { return p.vida > 0 && p.y < canvas.height + 30; });
+    particulas.forEach(function (p) {
+      p.vx *= 0.985; p.vy += 0.22;
+      p.x += p.vx; p.y += p.vy;
+      p.rot += p.vr; p.vida--;
+      cx.save();
+      cx.translate(p.x, p.y);
+      cx.rotate(p.rot);
+      cx.globalAlpha = Math.min(1, p.vida / 40);
+      cx.fillStyle = p.cor;
+      cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      cx.restore();
+    });
+    if (particulas.length) { requestAnimationFrame(passo); }
+    else { animando = false; cx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+
+  /* ---------- festa no bolo (7 velas!) ---------- */
+  var secaoBolo = document.getElementById('bolo');
+  var jaFestejou = false;
+  if ('IntersectionObserver' in window) {
+    var ioBolo = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (e.isIntersecting && !jaFestejou) {
+          jaFestejou = true;
+          secaoBolo.querySelector('.curso-card').classList.add('festejar');
+          var r = e.target.getBoundingClientRect();
+          estoura(window.innerWidth * 0.3, r.top + 60, 70);
+          estoura(window.innerWidth * 0.7, r.top + 60, 70);
+          ioBolo.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.35 });
+    ioBolo.observe(secaoBolo);
+  } else {
+    secaoBolo.querySelector('.curso-card').classList.add('festejar');
+  }
+
+  /* ---------- caça aos 7 microfones dourados ---------- */
+  var mics = document.querySelectorAll('[data-mic]');
+  var TOTAL = mics.length;
+  var achados = 0;
+  var placar = document.getElementById('placarMics');
+  var STORAGE_KEY = 'festa-lucas-mics';
+
+  try {
+    var salvos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch (err) { salvos = []; }
+
+  mics.forEach(function (m, idx) {
+    if (salvos.indexOf(idx) !== -1) { m.classList.add('achado'); achados++; }
+    m.addEventListener('click', function () {
+      if (m.classList.contains('achado')) return;
+      m.classList.add('achado');
+      achados++;
+      salvos.push(idx);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(salvos)); } catch (err) {}
+      placar.textContent = achados + '/' + TOTAL;
+      somPop();
+      var r = m.getBoundingClientRect();
+      estoura(r.left + r.width / 2, r.top + r.height / 2, 20);
+      if (achados === TOTAL) {
+        mostraToast('🎤 Você achou todos os ' + TOTAL + ' microfones dourados! É o Mussa Style! 🏆', 4400);
+        estoura(window.innerWidth / 2, window.innerHeight / 3, 140);
+      } else {
+        mostraToast('🎤 Microfone coletado! Faltam ' + (TOTAL - achados) + '.');
+      }
+    });
+  });
+  placar.textContent = achados + '/' + TOTAL;
+
+  document.getElementById('btnReiniciaMics').addEventListener('click', function () {
+    achados = 0;
+    salvos = [];
+    try { localStorage.removeItem(STORAGE_KEY); } catch (err) {}
+    mics.forEach(function (m) { m.classList.remove('achado'); });
+    placar.textContent = achados + '/' + TOTAL;
+    somPop();
+    mostraToast('🎤 Os microfones se esconderam no palco de novo. Boa caça!');
+  });
+
+  var btnCopiarEndHome = document.getElementById('btnCopiarEndHome');
+  if (btnCopiarEndHome) {
+    var END_GUIMI = 'Guimi Buffet — Rua Muniz de Souza, 1130, Aclimação, São Paulo - SP, CEP 01534-001';
+    btnCopiarEndHome.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(END_GUIMI)
+          .then(function () { mostraToast('📋 Endereço copiado! É só colar no Uber, 99 ou GPS.', 3000); })
+          .catch(function () { mostraToast(END_GUIMI, 4500); });
+      } else {
+        mostraToast(END_GUIMI, 4500);
+      }
+    });
+  }
+
+  document.documentElement.setAttribute('data-js-ok', '1');
+})();
+</script>
+</body>
+</html>
