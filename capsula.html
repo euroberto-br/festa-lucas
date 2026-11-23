@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#E62E2D">
+<meta name="theme-color" content="#140928">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -49,42 +49,44 @@ body{min-height:100svh;padding-bottom:3rem}
   max-width:700px;margin:0 auto;padding:0 1.1rem;
 }
 .card-capsula{
-  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
-  border:4px solid var(--grafite);border-radius:34px;
+  background:linear-gradient(160deg, rgba(32,22,56,.90), rgba(16,14,32,.95));
+  color:var(--branco);
+  border:3.5px solid var(--verde);border-radius:32px;
   padding:2rem 1.5rem;
-  box-shadow:inset 0 3px 0 rgba(255,255,255,.9), 0 10px 0 var(--grafite), 0 26px 46px rgba(13,13,22,.45);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.16), 0 10px 0 var(--grafite-escuro), 0 26px 48px rgba(0,0,0,.56), 0 0 36px rgba(62,201,107,.22);
 }
-.fita-ilustra{width:170px;margin:0 auto 1.2rem}
+.fita-ilustra{width:170px;margin:0 auto 1.2rem;filter:drop-shadow(0 0 18px rgba(255,210,63,.35))}
 .aviso-selada{
-  background:#FFF3C4;border:3px dashed var(--laranja);border-radius:18px;
+  background:rgba(255,210,63,.12);color:var(--creme);border:2px dashed rgba(255,210,63,.65);border-radius:18px;
   padding:.8rem 1rem;font-size:.9rem;font-weight:800;margin-bottom:1.4rem;text-align:center;
 }
 .campo{margin-bottom:1.15rem}
 .campo label{
-  display:block;font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:.35rem;
+  display:block;font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:.35rem;color:var(--ouro);
 }
 .campo input,.campo textarea{
   width:100%;font-family:var(--texto);font-size:1rem;font-weight:700;
-  color:var(--grafite);background:var(--branco);
-  border:3px solid var(--grafite);border-radius:16px;padding:.72rem .95rem;
-  box-shadow:inset 0 2px 5px rgba(24,24,38,.1);
+  color:var(--branco);background:rgba(12,10,24,.78);
+  border:2.5px solid rgba(62,201,107,.58);border-radius:16px;padding:.72rem .95rem;
 }
+.campo input::placeholder,.campo textarea::placeholder{color:rgba(255,253,247,.5)}
 .campo textarea{min-height:150px;resize:vertical}
-.campo input:focus,.campo textarea:focus{outline:4px solid var(--ouro);outline-offset:1px}
+.campo input:focus,.campo textarea:focus{outline:3px solid var(--ouro);border-color:var(--ouro);outline-offset:1px}
 .grade-2{display:grid;grid-template-columns:1fr;gap:1rem}
 @media (min-width:600px){.grade-2{grid-template-columns:1fr 1fr}}
 
 .tipos{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem}
 .tipo-btn{
   font-family:var(--display);font-weight:800;font-size:.88rem;
-  background:var(--branco);color:var(--grafite);
-  border:3px solid var(--grafite);border-radius:99px;padding:.38rem .92rem;
-  box-shadow:0 3px 0 var(--grafite);transition:transform .12s ease, background .12s ease;
+  background:rgba(255,255,255,.08);color:var(--creme);
+  border:2.5px solid rgba(255,255,255,.35);border-radius:99px;padding:.38rem .92rem;
+  box-shadow:0 3px 0 var(--grafite-escuro);transition:transform .12s ease, background .12s ease;
 }
-.tipo-btn.ativo{background:var(--ouro);transform:translateY(2px);box-shadow:0 1px 0 var(--grafite)}
+.tipo-btn.ativo{background:var(--ouro);color:var(--grafite);border-color:var(--grafite);transform:translateY(2px);box-shadow:0 1px 0 var(--grafite-escuro)}
 
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.contador-chars{font-size:.82rem;font-weight:800;opacity:.7;text-align:right;margin-top:.25rem}
+.contador-chars{font-size:.82rem;font-weight:800;color:rgba(255,253,247,.72);text-align:right;margin-top:.25rem}
 .acoes{text-align:center;margin-top:1.4rem}
 .acoes .cta{width:100%;max-width:360px}
 .acoes .cta[disabled]{opacity:.6;cursor:wait}
@@ -288,5 +290,6 @@ body{min-height:100svh;padding-bottom:3rem}
   });
 })();
 </script>
+<script src="js/palco-bg.js"></script>
 </body>
 </html>

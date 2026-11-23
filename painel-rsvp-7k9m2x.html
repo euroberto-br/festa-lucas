@@ -13,27 +13,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tema-mussa.css">
 <style>
-body{min-height:100svh;padding:1.5rem 1rem 3rem;background:linear-gradient(180deg,#1B1033 0%,#151524 100%);color:var(--branco)}
-.wrap{max-width:1040px;margin:0 auto}
-.topo{text-align:center;margin-bottom:1.5rem}
-.topo h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.6rem);color:var(--ouro)}
-.topo p{font-weight:700;opacity:.85}
+body{min-height:100svh;padding:1.5rem 1rem 3rem;background:#110822;color:var(--branco)}
+.wrap{max-width:1080px;margin:0 auto}
+.topo{display:block;text-align:center;margin-bottom:1.5rem;padding:0}
+.topo h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.7rem);color:var(--branco);text-shadow:0 .06em 0 var(--vermelho), 0 .13em 0 var(--grafite)}
+.topo p{font-weight:700;opacity:.88;color:var(--ouro)}
 
 .login-box{
-  max-width:420px;margin:2rem auto;background:var(--creme);color:var(--grafite);
-  border:4px solid var(--ouro);border-radius:28px;padding:1.8rem 1.4rem;text-align:center;
-  box-shadow:0 10px 0 #090912;
+  max-width:420px;margin:2rem auto;
+  background:linear-gradient(160deg, rgba(32,22,56,.92), rgba(16,14,32,.96));
+  color:var(--branco);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:3.5px solid var(--ouro);border-radius:28px;padding:1.8rem 1.4rem;text-align:center;
+  box-shadow:0 10px 0 #090912, 0 24px 46px rgba(0,0,0,.55), 0 0 34px rgba(255,210,63,.18);
 }
 .login-box input{
   width:100%;font-family:var(--texto);font-size:1.05rem;font-weight:800;
-  border:3px solid var(--grafite);border-radius:14px;padding:.72rem .9rem;margin:1rem 0;text-align:center;
+  background:rgba(12,10,24,.82);color:var(--branco);
+  border:2.5px solid rgba(255,210,63,.65);border-radius:14px;padding:.72rem .9rem;margin:1rem 0;text-align:center;
 }
 .login-box .cta{width:100%}
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.3rem}
 .stat{
-  background:rgba(255,255,255,.08);border:3px solid var(--ouro);border-radius:20px;
+  background:linear-gradient(160deg, rgba(32,22,56,.88), rgba(16,14,32,.94));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:3px solid var(--ouro);border-radius:20px;
   padding:.95rem;text-align:center;
+  box-shadow:0 6px 0 #090912, 0 0 22px rgba(255,210,63,.12);
 }
 .stat .num{font-family:var(--display);font-weight:800;font-size:2.1rem;color:var(--ouro);line-height:1}
 .stat .lbl{font-size:.86rem;font-weight:800;opacity:.9;margin-top:.2rem}
@@ -576,5 +582,6 @@ tr:last-child td{border-bottom:none}
   } catch (e) {}
 })();
 </script>
+<script src="js/palco-bg.js"></script>
 </body>
 </html>

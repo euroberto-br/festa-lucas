@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#E62E2D">
+<meta name="theme-color" content="#140928">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -45,34 +45,37 @@ body{min-height:100svh;padding-bottom:3.5rem}
 
 .wrap{max-width:1060px;margin:0 auto;padding:0 1.1rem}
 .card-envio{
-  background:linear-gradient(180deg,#FFFFFF 0%,#FFF8F0 100%);
-  border:4px solid var(--grafite);border-radius:32px;
+  background:linear-gradient(160deg, rgba(32,22,56,.90), rgba(16,14,32,.95));
+  color:var(--branco);
+  border:3.5px solid var(--rosa);border-radius:30px;
   padding:1.6rem 1.4rem;margin-bottom:2rem;
-  box-shadow:0 10px 0 var(--grafite), 0 24px 40px rgba(13,13,22,.4);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.16), 0 10px 0 var(--grafite-escuro), 0 24px 44px rgba(0,0,0,.54), 0 0 34px rgba(244,78,139,.22);
 }
 .envio-grade{display:grid;grid-template-columns:1fr;gap:1rem;align-items:end}
 @media (min-width:680px){.envio-grade{grid-template-columns:1fr auto}}
-.campo label{display:block;font-family:var(--display);font-weight:800;margin-bottom:.3rem}
+.campo label{display:block;font-family:var(--display);font-weight:800;margin-bottom:.3rem;color:var(--ouro)}
 .campo input{
   width:100%;font-family:var(--texto);font-size:1rem;font-weight:700;
-  color:var(--grafite);background:var(--branco);
-  border:3px solid var(--grafite);border-radius:16px;padding:.72rem .95rem;
+  color:var(--branco);background:rgba(12,10,24,.78);
+  border:2.5px solid rgba(255,210,63,.55);border-radius:16px;padding:.72rem .95rem;
 }
-.campo input:focus{outline:4px solid var(--ouro)}
+.campo input::placeholder{color:rgba(255,253,247,.5)}
+.campo input:focus{outline:3px solid var(--ouro);border-color:var(--ouro)}
 #inputFotos{display:none}
 .fila{margin-top:1rem;display:flex;flex-direction:column;gap:.55rem}
 .fila-item{
-  background:#FFF3C4;border:2.5px solid var(--grafite);border-radius:14px;
+  background:rgba(255,210,63,.14);color:var(--creme);border:2px solid var(--ouro);border-radius:14px;
   padding:.55rem .85rem;font-size:.88rem;font-weight:800;
 }
-.barra{height:8px;background:rgba(24,24,38,.15);border-radius:99px;overflow:hidden;margin-top:.35rem}
-.barra > span{display:block;height:100%;width:0;background:var(--vermelho);transition:width .2s ease}
+.barra{height:8px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:.35rem}
+.barra > span{display:block;height:100%;width:0;background:var(--ouro);transition:width .2s ease}
 
 .galeria-head{
   display:flex;align-items:center;justify-content:space-between;gap:.8rem;
   color:var(--branco);margin-bottom:1.1rem;flex-wrap:wrap;
 }
-.galeria-head h2{font-family:var(--display);font-weight:800;font-size:1.7rem;text-shadow:0 3px 0 var(--grafite)}
+.galeria-head h2{font-family:var(--display);font-weight:800;font-size:1.75rem;text-shadow:0 3px 0 var(--grafite-escuro)}
 .contagem{
   font-family:var(--display);font-weight:800;font-size:.9rem;
   background:var(--ouro);color:var(--grafite);
@@ -80,27 +83,27 @@ body{min-height:100svh;padding-bottom:3.5rem}
 }
 .btn-atualiza{
   font-family:var(--display);font-weight:800;font-size:.88rem;
-  background:rgba(21,21,36,.82);color:var(--branco);
-  border:3px solid var(--ouro);border-radius:99px;padding:.35rem .95rem;
+  background:rgba(21,15,42,.85);color:var(--ouro);
+  border:2.5px solid var(--ouro);border-radius:99px;padding:.35rem .95rem;
 }
 .grade-fotos{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;
 }
 @media (min-width:640px){.grade-fotos{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}}
 .foto-card{
-  position:relative;background:var(--branco);
-  border:4px solid var(--grafite);border-radius:22px;overflow:hidden;
-  box-shadow:0 7px 0 var(--grafite), 0 16px 28px rgba(13,13,22,.35);
-  cursor:pointer;transition:transform .16s ease;
+  position:relative;background:rgba(24,18,44,.92);
+  border:3px solid rgba(255,210,63,.55);border-radius:22px;overflow:hidden;
+  box-shadow:0 7px 0 var(--grafite-escuro), 0 16px 30px rgba(0,0,0,.48);
+  cursor:pointer;transition:transform .16s ease, border-color .16s ease, box-shadow .16s ease;
 }
-.foto-card:hover{transform:translateY(-4px)}
+.foto-card:hover{transform:translateY(-5px);border-color:var(--ouro);box-shadow:0 12px 0 var(--grafite-escuro), 0 22px 36px rgba(0,0,0,.58), 0 0 24px rgba(255,210,63,.25)}
 .foto-card img{
   width:100%;aspect-ratio:1;object-fit:cover;
   pointer-events:none;-webkit-touch-callout:none;user-select:none;
 }
 .foto-autor{
   font-family:var(--display);font-weight:800;font-size:.84rem;
-  padding:.42rem .7rem;background:var(--creme);color:var(--grafite);
+  padding:.46rem .75rem;background:rgba(16,12,30,.95);color:var(--ouro);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .vazio{
@@ -434,5 +437,6 @@ body{min-height:100svh;padding-bottom:3.5rem}
   setInterval(carregar, 45000);
 })();
 </script>
+<script src="js/palco-bg.js"></script>
 </body>
 </html>
