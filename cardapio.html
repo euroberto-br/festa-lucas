@@ -166,8 +166,8 @@
 .cardapio{
   position:relative;z-index:1;
   max-width:1060px;margin:0 auto;
-  padding:3.6rem 1.1rem 2.5rem;
-  display:flex;flex-direction:column;gap:2.6rem;
+  padding:2.2rem 1.1rem 2.5rem;
+  display:flex;flex-direction:column;gap:2.4rem;
 }
 .cardapio-titulo{text-align:center;color:var(--branco)}
 .cardapio-titulo .mini{
@@ -521,39 +521,20 @@
     <a href="fotos.html">📸 Fotos</a>
     <a href="mussa.html">🎨 Mussaverso IA</a>
     <a href="capsula.html">📼 Cápsula</a>
+    <a href="local.html">📍 Como Chegar</a>
   </nav>
 </header>
 
-<!-- ==================== HERO ==================== -->
-<header class="hero" id="topo">
-  <div class="hero-grade">
-    <div class="hero-texto">
-      <p class="hero-eyebrow">🎤 Show de Sabores · Mussa Style!</p>
-      <h1>Lucas Nery faz <span class="sete">7!</span></h1>
-      <p class="hero-data">📅 12/12/2026 · 🕐 13:00 · 📍 Guimi Buffet (Aclimação)</p>
-      <p class="hero-sub">Faz o sinalzinho do M e entra nessa batalha de sabores! Confira os 13 rounds oficiais do cardápio da Tropa do Lucas.</p>
-      <div class="hero-ctas">
-        <a class="cta" href="#entrada">Soltar o cardápio <span class="seta">🎤</span></a>
-      </div>
-    </div>
-    <div class="hero-retrato">
-      <img class="hero-quadro" src="img/hero-mussa.svg" alt="Palco do Mussa Style comemorando os 7 anos do Lucas Nery" width="600" height="680">
-      <div class="hero-bolha-lucas">
-        <img src="img/lucas.jpg" alt="Lucas Nery, o aniversariante de 7 anos">
-      </div>
-      <span class="selo-7">7<br>anos</span>
-    </div>
-  </div>
-  <svg class="onda-divisor" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,44 L120,22 L240,48 L360,18 L480,46 L600,24 L720,50 L840,20 L960,46 L1080,22 L1200,48 L1320,24 L1440,42 L1440,70 L0,70 Z" fill="rgba(21,21,36,.24)"/>
-    <path d="M0,56 L180,36 L360,58 L540,34 L720,58 L900,36 L1080,58 L1260,38 L1440,54 L1440,70 L0,70 Z" fill="rgba(21,21,36,.18)"/>
-  </svg>
-</header>
+<!-- ==================== CABEÇALHO COMPACTO ==================== -->
+<section class="hero-pag" id="topo">
+  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">SHOW DE SABORES · GUIMI BUFFET · 13 ROUNDS</p>
+  <h1>🍽️ Cardápio do Show</h1>
+  <p>Todas as delícias da festa de 7 anos do Lucas Nery — e ache os 7 microfones dourados escondidos!</p>
+</section>
 
 <!-- ==================== NAVEGAÇÃO ==================== -->
 <nav class="nav-cardapio" aria-label="Categorias do cardápio">
   <div class="nav-trilho">
-    <a class="nav-chip" href="index.html?festa=1">← Início</a>
     <a class="nav-chip" href="#entrada">Entrada</a>
     <a class="nav-chip" href="#salgados">Salgados</a>
     <a class="nav-chip" href="#fingerfoods">Finger Foods</a>
@@ -567,19 +548,11 @@
     <a class="nav-chip" href="#papais">Camarote 18+</a>
     <a class="nav-chip nav-chip--bolo" href="#bolo">🎂 Bolo</a>
     <a class="nav-chip" href="#tchau">Encerramento</a>
-    <a class="nav-chip nav-chip--jogos" href="jogos.html">🎮 Arena de Jogos</a>
-    <a class="nav-chip nav-chip--fotos" href="fotos.html">📸 Fotos</a>
-    <a class="nav-chip nav-chip--capsula" href="capsula.html">📼 Cápsula</a>
-    <a class="nav-chip nav-chip--ia" href="mussa.html">🎨 Mussaverso IA</a>
   </div>
 </nav>
 
 <!-- ==================== CARDÁPIO (13 ROUNDS) ==================== -->
 <main class="cardapio" id="conteudo-cardapio">
-  <div class="cardapio-titulo">
-    <p class="mini">Solta o beat que o show começou</p>
-    <h2>O cardápio da festa 🎤</h2>
-  </div>
 
   <!-- ROUND 01: ENTRADA -->
   <article class="curso" id="entrada">
