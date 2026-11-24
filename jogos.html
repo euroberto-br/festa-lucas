@@ -166,7 +166,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
 <section class="hero-pag">
   <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">ARENA ARCADE 60 FPS · LUCAS NERY 7 ANOS</p>
   <h1>🎮 Arena de Jogos</h1>
-  <p>4 jogos dinâmicos no estilo Subway Surfers, Sonic, Jetpack e Guitar Hero — jogue no celular ou teclado e domine o Ranking da Tropa!</p>
+  <p>5 jogos dinâmicos: Subway Surfers, Sonic, Jetpack, Guitar Hero e Pac-Man — jogue no celular ou teclado e domine o Ranking da Tropa!</p>
 </section>
 
 <main class="wrap">
@@ -176,6 +176,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
       <button class="aba" role="tab" aria-selected="false" data-jogo="sonic">💨 Lucas Dash</button>
       <button class="aba" role="tab" aria-selected="false" data-jogo="flappy">🚀 Voo do Mic</button>
       <button class="aba" role="tab" aria-selected="false" data-jogo="ritmo">🎸 Batalha Hero</button>
+      <button class="aba" role="tab" aria-selected="false" data-jogo="pacman">🟡 Lucas-Man</button>
     </div>
 
     <div class="hud">
@@ -278,7 +279,8 @@ body{min-height:100svh;padding-bottom:3.5rem}
     runner: 'Deslize (← →) ou use os botões para trocar de pista e ↑ para pular! Pegue 🎤💿⭐ e desvie das barreiras!',
     sonic: 'Toque na tela, Espaço ou ↑ para dar Spin Jump (tem PULO DUPLO!). Pegue anéis dourados e pule nos robôs!',
     flappy: 'Toque na tela ou Espaço para acionar o Jetpack do Lucas e passar entre as torres de caixas de som!',
-    ritmo: 'Toque nas 4 pistas (ou teclas A S D F) quando as notas chegarem na linha dourada para multiplicar o combo!'
+    ritmo: 'Toque nas 4 pistas (ou teclas A S D F) quando as notas chegarem na linha dourada para multiplicar o combo!',
+    pacman: 'Deslize na tela, use as setas (ou W A S D) para coletar notas ♪ e Microfones 🎤! Pegue o 🎤 para rimar os rivais!'
   };
 
   function mostraToast(msg, ms) {
@@ -1287,6 +1289,398 @@ body{min-height:100svh;padding-bottom:3.5rem}
   }
 
   /* ============================================================
+     JOGO 5: LUCAS-MAN (Pac-Man Completo no Palco Mussa!)
+     21x13 labirinto neon, 4 rivais temáticos, Microfones Power-Up,
+     Bolo Torta de Limão bônus, 3 vidas, túnel lateral e fases!
+     ============================================================ */
+  var PAC_MAPA_BASE = [
+    '111111111111111111111',
+    '120000000010000000021',
+    '101110111010111011101',
+    '100000000000000000001',
+    '101110101111101011101',
+    '100000100010001000001',
+    '333110113333311011333',
+    '100000100000001000001',
+    '101110101111101011101',
+    '100010000030000010001',
+    '111010111010111010111',
+    '120000000010000000021',
+    '111111111111111111111'
+  ];
+  var PAC_COLS = 21, PAC_ROWS = 13, PAC_TILE = 34;
+  var PAC_OX = Math.round((W - PAC_COLS * PAC_TILE) / 2); // 43
+  var PAC_OY = 44; // espaço para HUD de vidas/fase no topo
+  var pac = {};
+
+  function pacClonaMapa() {
+    var g = [], total = 0;
+    for (var r = 0; r < PAC_ROWS; r++) {
+      var row = [];
+      for (var c = 0; c < PAC_COLS; c++) {
+        var ch = Number(PAC_MAPA_BASE[r][c]);
+        row.push(ch);
+        if (ch === 0 || ch === 2) total++;
+      }
+      g.push(row);
+    }
+    return { grid: g, total: total };
+  }
+
+  function pacResetaPosicoes() {
+    pac.px = 10; pac.py = 9;
+    pac.dx = 1; pac.dy = 0;
+    pac.ndx = 1; pac.ndy = 0;
+    pac.boca = 0;
+    pac.invuln = 1.8;
+    pac.rivais = [
+      { nome: 'Mussa Reverso', cor: '#E62E2D', x: 9, y: 6, dx: -1, dy: 0, tipo: 'chase', preso: 0 },
+      { nome: 'ET da Rima',    cor: '#3EC96B', x: 10, y: 6, dx: 0, dy: -1, tipo: 'ambush', preso: 1.5 },
+      { nome: 'Malucão',       cor: '#F44E8B', x: 11, y: 6, dx: 1, dy: 0, tipo: 'wild', preso: 3.0 },
+      { nome: 'Mussarela',     cor: '#1CC6E8', x: 10, y: 6, dx: 0, dy: -1, tipo: 'patrol', preso: 4.5 }
+    ];
+  }
+
+  function initPacman() {
+    var m = pacClonaMapa();
+    pac = {
+      grid: m.grid,
+      restantes: m.total,
+      comidas: 0,
+      vidas: 3,
+      fase: 1,
+      power: 0,
+      bolo: null, // { x: 10, y: 7, t: 10 }
+      tempo: 0
+    };
+    pacResetaPosicoes();
+  }
+
+  function pacSetDir(dx, dy) {
+    pac.ndx = dx;
+    pac.ndy = dy;
+  }
+
+  function pacEhParede(col, row) {
+    if (row < 0 || row >= PAC_ROWS) return true;
+    var c = ((col % PAC_COLS) + PAC_COLS) % PAC_COLS;
+    return pac.grid[row][c] === 1;
+  }
+
+  function pacMoveEntidade(ent, spd, dt, isPlayer) {
+    var cx = Math.round(ent.x), cy = Math.round(ent.y);
+    var distC = Math.hypot(ent.x - cx, ent.y - cy);
+
+    if (isPlayer) {
+      // Reversão instantânea de 180 graus
+      if (ent.ndx === -ent.dx && ent.ndy === -ent.dy && (ent.ndx !== 0 || ent.ndy !== 0)) {
+        ent.dx = ent.ndx; ent.dy = ent.ndy;
+      } else if (distC < 0.22 && (ent.ndx !== 0 || ent.ndy !== 0)) {
+        if (!pacEhParede(cx + ent.ndx, cy + ent.ndy)) {
+          if (ent.ndx !== ent.dx || ent.ndy !== ent.dy) {
+            ent.x = cx; ent.y = cy;
+          }
+          ent.dx = ent.ndx; ent.dy = ent.ndy;
+        }
+      }
+    }
+
+    var nx = ent.x + ent.dx * spd * dt;
+    var ny = ent.y + ent.dy * spd * dt;
+
+    // Checa colisão com parede à frente
+    var nextCol = ent.dx > 0 ? Math.floor(nx + 0.45) : (ent.dx < 0 ? Math.ceil(nx - 0.45) : Math.round(nx));
+    var nextRow = ent.dy > 0 ? Math.floor(ny + 0.45) : (ent.dy < 0 ? Math.ceil(ny - 0.45) : Math.round(ny));
+
+    if (pacEhParede(nextCol, nextRow)) {
+      ent.x = Math.round(ent.x);
+      ent.y = Math.round(ent.y);
+      if (!isPlayer) { ent.dx = 0; ent.dy = 0; }
+    } else {
+      ent.x = nx;
+      ent.y = ny;
+    }
+
+    // Túnel lateral (teletransporte esquerda <-> direita)
+    if (ent.x < -0.4) ent.x = PAC_COLS - 0.6;
+    else if (ent.x > PAC_COLS - 0.6) ent.x = -0.4;
+  }
+
+  function updatePacman(dt) {
+    pac.tempo += dt;
+    pac.boca += dt * 11;
+    if (pac.invuln > 0) pac.invuln -= dt;
+    if (pac.power > 0) pac.power = Math.max(0, pac.power - dt);
+    if (pac.bolo) {
+      pac.bolo.t -= dt;
+      if (pac.bolo.t <= 0) pac.bolo = null;
+    }
+
+    var pObj = { x: pac.px, y: pac.py, dx: pac.dx, dy: pac.dy, ndx: pac.ndx, ndy: pac.ndy };
+    var pSpeed = Math.min(7.8, 5.2 + (pac.fase - 1) * 0.45) + (pac.power > 0 ? 0.55 : 0);
+    pacMoveEntidade(pObj, pSpeed, dt, true);
+    pac.px = pObj.x; pac.py = pObj.y; pac.dx = pObj.dx; pac.dy = pObj.dy;
+
+    // Coleta de notas e Microfones Power-Up
+    var gc = ((Math.round(pac.px) % PAC_COLS) + PAC_COLS) % PAC_COLS;
+    var gr = Math.max(0, Math.min(PAC_ROWS - 1, Math.round(pac.py)));
+    var cell = pac.grid[gr][gc];
+    var sx = PAC_OX + (gc + 0.5) * PAC_TILE;
+    var sy = PAC_OY + (gr + 0.5) * PAC_TILE;
+
+    if (cell === 0) {
+      pac.grid[gr][gc] = 3;
+      pac.restantes--;
+      pac.comidas++;
+      ganhaPontos(1, sx, sy, '+1', '#FFD23F', true);
+      som(520 + (pac.comidas % 4) * 55, 680, 0.045, 'sine', 0.06);
+      if (pac.comidas % 28 === 0 && !pac.bolo) {
+        pac.bolo = { x: 10, y: 7, t: 10 };
+        addTexto(PAC_OX + 10.5 * PAC_TILE, PAC_OY + 7 * PAC_TILE, '🍰 BOLO BÔNUS!', '#3EC96B');
+      }
+    } else if (cell === 2) {
+      pac.grid[gr][gc] = 3;
+      pac.restantes--;
+      pac.power = 7.0;
+      ganhaPontos(5, sx, sy, '🎤 MUSSA STYLE!', '#1CC6E8', false);
+      sfxCombo();
+    }
+
+    // Coleta Bolo Torta de Limão bônus
+    if (pac.bolo && Math.hypot(pac.px - pac.bolo.x, pac.py - pac.bolo.y) < 0.72) {
+      ganhaPontos(25, PAC_OX + (pac.bolo.x + 0.5) * PAC_TILE, PAC_OY + (pac.bolo.y + 0.5) * PAC_TILE, '🍰 +25 BOLO!', '#3EC96B', false);
+      sfxCombo();
+      pac.bolo = null;
+    }
+
+    // Próxima fase ao limpar o labirinto!
+    if (pac.restantes <= 0) {
+      pac.fase++;
+      ganhaPontos(30, W / 2, H / 2, '🔥 FASE ' + pac.fase + '! +30', '#FFD23F', false);
+      sfxCombo();
+      var novo = pacClonaMapa();
+      pac.grid = novo.grid;
+      pac.restantes = novo.total;
+      pac.power = 0;
+      pac.bolo = null;
+      pacResetaPosicoes();
+      return;
+    }
+
+    // Atualiza os 4 rivais (Fantasmas temáticos)
+    var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    var rSpeedBase = Math.min(6.3, 3.6 + (pac.fase - 1) * 0.42);
+    for (var i = 0; i < pac.rivais.length; i++) {
+      var rv = pac.rivais[i];
+      if (rv.preso > 0) { rv.preso -= dt; continue; }
+
+      var rcx = Math.round(rv.x), rcy = Math.round(rv.y);
+      var pertoCentro = Math.hypot(rv.x - rcx, rv.y - rcy) < 0.16;
+
+      if (pertoCentro || (rv.dx === 0 && rv.dy === 0)) {
+        var opcoes = [];
+        for (var d = 0; d < 4; d++) {
+          var ddx = dirs[d][0], ddy = dirs[d][1];
+          if (ddx === -rv.dx && ddy === -rv.dy && (rv.dx !== 0 || rv.dy !== 0)) continue;
+          if (!pacEhParede(rcx + ddx, rcy + ddy)) opcoes.push(dirs[d]);
+        }
+        if (!opcoes.length) {
+          for (var d2 = 0; d2 < 4; d2++) {
+            if (!pacEhParede(rcx + dirs[d2][0], rcy + dirs[d2][1])) opcoes.push(dirs[d2]);
+          }
+        }
+        if (opcoes.length) {
+          var escolha = opcoes[0];
+          if (pac.power > 0) {
+            // Foge do Lucas!
+            var melhorDist = -1;
+            opcoes.forEach(function (op) {
+              var dist = Math.hypot((rcx + op[0]) - pac.px, (rcy + op[1]) - pac.py);
+              if (dist > melhorDist) { melhorDist = dist; escolha = op; }
+            });
+          } else if (rv.tipo === 'wild' && Math.random() < 0.45) {
+            escolha = opcoes[Math.floor(Math.random() * opcoes.length)];
+          } else {
+            var tx = pac.px + (rv.tipo === 'ambush' ? pac.dx * 3 : 0);
+            var ty = pac.py + (rv.tipo === 'ambush' ? pac.dy * 3 : 0);
+            var menorDist = 9999;
+            opcoes.forEach(function (op) {
+              var dist = Math.hypot((rcx + op[0]) - tx, (rcy + op[1]) - ty);
+              if (dist < menorDist) { menorDist = dist; escolha = op; }
+            });
+          }
+          if (escolha[0] !== rv.dx || escolha[1] !== rv.dy) {
+            rv.x = rcx; rv.y = rcy;
+          }
+          rv.dx = escolha[0]; rv.dy = escolha[1];
+        }
+      }
+
+      var rSpd = pac.power > 0 ? rSpeedBase * 0.68 : rSpeedBase;
+      pacMoveEntidade(rv, rSpd, dt, false);
+
+      // Colisão Lucas vs Rival
+      if (Math.hypot(pac.px - rv.x, pac.py - rv.y) < 0.65) {
+        var rx = PAC_OX + (rv.x + 0.5) * PAC_TILE;
+        var ry = PAC_OY + (rv.y + 0.5) * PAC_TILE;
+        if (pac.power > 0) {
+          ganhaPontos(15, rx, ry, '🎤 RIMOU ' + rv.nome.toUpperCase() + '! +15', '#FFD23F', false);
+          sfxCombo();
+          rv.x = 10; rv.y = 6; rv.dx = 0; rv.dy = -1; rv.preso = 2.5;
+        } else if (pac.invuln <= 0) {
+          pac.vidas--;
+          shake = 14;
+          sfxErro();
+          addParticulas(PAC_OX + (pac.px + 0.5) * PAC_TILE, PAC_OY + (pac.py + 0.5) * PAC_TILE, '#FF4D4D', 18);
+          if (pac.vidas <= 0) {
+            addTexto(W / 2, H / 2, 'GAME OVER! 🎤', '#FF5A5A');
+            fimDeJogo();
+            return;
+          } else {
+            addTexto(W / 2, H / 2 - 20, '❤️ ' + pac.vidas + (pac.vidas === 1 ? ' VIDA' : ' VIDAS'), '#FFD23F');
+            pacResetaPosicoes();
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  function drawPacman() {
+    // Fundo palco neon escuro
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#120826');
+    bg.addColorStop(1, '#1E0E3B');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Barra superior de status (Vidas, Fase, Modo Mussa Style)
+    ctx.font = '800 18px "Baloo 2", sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#FFD23F';
+    var coracoes = '';
+    for (var v = 0; v < pac.vidas; v++) coracoes += '❤️ ';
+    ctx.fillText((coracoes || '💔') + '  FASE ' + pac.fase, PAC_OX, 22);
+
+    ctx.textAlign = 'right';
+    if (pac.power > 0) {
+      ctx.fillStyle = '#1CC6E8';
+      ctx.fillText('🎤 MODO MUSSA STYLE! ' + pac.power.toFixed(1) + 's', W - PAC_OX, 22);
+    } else {
+      ctx.fillStyle = 'rgba(255,253,247,.75)';
+      ctx.fillText('Notas restantes: ' + pac.restantes, W - PAC_OX, 22);
+    }
+
+    // Desenho do Labirinto + Notas + Microfones Power-Up
+    for (var r = 0; r < PAC_ROWS; r++) {
+      for (var c = 0; c < PAC_COLS; c++) {
+        var x = PAC_OX + c * PAC_TILE;
+        var y = PAC_OY + r * PAC_TILE;
+        var val = pac.grid[r][c];
+        if (val === 1) {
+          ctx.fillStyle = '#2B1654';
+          ctx.fillRect(x + 2, y + 2, PAC_TILE - 4, PAC_TILE - 4);
+          ctx.strokeStyle = pac.power > 0 ? '#1CC6E8' : '#8A4FFF';
+          ctx.lineWidth = 2.5;
+          ctx.strokeRect(x + 3, y + 3, PAC_TILE - 6, PAC_TILE - 6);
+        } else if (val === 0) {
+          ctx.fillStyle = '#FFD23F';
+          ctx.beginPath();
+          ctx.arc(x + PAC_TILE / 2, y + PAC_TILE / 2, 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (val === 2) {
+          var pulso = 1 + Math.sin(pac.tempo * 7) * 0.16;
+          ctx.save();
+          ctx.translate(x + PAC_TILE / 2, y + PAC_TILE / 2);
+          ctx.scale(pulso, pulso);
+          ctx.fillStyle = 'rgba(255,210,63,0.22)';
+          ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
+          ctx.font = '20px Arial';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('🎤', 0, 1);
+          ctx.restore();
+        }
+      }
+    }
+
+    // Bolo Torta de Limão Bônus
+    if (pac.bolo) {
+      var bx = PAC_OX + (pac.bolo.x + 0.5) * PAC_TILE;
+      var by = PAC_OY + (pac.bolo.y + 0.5) * PAC_TILE + Math.sin(pac.tempo * 8) * 3;
+      ctx.font = '24px Arial';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🍰', bx, by);
+    }
+
+    // Desenho do Lucas-Man (boca abrindo/fechando + boné vermelho pra trás + óculos Mussa)
+    var lx = PAC_OX + (pac.px + 0.5) * PAC_TILE;
+    var ly = PAC_OY + (pac.py + 0.5) * PAC_TILE;
+    var pisca = pac.invuln > 0 && Math.floor(pac.tempo * 14) % 2 === 0;
+    if (!pisca) {
+      var ang = pac.dx === 1 ? 0 : pac.dx === -1 ? Math.PI : pac.dy === 1 ? Math.PI / 2 : -Math.PI / 2;
+      var abertura = 0.25 + Math.abs(Math.sin(pac.boca)) * 0.42;
+      ctx.save();
+      ctx.translate(lx, ly);
+      if (pac.power > 0) { ctx.shadowColor = '#1CC6E8'; ctx.shadowBlur = 18; }
+      ctx.fillStyle = '#FFD23F';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, 14, ang + abertura, ang + Math.PI * 2 - abertura);
+      ctx.closePath();
+      ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#181826'; ctx.stroke();
+
+      // Bonézinho vermelho pra trás do Mussa Style
+      ctx.fillStyle = '#E62E2D';
+      ctx.beginPath();
+      ctx.arc(0, -5, 10, Math.PI, 0);
+      ctx.fill();
+      ctx.fillRect(-13, -7, 8, 4); // aba pra trás
+
+      // Óculos escuro
+      ctx.fillStyle = '#181826';
+      ctx.fillRect(1, -6, 9, 4);
+      ctx.restore();
+    }
+
+    // Desenho dos 4 Rivais temáticos (Fantasmas)
+    for (var i = 0; i < pac.rivais.length; i++) {
+      var rv = pac.rivais[i];
+      var rx = PAC_OX + (rv.x + 0.5) * PAC_TILE;
+      var ry = PAC_OY + (rv.y + 0.5) * PAC_TILE;
+      var assustado = pac.power > 0;
+      var corRival = assustado
+        ? (pac.power < 2 && Math.floor(pac.tempo * 10) % 2 === 0 ? '#FFFFFF' : '#2E7CF6')
+        : rv.cor;
+
+      ctx.save();
+      ctx.translate(rx, ry);
+      ctx.fillStyle = corRival;
+      ctx.beginPath();
+      ctx.arc(0, -2, 13, Math.PI, 0);
+      ctx.lineTo(13, 12);
+      ctx.lineTo(7, 8);
+      ctx.lineTo(0, 12);
+      ctx.lineTo(-7, 8);
+      ctx.lineTo(-13, 12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#181826'; ctx.stroke();
+
+      // Olhinhos
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.arc(-4.5, -3, 3.5, 0, Math.PI * 2); ctx.arc(4.5, -3, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = assustado ? '#FFD23F' : '#181826';
+      ctx.beginPath();
+      ctx.arc(-4.5 + rv.dx * 1.5, -3 + rv.dy * 1.5, 1.8, 0, Math.PI * 2);
+      ctx.arc(4.5 + rv.dx * 1.5, -3 + rv.dy * 1.5, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /* ============================================================
      LOOP PRINCIPAL 60 FPS + CONTROLES UNIFICADOS
      ============================================================ */
   function montaControles() {
@@ -1330,6 +1724,13 @@ body{min-height:100svh;padding-bottom:3.5rem}
           controlesBar.appendChild(b);
         })(i);
       }
+    } else if (jogoAtual === 'pacman') {
+      [
+        ['⬅️', function () { pacSetDir(-1, 0); }],
+        ['⬆️', function () { pacSetDir(0, -1); }],
+        ['⬇️', function () { pacSetDir(0, 1); }],
+        ['➡️', function () { pacSetDir(1, 0); }]
+      ].forEach(addCtrl);
     }
   }
   function addCtrl(cfg) {
@@ -1365,10 +1766,16 @@ body{min-height:100svh;padding-bottom:3.5rem}
     }
   });
   canvas.addEventListener('pointerup', function (e) {
-    if (jogoAtual !== 'runner' || modo === 'fim' || modo === 'contagem') return;
+    if (modo === 'fim' || modo === 'contagem') return;
     var dx = e.clientX - touchX, dy = e.clientY - touchY;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) runnerMove(dx > 0 ? 1 : -1);
-    else if (dy < -40) runnerJump();
+    if (jogoAtual === 'runner') {
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) runnerMove(dx > 0 ? 1 : -1);
+      else if (dy < -40) runnerJump();
+    } else if (jogoAtual === 'pacman') {
+      if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+      if (Math.abs(dx) > Math.abs(dy)) pacSetDir(dx > 0 ? 1 : -1, 0);
+      else pacSetDir(0, dy > 0 ? 1 : -1);
+    }
   });
 
   document.addEventListener('keydown', function (e) {
@@ -1385,6 +1792,11 @@ body{min-height:100svh;padding-bottom:3.5rem}
     } else if (jogoAtual === 'ritmo') {
       var map = { a: 0, s: 1, d: 2, f: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
       if (map.hasOwnProperty(k)) { e.preventDefault(); hitLane(map[k]); }
+    } else if (jogoAtual === 'pacman') {
+      if (k === 'arrowleft' || k === 'a') { e.preventDefault(); pacSetDir(-1, 0); }
+      if (k === 'arrowright' || k === 'd') { e.preventDefault(); pacSetDir(1, 0); }
+      if (k === 'arrowup' || k === 'w') { e.preventDefault(); pacSetDir(0, -1); }
+      if (k === 'arrowdown' || k === 's') { e.preventDefault(); pacSetDir(0, 1); }
     }
   });
 
@@ -1399,6 +1811,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
       else if (jogoAtual === 'sonic') updateSonic(dt);
       else if (jogoAtual === 'flappy') updateFlappy(dt);
       else if (jogoAtual === 'ritmo') updateRitmo(dt);
+      else if (jogoAtual === 'pacman') updatePacman(dt);
     }
 
     ctx.save();
@@ -1412,6 +1825,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
     else if (jogoAtual === 'sonic') drawSonic();
     else if (jogoAtual === 'flappy') drawFlappy();
     else if (jogoAtual === 'ritmo') drawRitmo();
+    else if (jogoAtual === 'pacman') drawPacman();
 
     // Partículas & textos flutuantes
     for (var i = particulas.length - 1; i >= 0; i--) {
@@ -1512,6 +1926,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
     else if (nome === 'sonic') initSonic();
     else if (nome === 'flappy') initFlappy();
     else if (nome === 'ritmo') initRitmo();
+    else if (nome === 'pacman') initPacman();
     montaControles();
 
     if (novoModo === 'desafio') {

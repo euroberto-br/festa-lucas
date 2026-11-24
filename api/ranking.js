@@ -5,7 +5,7 @@
  *   - SUPABASE_SERVICE_ROLE_KEY
  */
 
-const JOGOS_VALIDOS = { runner: 400, sonic: 400, flappy: 400, ritmo: 400 };
+const JOGOS_VALIDOS = { runner: 1200, sonic: 1200, flappy: 1200, ritmo: 1200, pacman: 1200 };
 
 function limpa(v, max) {
   return String(v || '').trim().slice(0, max);
@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
       }
       const rows = await resp.json();
 
-      const porJogo = { runner: [], sonic: [], flappy: [], ritmo: [] };
+      const porJogo = { runner: [], sonic: [], flappy: [], ritmo: [], pacman: [] };
       const porPessoa = {};
 
       rows.forEach(function (r) {
