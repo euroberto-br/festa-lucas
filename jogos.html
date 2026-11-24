@@ -800,8 +800,9 @@ body.tela-fixa .btn-musica{display:none !important}
   var sonic = {};
   function initSonic() {
     sonic = {
-      y: 380, vy: 0, jumps: 0, rot: 0,
-      groundY: 406, speed: 340, scroll: 0, spawnT: 0, invuln: 0,
+      y: 372, vy: 0, jumps: 0, rot: 0,
+      groundY: 406, speed: 340, scroll: 0, spawnT: 0.35, invuln: 0,
+      trilha: [],
       objs: [] // { x, y, kind: 'ring'|'mic'|'spike'|'robo' }
     };
   }
@@ -810,11 +811,11 @@ body.tela-fixa .btn-musica{display:none !important}
       sonic.vy = sonic.jumps === 0 ? -610 : -540;
       sonic.jumps++;
       sfxPulo(sonic.jumps === 2);
-      addParticulas(140, sonic.y + 24, '#1CC6E8', 9);
+      addParticulas(140, sonic.y + 24, '#1CC6E8', 10);
     }
   }
   function updateSonic(dt) {
-    sonic.speed = Math.min(580, sonic.speed + dt * 11);
+    sonic.speed = Math.min(560, sonic.speed + dt * 10);
     sonic.scroll += sonic.speed * dt;
     if (sonic.invuln > 0) sonic.invuln -= dt;
 
@@ -829,18 +830,38 @@ body.tela-fixa .btn-musica{display:none !important}
       sonic.rot += dt * 15; // Spin Jump estilo Sonic!
     }
 
+    // Rastro suave seguindo a trajetória real do Lucas
+    sonic.trilha.unshift({ x: 140, y: sonic.y });
+    if (sonic.trilha.length > 8) sonic.trilha.pop();
+    for (var tr = 0; tr < sonic.trilha.length; tr++) {
+      sonic.trilha[tr].x -= sonic.speed * dt;
+    }
+
     sonic.spawnT -= dt;
     if (sonic.spawnT <= 0) {
-      sonic.spawnT = Math.max(0.55, 1.25 - (sonic.speed - 340) * 0.002);
+      sonic.spawnT = Math.max(0.75, 1.38 - (sonic.speed - 340) * 0.002);
       var r = Math.random();
-      if (r < 0.42) {
-        // Arco de 4 anéis dourados estilo Sonic!
+      var y0 = sonic.groundY - 34; // 372
+      if (r < 0.48) {
+        // Arco parabólico de 4 anéis calculado EXATAMENTE na física do pulo (vy=-610, g=1550)
+        var T = (2 * 610) / 1550; // ~0.787s
+        var fracs = [0.22, 0.41, 0.59, 0.78];
+        var xStart = W + 50;
+        var baseT = fracs[0] * T;
         for (var k = 0; k < 4; k++) {
-          sonic.objs.push({ x: W + 40 + k * 46, y: 270 - Math.sin((k / 3) * Math.PI) * 90, kind: 'ring' });
+          var tk = fracs[k] * T;
+          var xk = xStart + (tk - baseT) * sonic.speed;
+          var yk = y0 - 610 * tk + 0.5 * 1550 * tk * tk;
+          sonic.objs.push({ x: xk, y: yk, kind: 'ring' });
         }
-      } else if (r < 0.68) {
+      } else if (r < 0.62) {
+        // Linha rápida de 4 anéis rasantes no chão
+        for (var k2 = 0; k2 < 4; k2++) {
+          sonic.objs.push({ x: W + 50 + k2 * 52, y: y0 - 6, kind: 'ring' });
+        }
+      } else if (r < 0.80) {
         sonic.objs.push({ x: W + 50, y: sonic.groundY - 24, kind: 'spike' });
-        sonic.objs.push({ x: W + 50, y: sonic.groundY - 125, kind: 'mic' });
+        sonic.objs.push({ x: W + 50, y: y0 - 108, kind: 'mic' });
       } else {
         sonic.objs.push({ x: W + 50, y: sonic.groundY - 30, kind: 'robo' });
       }
@@ -850,14 +871,15 @@ body.tela-fixa .btn-musica{display:none !important}
       var o = sonic.objs[i];
       o.x -= sonic.speed * dt;
       var dx = 140 - o.x, dy = sonic.y - o.y;
-      if (dx * dx + dy * dy < 2400) {
+      var raioSq = (o.kind === 'ring' || o.kind === 'mic') ? 3025 : 2200;
+      if (dx * dx + dy * dy < raioSq) {
         if (o.kind === 'ring') {
           somaPontos(1, o.x, o.y, '⭕ +1');
           sonic.objs.splice(i, 1); continue;
         } else if (o.kind === 'mic') {
           somaPontos(3, o.x, o.y, '🎤 +3');
           sonic.objs.splice(i, 1); continue;
-        } else if (o.kind === 'robo' && sonic.vy > 0 && sonic.y < o.y - 6) {
+        } else if (o.kind === 'robo' && sonic.vy > 0 && sonic.y < o.y - 4) {
           // Esmagou o robô por cima igual Sonic!
           sonic.vy = -490;
           somaPontos(4, o.x, o.y, 'POW! +4');
@@ -868,80 +890,81 @@ body.tela-fixa .btn-musica{display:none !important}
           sonic.objs.splice(i, 1); continue;
         }
       }
-      if (o.x < -60) sonic.objs.splice(i, 1);
+      if (o.x < -80) sonic.objs.splice(i, 1);
     }
   }
   function drawSonic() {
     var t = bgmTempo;
-    // Céu vibrante pôr-do-sol estilo Green Hill + Festival
+    // Céu Palco Mussa Sunset Neon (alto contraste para os anéis dourados!)
     var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#0D47A1'); g.addColorStop(0.45, '#1CC6E8'); g.addColorStop(0.78, '#FF9E44'); g.addColorStop(1, '#461B6E');
+    g.addColorStop(0, '#14082E'); g.addColorStop(0.45, '#3E1468'); g.addColorStop(0.78, '#8C1D4A'); g.addColorStop(1, '#1A0F2E');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 
-    // Sol brilhante ao fundo
-    ctx.fillStyle = 'rgba(255,240,150,0.9)';
-    ctx.beginPath(); ctx.arc(640, 108, 46, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,210,63,0.22)';
-    ctx.beginPath(); ctx.arc(640, 108, 72, 0, Math.PI * 2); ctx.fill();
-
-    // Camada 1: Nuvens fofas em paralaxe lenta
-    ctx.fillStyle = 'rgba(255,255,255,0.78)';
-    var offN = (sonic.scroll * 0.1) % 280;
-    for (var nx = -offN; nx < W + 280; nx += 280) {
-      ctx.beginPath();
-      ctx.arc(nx + 40, 84, 24, 0, Math.PI * 2);
-      ctx.arc(nx + 68, 76, 30, 0, Math.PI * 2);
-      ctx.arc(nx + 98, 84, 22, 0, Math.PI * 2);
-      ctx.fill();
+    // Estrelas cintilantes
+    for (var st = 0; st < 26; st++) {
+      var sx = (st * 97 + 31) % W;
+      var sy = (st * 53 + 17) % 190;
+      ctx.fillStyle = 'rgba(255,245,205,' + (0.25 + 0.55 * Math.abs(Math.sin(t * 2 + st))) + ')';
+      ctx.beginPath(); ctx.arc(sx, sy, 1.5 + (st % 2), 0, Math.PI * 2); ctx.fill();
     }
 
-    // Camada 2: Montanhas geométricas distantes
-    var offM = (sonic.scroll * 0.2) % 240;
+    // Sol/Disco Neon Dourado ao fundo
+    ctx.fillStyle = 'rgba(255,210,63,0.16)';
+    ctx.beginPath(); ctx.arc(650, 118, 76, 0, Math.PI * 2); ctx.fill();
+    var sunG = ctx.createLinearGradient(650, 70, 650, 166);
+    sunG.addColorStop(0, '#FFF29C'); sunG.addColorStop(1, '#FF6B2B');
+    ctx.fillStyle = sunG;
+    ctx.beginPath(); ctx.arc(650, 118, 46, 0, Math.PI * 2); ctx.fill();
+
+    // Camada 1: Montanhas neon em paralaxe lenta
+    var offM = (sonic.scroll * 0.16) % 240;
     for (var mx = -offM; mx < W + 240; mx += 240) {
-      ctx.fillStyle = '#382B73';
-      ctx.beginPath(); ctx.moveTo(mx, sonic.groundY); ctx.lineTo(mx + 120, 210); ctx.lineTo(mx + 240, sonic.groundY); ctx.fill();
-      ctx.fillStyle = '#563D99';
-      ctx.beginPath(); ctx.moveTo(mx + 120, 210); ctx.lineTo(mx + 165, 275); ctx.lineTo(mx + 240, sonic.groundY); ctx.lineTo(mx + 120, sonic.groundY); ctx.fill();
+      ctx.fillStyle = '#28144D';
+      ctx.beginPath(); ctx.moveTo(mx, sonic.groundY); ctx.lineTo(mx + 120, 220); ctx.lineTo(mx + 240, sonic.groundY); ctx.fill();
+      ctx.fillStyle = '#3B1E6E';
+      ctx.beginPath(); ctx.moveTo(mx + 120, 220); ctx.lineTo(mx + 165, 285); ctx.lineTo(mx + 240, sonic.groundY); ctx.lineTo(mx + 120, sonic.groundY); ctx.fill();
     }
 
-    // Camada 3: Coqueiros/palmeiras estilizadas + prédios street
-    var offP = (sonic.scroll * 0.45) % 260;
+    // Camada 2: Cidade Street Neon + Coqueiros
+    var offP = (sonic.scroll * 0.42) % 260;
     for (var px = -offP; px < W + 260; px += 260) {
-      ctx.fillStyle = '#25194A';
-      ctx.fillRect(px + 20, 285, 64, sonic.groundY - 285);
-      ctx.fillStyle = '#FFD23F';
+      ctx.fillStyle = '#1B0E38';
+      ctx.fillRect(px + 20, 285, 66, sonic.groundY - 285);
+      ctx.fillStyle = '#1CC6E8';
       ctx.fillRect(px + 30, 300, 12, 12); ctx.fillRect(px + 54, 300, 12, 12);
+      ctx.fillStyle = '#FFD23F';
       ctx.fillRect(px + 30, 326, 12, 12); ctx.fillRect(px + 54, 326, 12, 12);
-      // Coqueiro estilo Green Hill
-      ctx.fillStyle = '#7A451E';
-      ctx.fillRect(px + 166, 308, 12, sonic.groundY - 308);
-      ctx.fillStyle = '#2FB359';
-      ctx.beginPath(); ctx.ellipse(px + 150, 306, 26, 10, -0.35, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(px + 194, 306, 26, 10, 0.35, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(px + 172, 294, 24, 10, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#5A2D18';
+      ctx.fillRect(px + 166, 312, 11, sonic.groundY - 312);
+      ctx.fillStyle = '#2CC770';
+      ctx.beginPath(); ctx.ellipse(px + 150, 310, 25, 9, -0.35, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(px + 194, 310, 25, 9, 0.35, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(px + 172, 298, 23, 9, 0, 0, Math.PI * 2); ctx.fill();
     }
 
-    // Chão quadriculado clássico estilo Green Hill
+    // Chão quadriculado Neon estilo Green Hill / Palco Mussa
+    ctx.fillStyle = '#1CC6E8';
+    ctx.fillRect(0, sonic.groundY, W, 6);
     ctx.fillStyle = '#3EC96B';
-    ctx.fillRect(0, sonic.groundY, W, 16);
-    ctx.fillStyle = '#7AF09D';
-    ctx.fillRect(0, sonic.groundY, W, 5);
+    ctx.fillRect(0, sonic.groundY + 6, W, 10);
     var tile = 44, offG = sonic.scroll % (tile * 2);
     for (var gx = -offG; gx < W + tile * 2; gx += tile) {
       var par = Math.floor((gx + offG) / tile) % 2 === 0;
-      ctx.fillStyle = par ? '#8B4513' : '#C26D27';
+      ctx.fillStyle = par ? '#2B1654' : '#46217A';
       ctx.fillRect(gx, sonic.groundY + 16, tile, 40);
-      ctx.fillStyle = par ? '#C26D27' : '#8B4513';
+      ctx.fillStyle = par ? '#46217A' : '#2B1654';
       ctx.fillRect(gx, sonic.groundY + 56, tile, 40);
     }
 
-    // Objetos (anéis girando com brilho!)
+    // Objetos (anéis girando com halo luminoso!)
     sonic.objs.forEach(function (o) {
       if (o.kind === 'ring') {
-        var rx = Math.max(5, Math.abs(Math.cos(t * 5 + o.x * 0.02)) * 16);
+        var rx = Math.max(6, Math.abs(Math.cos(t * 5 + o.x * 0.02)) * 16);
+        ctx.fillStyle = 'rgba(255,210,63,0.18)';
+        ctx.beginPath(); ctx.arc(o.x, o.y, 21, 0, Math.PI * 2); ctx.fill();
         ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 6;
         ctx.beginPath(); ctx.ellipse(o.x, o.y, rx, 16, 0, 0, Math.PI * 2); ctx.stroke();
-        ctx.strokeStyle = '#FFF8CC'; ctx.lineWidth = 2;
+        ctx.strokeStyle = '#FFF9D6'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.ellipse(o.x, o.y, rx * 0.7, 11, 0, 0, Math.PI * 2); ctx.stroke();
       } else {
         ctx.font = '38px Arial, sans-serif';
@@ -950,11 +973,15 @@ body.tela-fixa .btn-musica{display:none !important}
       }
     });
 
-    // Rastro de velocidade
-    ctx.fillStyle = 'rgba(28,198,232,0.34)';
-    ctx.beginPath(); ctx.arc(108, sonic.y, 26, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,210,63,0.22)';
-    ctx.beginPath(); ctx.arc(82, sonic.y, 18, 0, Math.PI * 2); ctx.fill();
+    // Rastro dinâmico seguindo o arco do pulo
+    for (var tr = sonic.trilha.length - 1; tr >= 1; tr--) {
+      var pt = sonic.trilha[tr];
+      var alpha = (1 - tr / sonic.trilha.length) * 0.36;
+      ctx.fillStyle = sonic.jumps > 0 ? 'rgba(28,198,232,' + alpha + ')' : 'rgba(255,210,63,' + alpha + ')';
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, Math.max(8, 30 - tr * 3), 0, Math.PI * 2);
+      ctx.fill();
+    }
     if (!(sonic.invuln > 0 && Math.floor(sonic.invuln * 18) % 2 === 0)) {
       desenhaAvatar(140, sonic.y, 34, sonic.jumps > 0 ? sonic.rot : 0, sonic.jumps > 0 ? '#1CC6E8' : '#FFD23F');
     }
