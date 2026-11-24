@@ -50,11 +50,14 @@ module.exports = async function handler(req, res) {
       });
 
       if (!resp.ok) {
-        return res.status(502).json({ ok: false, erro: 'erro-supabase' });
+        const errText = await resp.text().catch(() => '');
+        console.error('Supabase erro POST:', resp.status, errText);
+        return res.status(502).json({ ok: false, erro: 'erro-supabase', status: resp.status, detalhe: errText });
       }
       return res.status(200).json({ ok: true });
     } catch (err) {
-      return res.status(500).json({ ok: false, erro: 'erro-interno' });
+      console.error('Erro interno POST /api/ranking:', err);
+      return res.status(500).json({ ok: false, erro: 'erro-interno', mensagem: err && err.message, stack: err && err.stack });
     }
   }
 
