@@ -63,9 +63,19 @@ body{
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;
   font-weight:800;opacity:.82;font-size:.95rem;
 }
-.dots{display:flex;gap:.5rem}
-.dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.28)}
-.dot.ativo{background:var(--ouro);transform:scale(1.25)}
+.dots{display:flex;gap:.5rem;align-items:center}
+.dot{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.28);border:none;padding:0;cursor:pointer;transition:transform .15s ease, background .15s ease}
+.dot.ativo{background:var(--ouro);transform:scale(1.3)}
+.nav-telao{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}
+.btn-telao{
+  font-family:var(--display);font-weight:800;font-size:.9rem;
+  background:rgba(24,18,46,.9);color:var(--ouro);
+  border:2.5px solid var(--ouro);border-radius:99px;padding:.32rem .92rem;
+  text-decoration:none;cursor:pointer;
+  transition:transform .12s ease, background .12s ease;
+}
+.btn-telao:hover{background:var(--ouro);color:var(--grafite);transform:translateY(-1px)}
+.btn-telao--ativo{background:var(--vermelho);color:#fff;border-color:var(--ouro)}
 
 /* Galeria ao vivo no Telão + QR Code fixo */
 .telao-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
@@ -91,8 +101,16 @@ body{
 </head>
 <body>
 <header class="head">
-  <h1>🏆 Telão do Show · Lucas 7!</h1>
-  <span class="badge-vista" id="tituloVista">🏆 Ranking Geral</span>
+  <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+    <a class="btn-telao" href="index.html?festa=1">← Início</a>
+    <h1>🏆 Telão do Show · Lucas 7!</h1>
+  </div>
+  <div class="nav-telao">
+    <button type="button" class="btn-telao" id="btnAnt" aria-label="Slide anterior">‹ Anterior</button>
+    <button type="button" class="btn-telao" id="btnPausa" aria-pressed="false">⏸ Pausar</button>
+    <button type="button" class="btn-telao" id="btnProx" aria-label="Próximo slide">Próximo ›</button>
+    <span class="badge-vista" id="tituloVista">🏆 Ranking Geral</span>
+  </div>
 </header>
 
 <main class="painel">
@@ -116,14 +134,15 @@ body{
 (function () {
   'use strict';
   var API_URL = '/api/ranking';
-  var CLOUD_BASE = 'https://res.cloudinary.com/znbneca7/image/upload/w_520,h_520,c_fill,q_auto,f_auto/';
+  var CLOUD_BASE = 'https://res.cloudinary.com/znbneca7/image/upload/c_fill,w_520,h_520,g_auto,q_auto,f_auto/';
   var apiOk = true;
+  var pausado = false;
 
   var VISTAS = [
     { chave: 'geral', tipo: 'rank', titulo: '🏆 Ranking Geral' },
     { chave: 'fotos', tipo: 'fotos', titulo: '📸 Fotos dos Inscritos — Ao Vivo!' },
-    { chave: 'runner', tipo: 'rank', titulo: '🏃 Mussa Surf' },
     { chave: 'ia', tipo: 'ia', titulo: '🎨 Mural do Mussaverso IA' },
+    { chave: 'runner', tipo: 'rank', titulo: '🏃 Mussa Surf' },
     { chave: 'sonic', tipo: 'rank', titulo: '💨 Lucas Dash' },
     { chave: 'flappy', tipo: 'rank', titulo: '🚀 Voo do Mic' },
     { chave: 'ritmo', tipo: 'rank', titulo: '🎸 Batalha Hero' }
@@ -137,13 +156,20 @@ body{
   var gradeTelao = document.getElementById('gradeTelao');
   var tituloVista = document.getElementById('tituloVista');
   var dots = document.getElementById('dots');
+  var btnAnt = document.getElementById('btnAnt');
+  var btnProx = document.getElementById('btnProx');
+  var btnPausa = document.getElementById('btnPausa');
 
   function desenhaDots() {
     dots.innerHTML = '';
-    VISTAS.forEach(function (_, i) {
-      var s = document.createElement('span');
-      s.className = 'dot' + (i === idx ? ' ativo' : '');
-      dots.appendChild(s);
+    VISTAS.forEach(function (v, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'dot' + (i === idx ? ' ativo' : '');
+      b.title = v.titulo;
+      b.setAttribute('aria-label', v.titulo);
+      b.addEventListener('click', function () { idx = i; render(); });
+      dots.appendChild(b);
     });
   }
 
@@ -156,8 +182,10 @@ body{
     }
     gradeTelao.innerHTML = itens.slice(0, 8).map(function (f) {
       var ver = f.version ? 'v' + f.version + '/' : '';
-      var src = f.url || (CLOUD_BASE + ver + f.public_id + '.jpg');
-      var autor = String(f.autor || 'Tropa do Lucas').replace(/</g, '&lt;');
+      var ext = f.format || 'jpg';
+      var src = f.secure_url || f.url || (CLOUD_BASE + ver + f.public_id + '.' + ext);
+      var cap = (f.context && f.context.custom && f.context.custom.caption) || f.autor || 'Tropa do Lucas';
+      var autor = String(cap).replace(/</g, '&lt;');
       return '<div class="telao-foto"><img src="' + src + '" alt="' + autor + '"><span>' + autor + '</span></div>';
     }).join('');
   }
@@ -217,18 +245,43 @@ body{
 
     fetch('/api/galeria?pasta=festa_lucas&t=' + Date.now())
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d && d.ok && Array.isArray(d.fotos)) fotosLista = d.fotos; })
+      .then(function (d) {
+        var arr = (d && (d.resources || d.fotos)) || [];
+        if (Array.isArray(arr)) { fotosLista = arr; if (VISTAS[idx].tipo === 'fotos') render(); }
+      })
       .catch(function () {});
 
     fetch('/api/galeria?pasta=festa_lucas_ia&t=' + Date.now())
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d && d.ok && Array.isArray(d.fotos)) iaLista = d.fotos; })
+      .then(function (d) {
+        var arr = (d && (d.resources || d.fotos)) || [];
+        if (Array.isArray(arr)) { iaLista = arr; if (VISTAS[idx].tipo === 'ia') render(); }
+      })
       .catch(function () {});
   }
 
+  function avancar(delta) {
+    idx = (idx + delta + VISTAS.length) % VISTAS.length;
+    render();
+  }
+
+  btnAnt.addEventListener('click', function () { avancar(-1); });
+  btnProx.addEventListener('click', function () { avancar(1); });
+  btnPausa.addEventListener('click', function () {
+    pausado = !pausado;
+    btnPausa.setAttribute('aria-pressed', String(pausado));
+    btnPausa.classList.toggle('btn-telao--ativo', pausado);
+    btnPausa.textContent = pausado ? '▶ Continuar' : '⏸ Pausar';
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'ArrowRight') avancar(1);
+    else if (ev.key === 'ArrowLeft') avancar(-1);
+    else if (ev.key === ' ') { ev.preventDefault(); btnPausa.click(); }
+  });
+
   busca();
   setInterval(busca, 25000);
-  setInterval(function () { idx = (idx + 1) % VISTAS.length; render(); }, 12000);
+  setInterval(function () { if (!pausado) avancar(1); }, 12000);
 })();
 </script>
 <script src="js/palco-bg.js"></script>
