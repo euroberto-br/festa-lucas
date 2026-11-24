@@ -1521,7 +1521,7 @@ body.tela-fixa .btn-musica{display:none !important}
       pac.grid[gr][gc] = 3;
       pac.restantes--;
       pac.comidas++;
-      ganhaPontos(1, sx, sy, '+1', '#FFD23F', true);
+      somaPontos(1, sx, sy, '+1', true);
       som(520 + (pac.comidas % 4) * 55, 680, 0.045, 'sine', 0.06);
       if (pac.comidas % 28 === 0 && !pac.bolo) {
         pac.bolo = { x: 10, y: 7, t: 10 };
@@ -1531,22 +1531,22 @@ body.tela-fixa .btn-musica{display:none !important}
       pac.grid[gr][gc] = 3;
       pac.restantes--;
       pac.power = 7.0;
-      ganhaPontos(5, sx, sy, '🎤 MUSSA STYLE!', '#1CC6E8', false);
-      sfxCombo();
+      somaPontos(5, sx, sy, '🎤 MUSSA STYLE!', false);
+      som(660, 990, 0.16, 'triangle', 0.12);
     }
 
     // Coleta Bolo Torta de Limão bônus
     if (pac.bolo && Math.hypot(pac.px - pac.bolo.x, pac.py - pac.bolo.y) < 0.72) {
-      ganhaPontos(25, PAC_OX + (pac.bolo.x + 0.5) * PAC_TILE, PAC_OY + (pac.bolo.y + 0.5) * PAC_TILE, '🍰 +25 BOLO!', '#3EC96B', false);
-      sfxCombo();
+      somaPontos(25, PAC_OX + (pac.bolo.x + 0.5) * PAC_TILE, PAC_OY + (pac.bolo.y + 0.5) * PAC_TILE, '🍰 +25 BOLO!', false);
+      som(740, 1120, 0.18, 'triangle', 0.13);
       pac.bolo = null;
     }
 
     // Próxima fase ao limpar o labirinto!
     if (pac.restantes <= 0) {
       pac.fase++;
-      ganhaPontos(30, W / 2, H / 2, '🔥 FASE ' + pac.fase + '! +30', '#FFD23F', false);
-      sfxCombo();
+      somaPontos(30, W / 2, H / 2, '🔥 FASE ' + pac.fase + '! +30', false);
+      som(520, 1040, 0.22, 'triangle', 0.14);
       var novo = pacClonaMapa();
       pac.grid = novo.grid;
       pac.restantes = novo.total;
@@ -1613,8 +1613,8 @@ body.tela-fixa .btn-musica{display:none !important}
         var rx = PAC_OX + (rv.x + 0.5) * PAC_TILE;
         var ry = PAC_OY + (rv.y + 0.5) * PAC_TILE;
         if (pac.power > 0) {
-          ganhaPontos(15, rx, ry, '🎤 RIMOU ' + rv.nome.toUpperCase() + '! +15', '#FFD23F', false);
-          sfxCombo();
+          somaPontos(15, rx, ry, '🎤 RIMOU ' + rv.nome.toUpperCase() + '! +15', false);
+          som(780, 1180, 0.15, 'triangle', 0.12);
           rv.x = 10; rv.y = 6; rv.dx = 0; rv.dy = -1; rv.preso = 2.5;
         } else if (pac.invuln <= 0) {
           pac.vidas--;
@@ -1623,7 +1623,7 @@ body.tela-fixa .btn-musica{display:none !important}
           addParticulas(PAC_OX + (pac.px + 0.5) * PAC_TILE, PAC_OY + (pac.py + 0.5) * PAC_TILE, '#FF4D4D', 18);
           if (pac.vidas <= 0) {
             addTexto(W / 2, H / 2, 'GAME OVER! 🎤', '#FF5A5A');
-            fimDeJogo();
+            encerraDesafio();
             return;
           } else {
             addTexto(W / 2, H / 2 - 20, '❤️ ' + pac.vidas + (pac.vidas === 1 ? ' VIDA' : ' VIDAS'), '#FFD23F');
