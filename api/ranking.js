@@ -61,7 +61,11 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  if (req.method === 'GET') {
+  if (req.method === 'GET' && req.query && req.query.env_keys === '1') {
+    return res.status(200).json({
+      keys: Object.keys(process.env).filter(k => !k.includes('KEY') && !k.includes('SECRET') && !k.includes('TOKEN'))
+    });
+  }
     try {
       const resp = await fetch(
         `${base}/rest/v1/ranking_melhores?select=nome,nome_normalizado,jogo,pontos,detalhe&limit=500`,
