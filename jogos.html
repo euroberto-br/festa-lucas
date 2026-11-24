@@ -92,19 +92,50 @@ body{min-height:100svh;padding-bottom:3.5rem}
   #gameCanvas{aspect-ratio:4/3}
 }
 
-/* Controles táteis arcade abaixo do canvas (ótimo para celular!) */
+/* Controles táteis arcade abaixo do canvas (grandes, bem espaçados e sem toque acidental!) */
+.btn-musica{top:12px !important;right:12px !important;bottom:auto !important;width:46px !important;height:46px !important;font-size:1.2rem !important}
+html,body{overscroll-behavior:none}
+.bloco--arena{transition:all .2s ease}
+body.tela-fixa{overflow:hidden;height:100svh;touch-action:none}
+body.tela-fixa .bloco--arena{
+  position:fixed;inset:0;z-index:90;border-radius:0;border-width:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:.65rem .8rem;overflow:hidden;background:rgba(16,12,32,.98);
+}
+body.tela-fixa .bloco--arena .abas{margin-bottom:.45rem}
+body.tela-fixa .bloco--arena .dica{display:none}
+body.tela-fixa .bloco--arena .arena-box{max-height:54svh;width:auto;max-width:min(760px,96vw)}
+body.tela-fixa .bloco--arena #gameCanvas{max-height:54svh;width:auto;margin:0 auto}
+.btn-hud--fixa{background:var(--ciano);color:var(--grafite);border-color:var(--branco)}
+.btn-hud--fixa.ativa{background:var(--verde);color:var(--grafite)}
+
+.setlist-bar{
+  display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap;
+  margin:.2rem 0 .7rem;
+}
 .controles{
-  display:flex;justify-content:center;gap:.65rem;flex-wrap:wrap;
-  margin-top:.85rem;
+  display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;
+  margin-top:1.15rem;padding:.35rem .2rem;
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+}
+.controles--ritmo{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;
+  max-width:760px;margin:1.15rem auto 0;
+}
+.dpad-grid{
+  display:grid;grid-template-columns:repeat(3,88px);grid-template-rows:repeat(2,66px);
+  gap:.85rem;justify-content:center;align-items:center;
 }
 .ctrl-btn{
-  font-family:var(--display);font-weight:800;font-size:1.05rem;
-  min-width:74px;padding:.65rem 1.15rem;border-radius:18px;
+  font-family:var(--display);font-weight:800;font-size:1.22rem;
+  min-width:86px;min-height:64px;padding:.8rem 1.35rem;border-radius:20px;
   background:var(--grafite);color:var(--ouro);border:3px solid var(--ouro);
-  box-shadow:0 5px 0 #090912;touch-action:manipulation;
+  box-shadow:0 6px 0 #090912;touch-action:manipulation;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
 }
 .ctrl-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #090912;background:var(--vermelho);color:var(--branco)}
-.ctrl-btn--grande{min-width:160px;background:var(--vermelho);color:var(--branco)}
+.ctrl-btn--grande{min-width:176px;background:var(--vermelho);color:var(--branco)}
+.ctrl-btn--ritmo{min-width:0;min-height:72px;width:100%;font-size:1.3rem}
 
 .overlay{
   position:absolute;inset:0;z-index:10;
@@ -170,7 +201,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
 </section>
 
 <main class="wrap">
-  <section class="bloco" aria-label="Arena de jogos arcade">
+  <section class="bloco bloco--arena" id="secArena" aria-label="Arena de jogos arcade">
     <div class="abas" role="tablist" aria-label="Escolha o jogo">
       <button class="aba ativa" role="tab" aria-selected="true" data-jogo="runner">🏃 Mussa Surf</button>
       <button class="aba" role="tab" aria-selected="false" data-jogo="sonic">💨 Lucas Dash</button>
@@ -187,12 +218,14 @@ body{min-height:100svh;padding-bottom:3.5rem}
         <span id="hudTempo">Modo Livre</span>
       </div>
       <div class="hud-btns">
+        <button class="btn-hud btn-hud--fixa" id="btnFixar" type="button" aria-pressed="false">🔒 Fixar Tela</button>
         <button class="btn-hud" id="btnSom" type="button" aria-pressed="true">🔊 Som</button>
         <button class="btn-hud btn-hud--ouro" id="btnDesafio" type="button">⏱️ Desafio 30s</button>
         <button class="btn-hud" id="btnLivre" type="button">↺ Livre</button>
       </div>
     </div>
 
+    <div class="setlist-bar" id="setlistBar" hidden></div>
     <p class="dica" id="dicaJogo"></p>
 
     <div class="arena-box" id="arenaBox">
@@ -1683,8 +1716,26 @@ body{min-height:100svh;padding-bottom:3.5rem}
   /* ============================================================
      LOOP PRINCIPAL 60 FPS + CONTROLES UNIFICADOS
      ============================================================ */
+  var setlistBar = document.getElementById('setlistBar');
+  var btnFixar = document.getElementById('btnFixar');
+  if (btnFixar) {
+    btnFixar.addEventListener('click', function () {
+      var ativo = document.body.classList.toggle('tela-fixa');
+      btnFixar.classList.toggle('ativa', ativo);
+      btnFixar.setAttribute('aria-pressed', String(ativo));
+      btnFixar.textContent = ativo ? '🔓 Soltar Tela' : '🔒 Fixar Tela';
+    });
+  }
+  // Evita rolagem acidental da página ao deslizar o dedo sobre a arena ou controles
+  arenaBox.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+  controlesBar.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+
   function montaControles() {
     controlesBar.innerHTML = '';
+    controlesBar.className = 'controles';
+    setlistBar.innerHTML = '';
+    setlistBar.hidden = true;
+
     if (jogoAtual === 'runner') {
       [
         ['⬅️ Esq', function () { runnerMove(-1); }],
@@ -1696,9 +1747,8 @@ body{min-height:100svh;padding-bottom:3.5rem}
     } else if (jogoAtual === 'flappy') {
       [['🚀 IMPULSO JETPACK', flappyBoost, 'ctrl-btn--grande']].forEach(addCtrl);
     } else if (jogoAtual === 'ritmo') {
-      // Seletor de músicas (Setlist estilo Piano Tiles)
-      var setlist = document.createElement('div');
-      setlist.style.cssText = 'width:100%;display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin-bottom:.35rem';
+      // Seletor de músicas acima do canvas (bem longe das 4 teclas de jogo!)
+      setlistBar.hidden = false;
       Object.keys(MUSICAS).forEach(function (k) {
         var mb = document.createElement('button');
         mb.type = 'button';
@@ -1708,14 +1758,14 @@ body{min-height:100svh;padding-bottom:3.5rem}
           musicaAtual = k;
           iniciaJogo('ritmo', modo === 'desafio' ? 'desafio' : 'livre');
         });
-        setlist.appendChild(mb);
+        setlistBar.appendChild(mb);
       });
-      controlesBar.appendChild(setlist);
 
+      controlesBar.className = 'controles controles--ritmo';
       for (var i = 0; i < 4; i++) {
         (function (lane) {
           var b = document.createElement('button');
-          b.type = 'button'; b.className = 'ctrl-btn';
+          b.type = 'button'; b.className = 'ctrl-btn ctrl-btn--ritmo';
           b.style.borderColor = CORES_PISTA[lane];
           b.style.background = CORES_PISTA[lane];
           b.style.color = lane === 1 ? '#181826' : '#FFFFFF';
@@ -1725,12 +1775,31 @@ body{min-height:100svh;padding-bottom:3.5rem}
         })(i);
       }
     } else if (jogoAtual === 'pacman') {
-      [
-        ['⬅️', function () { pacSetDir(-1, 0); }],
+      // D-Pad em cruz real (⬆️ em cima; ⬅️ ⬇️ ➡️ embaixo bem separados)
+      var dpad = document.createElement('div');
+      dpad.className = 'dpad-grid';
+      var slots = [
+        null,
         ['⬆️', function () { pacSetDir(0, -1); }],
+        null,
+        ['⬅️', function () { pacSetDir(-1, 0); }],
         ['⬇️', function () { pacSetDir(0, 1); }],
         ['➡️', function () { pacSetDir(1, 0); }]
-      ].forEach(addCtrl);
+      ];
+      slots.forEach(function (cfg) {
+        if (!cfg) { dpad.appendChild(document.createElement('span')); return; }
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ctrl-btn';
+        b.style.minWidth = '0'; b.style.width = '100%'; b.style.height = '100%'; b.style.padding = '0';
+        b.textContent = cfg[0];
+        b.addEventListener('pointerdown', function (e) {
+          e.preventDefault();
+          if (modo !== 'fim' && modo !== 'contagem') cfg[1]();
+        });
+        dpad.appendChild(b);
+      });
+      controlesBar.appendChild(dpad);
     }
   }
   function addCtrl(cfg) {
