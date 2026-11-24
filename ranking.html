@@ -78,6 +78,7 @@ body{
 .btn-telao--ativo{background:var(--vermelho);color:#fff;border-color:var(--ouro)}
 
 /* Galeria ao vivo no Telão + QR Code fixo */
+[hidden]{display:none !important}
 .telao-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
 .telao-foto{
   background:rgba(16,12,32,.92);border:3px solid var(--ouro);border-radius:20px;overflow:hidden;
@@ -175,7 +176,9 @@ body{
 
   function renderGaleria(itens, vazioMsg) {
     lista.hidden = true;
+    lista.innerHTML = '';
     gradeTelao.hidden = false;
+    gradeTelao.innerHTML = '';
     if (!itens.length) {
       gradeTelao.innerHTML = '<div class="vazio" style="grid-column:1/-1">' + vazioMsg + '</div>';
       return;
@@ -205,6 +208,7 @@ body{
     }
 
     gradeTelao.hidden = true;
+    gradeTelao.innerHTML = '';
     lista.hidden = false;
 
     if (!apiOk) {
