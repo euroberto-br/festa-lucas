@@ -62,7 +62,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
 }
 .campo input::placeholder{color:rgba(255,253,247,.5)}
 .campo input:focus{outline:3px solid var(--ouro);border-color:var(--ouro)}
-#inputFotos{display:none}
+#inputFotos{position:fixed;left:-9999px;width:1px;height:1px;opacity:0}
 .fila{margin-top:1rem;display:flex;flex-direction:column;gap:.55rem}
 .fila-item{
   background:rgba(255,210,63,.14);color:var(--creme);border:2px solid var(--ouro);border-radius:14px;
@@ -193,8 +193,8 @@ body{min-height:100svh;padding-bottom:3.5rem}
         <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Tio Bruno, Mãe do Pedro...">
       </div>
       <div>
-        <input id="inputFotos" type="file" accept="image/*" multiple>
-        <button class="cta cta--fotos" id="btnEscolher" type="button">Escolher fotos 📸</button>
+        <input id="inputFotos" type="file" accept="image/*,.heic,.heif" multiple>
+        <label class="cta cta--fotos" id="btnEscolher" for="inputFotos" role="button" tabindex="0">Escolher fotos 📸</label>
       </div>
     </div>
     <div class="fila" id="fila" aria-live="polite"></div>
@@ -286,83 +286,161 @@ body{min-height:100svh;padding-bottom:3.5rem}
     try { localStorage.setItem('festa-lucas-nome', campoNome.value.trim()); } catch (e) {}
   });
 
-  btnEscolher.addEventListener('click', function () { inputFotos.click(); });
+  btnEscolher.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputFotos.click(); }
+  });
 
   function comprimir(arquivo) {
     return new Promise(function (resolve) {
-      var img = new Image();
-      var url = URL.createObjectURL(arquivo);
-      img.onload = function () {
-        URL.revokeObjectURL(url);
-        var max = 1600;
-        var w = img.naturalWidth, h = img.naturalHeight;
-        if (w > max || h > max) {
-          var r = Math.min(max / w, max / h);
-          w = Math.round(w * r); h = Math.round(h * r);
+      var finalizado = false;
+      function conclui(res, ehJpeg) {
+        if (finalizado) return;
+        finalizado = true;
+        resolve({ blob: res, ehJpeg: Boolean(ehJpeg) });
+      }
+      // Timeout de segurança para iOS Safari / HEIC lento
+      var timer = setTimeout(function () { conclui(arquivo, false); }, 9000);
+
+      function desenhar(src, wOrig, hOrig, cleanup) {
+        try {
+          var max = 1400; // seguro contra limite de memória de canvas no iPhone 48MP
+          var w = wOrig, h = hOrig;
+          if (!w || !h) { clearTimeout(timer); if (cleanup) cleanup(); return conclui(arquivo, false); }
+          if (w > max || h > max) {
+            var r = Math.min(max / w, max / h);
+            w = Math.max(1, Math.round(w * r));
+            h = Math.max(1, Math.round(h * r));
+          }
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          var ctx = c.getContext('2d');
+          ctx.drawImage(src, 0, 0, w, h);
+          if (cleanup) cleanup();
+          if (c.toBlob) {
+            c.toBlob(function (blob) {
+              clearTimeout(timer);
+              c.width = 0; c.height = 0; // libera VRAM/RAM no iOS Safari
+              if (blob && blob.size > 0 && (blob.size < arquivo.size || /\.heic$|\.heif$/i.test(arquivo.name || ''))) {
+                conclui(blob, true);
+              } else {
+                conclui(arquivo, false);
+              }
+            }, 'image/jpeg', 0.82);
+          } else {
+            clearTimeout(timer);
+            c.width = 0; c.height = 0;
+            conclui(arquivo, false);
+          }
+        } catch (e) {
+          clearTimeout(timer);
+          if (cleanup) cleanup();
+          conclui(arquivo, false);
         }
-        var c = document.createElement('canvas');
-        c.width = w; c.height = h;
-        c.getContext('2d').drawImage(img, 0, 0, w, h);
-        c.toBlob(function (blob) {
-          resolve(blob && blob.size < arquivo.size ? blob : arquivo);
-        }, 'image/jpeg', 0.82);
-      };
-      img.onerror = function () { URL.revokeObjectURL(url); resolve(arquivo); };
-      img.src = url;
+      }
+
+      if (window.createImageBitmap) {
+        createImageBitmap(arquivo).then(function (bmp) {
+          desenhar(bmp, bmp.width, bmp.height, function () { if (bmp.close) bmp.close(); });
+        }).catch(function () {
+          carregarViaImg();
+        });
+      } else {
+        carregarViaImg();
+      }
+
+      function carregarViaImg() {
+        var img = new Image();
+        var url = URL.createObjectURL(arquivo);
+        img.onload = function () {
+          desenhar(img, img.naturalWidth, img.naturalHeight, function () { URL.revokeObjectURL(url); });
+        };
+        img.onerror = function () {
+          clearTimeout(timer);
+          URL.revokeObjectURL(url);
+          conclui(arquivo, false);
+        };
+        img.src = url;
+      }
     });
   }
 
   function enviarArquivo(arquivo) {
-    var nomeBase = campoNome.value.trim() || 'Convidado da Tropa';
-    try { localStorage.setItem('festa-lucas-nome', nomeBase); } catch (e) {}
-    var nome = missaoAtiva ? (nomeBase + ' · 🎯 ' + missaoAtiva) : nomeBase;
+    return new Promise(function (resolveEnvio) {
+      var nomeBase = campoNome.value.trim() || 'Convidado da Tropa';
+      try { localStorage.setItem('festa-lucas-nome', nomeBase); } catch (e) {}
+      var nome = missaoAtiva ? (nomeBase + ' · 🎯 ' + missaoAtiva) : nomeBase;
+      var nomeArq = (arquivo && arquivo.name) || ('foto-' + Date.now() + '.jpg');
 
-    var item = document.createElement('div');
-    item.className = 'fila-item';
-    item.innerHTML = '<span>Enviando ' + arquivo.name.replace(/</g, '&lt;') + '...</span><div class="barra"><span></span></div>';
-    fila.appendChild(item);
-    var barra = item.querySelector('.barra > span');
+      var item = document.createElement('div');
+      item.className = 'fila-item';
+      item.innerHTML = '<span>Preparando ' + nomeArq.replace(/</g, '&lt;') + '...</span><div class="barra"><span></span></div>';
+      fila.appendChild(item);
+      var barra = item.querySelector('.barra > span');
 
-    comprimir(arquivo).then(function (blob) {
-      var fd = new FormData();
-      fd.append('file', blob, arquivo.name);
-      fd.append('upload_preset', UPLOAD_PRESET);
-      fd.append('tags', TAG);
-      fd.append('context', 'caption=' + nome.replace(/[|=]/g, ' '));
+      comprimir(arquivo).then(function (out) {
+        var blob = out.blob;
+        var arqEnvio = out.ehJpeg ? nomeArq.replace(/\.[^.]+$/, '') + '.jpg' : nomeArq;
+        item.querySelector('span').textContent = 'Enviando ' + nomeArq.replace(/</g, '&lt;') + '...';
 
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', UPLOAD_URL);
-      xhr.upload.onprogress = function (e) {
-        if (e.lengthComputable) barra.style.width = Math.round((e.loaded / e.total) * 100) + '%';
-      };
-      xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          var res = JSON.parse(xhr.responseText);
-          barra.style.width = '100%';
-          barra.style.background = '#3EC96B';
-          item.querySelector('span').textContent = '✅ Enviada!';
-          locais.unshift({
-            public_id: res.public_id,
-            version: res.version,
-            autor: nome,
-            expira: Date.now() + 120000
-          });
-          try { localStorage.setItem('festa-lucas-carimbo-foto', '1'); } catch (e2) {}
-          render(fotos);
-          mostraToast('📸 Foto publicada! Carimbo conquistado no Passaporte!', 3400);
-          setTimeout(function () { item.remove(); }, 2500);
-        } else {
-          item.querySelector('span').textContent = '❌ Erro no envio (verifique preset festa_lucas no Cloudinary)';
-        }
-      };
-      xhr.onerror = function () { item.querySelector('span').textContent = '❌ Falha de rede ao enviar.'; };
-      xhr.send(fd);
+        var fd = new FormData();
+        fd.append('file', blob, arqEnvio);
+        fd.append('upload_preset', UPLOAD_PRESET);
+        fd.append('tags', TAG);
+        fd.append('context', 'caption=' + nome.replace(/[|=]/g, ' '));
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', UPLOAD_URL);
+        xhr.upload.onprogress = function (e) {
+          if (e.lengthComputable) barra.style.width = Math.round((e.loaded / e.total) * 100) + '%';
+        };
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var res = JSON.parse(xhr.responseText);
+            barra.style.width = '100%';
+            barra.style.background = '#3EC96B';
+            item.querySelector('span').textContent = '✅ Enviada!';
+            locais.unshift({
+              public_id: res.public_id,
+              version: res.version,
+              autor: nome,
+              expira: Date.now() + 120000
+            });
+            try { localStorage.setItem('festa-lucas-carimbo-foto', '1'); } catch (e2) {}
+            render(fotos);
+            mostraToast('📸 Foto publicada! Carimbo conquistado no Passaporte!', 3400);
+            setTimeout(function () { item.remove(); }, 2500);
+          } else {
+            item.querySelector('span').textContent = '❌ Erro no envio (HTTP ' + xhr.status + '). Tente novamente.';
+          }
+          resolveEnvio();
+        };
+        xhr.onerror = function () {
+          item.querySelector('span').textContent = '❌ Falha de rede ao enviar.';
+          resolveEnvio();
+        };
+        xhr.send(fd);
+      });
+    });
+  }
+
+  // Envio sequencial (1 foto por vez) para não estourar memória do iOS Safari com múltiplas fotos
+  var filaPendente = [];
+  var processandoFila = false;
+  function processarProximo() {
+    if (processandoFila || !filaPendente.length) return;
+    processandoFila = true;
+    var prox = filaPendente.shift();
+    enviarArquivo(prox).then(function () {
+      processandoFila = false;
+      processarProximo();
     });
   }
 
   inputFotos.addEventListener('change', function () {
-    Array.prototype.slice.call(inputFotos.files || []).forEach(enviarArquivo);
-    inputFotos.value = '';
+    var lista = Array.prototype.slice.call(inputFotos.files || []);
+    lista.forEach(function (f) { filaPendente.push(f); });
+    processarProximo();
+    setTimeout(function () { inputFotos.value = ''; }, 100);
   });
 
   function hashMoldura(id) {
