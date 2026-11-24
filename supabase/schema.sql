@@ -19,8 +19,8 @@ create table if not exists public.ranking_placares (
   criado_em timestamptz not null default now(),
   nome text not null check (char_length(trim(nome)) between 1 and 40),
   nome_normalizado text generated always as (lower(trim(nome))) stored,
-  jogo text not null check (jogo in ('runner', 'sonic', 'flappy', 'ritmo')),
-  pontos integer not null check (pontos between 1 and 400),
+  jogo text not null check (jogo in ('runner', 'sonic', 'flappy', 'ritmo', 'pacman')),
+  pontos integer not null check (pontos between 1 and 2000),
   detalhe text not null default '30s' check (char_length(detalhe) <= 20),
   aparelho text not null default '' check (char_length(aparelho) <= 32)
 );
