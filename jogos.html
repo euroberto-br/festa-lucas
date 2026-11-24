@@ -273,6 +273,7 @@ body.tela-fixa .btn-musica{display:none !important}
       <button class="aba" data-rk="sonic">Lucas Dash</button>
       <button class="aba" data-rk="flappy">Voo do Mic</button>
       <button class="aba" data-rk="ritmo">Batalha Hero</button>
+      <button class="aba" data-rk="pacman">Lucas-Man</button>
     </div>
     <ol class="rank-lista" id="rankLista">
       <li><span>Carregando o Ranking da Tropa... 🏆</span></li>
@@ -1389,7 +1390,7 @@ body.tela-fixa .btn-musica{display:none !important}
     '100000000000000000001',
     '101110101111101011101',
     '100000100010001000001',
-    '333110113333311011333',
+    '300000133333331000003',
     '100000100000001000001',
     '101110101111101011101',
     '100010000030000010001',
@@ -1457,15 +1458,18 @@ body.tela-fixa .btn-musica{display:none !important}
   }
 
   function pacMoveEntidade(ent, spd, dt, isPlayer) {
+    var step = Math.min(0.45, spd * dt);
     var cx = Math.round(ent.x), cy = Math.round(ent.y);
-    var distC = Math.hypot(ent.x - cx, ent.y - cy);
 
     if (isPlayer) {
       // Reversão instantânea de 180 graus
       if (ent.ndx === -ent.dx && ent.ndy === -ent.dy && (ent.ndx !== 0 || ent.ndy !== 0)) {
         ent.dx = ent.ndx; ent.dy = ent.ndy;
-      } else if (distC < 0.22 && (ent.ndx !== 0 || ent.ndy !== 0)) {
-        if (!pacEhParede(cx + ent.ndx, cy + ent.ndy)) {
+      }
+      // Se parado ou perto do centro (com tolerância maior que o passo!), tenta virar para nextDir
+      var distC = Math.hypot(ent.x - cx, ent.y - cy);
+      if ((ent.dx === 0 && ent.dy === 0) || distC <= Math.max(0.28, step + 0.06)) {
+        if ((ent.ndx !== 0 || ent.ndy !== 0) && !pacEhParede(cx + ent.ndx, cy + ent.ndy)) {
           if (ent.ndx !== ent.dx || ent.ndy !== ent.dy) {
             ent.x = cx; ent.y = cy;
           }
@@ -1474,23 +1478,25 @@ body.tela-fixa .btn-musica{display:none !important}
       }
     }
 
-    var nx = ent.x + ent.dx * spd * dt;
-    var ny = ent.y + ent.dy * spd * dt;
+    if (ent.dx === 0 && ent.dy === 0) return;
 
-    // Checa colisão com parede à frente
-    var nextCol = ent.dx > 0 ? Math.floor(nx + 0.45) : (ent.dx < 0 ? Math.ceil(nx - 0.45) : Math.round(nx));
-    var nextRow = ent.dy > 0 ? Math.floor(ny + 0.45) : (ent.dy < 0 ? Math.ceil(ny - 0.45) : Math.round(ny));
+    var nx = ent.x + ent.dx * step;
+    var ny = ent.y + ent.dy * step;
 
-    if (pacEhParede(nextCol, nextRow)) {
+    // Verifica se vai cruzar para dentro de uma parede
+    var aheadCol = ent.dx > 0 ? Math.floor(nx + 0.5) : (ent.dx < 0 ? Math.ceil(nx - 0.5) : Math.round(nx));
+    var aheadRow = ent.dy > 0 ? Math.floor(ny + 0.5) : (ent.dy < 0 ? Math.ceil(ny - 0.5) : Math.round(ny));
+
+    if (pacEhParede(aheadCol, aheadRow)) {
       ent.x = Math.round(ent.x);
       ent.y = Math.round(ent.y);
-      if (!isPlayer) { ent.dx = 0; ent.dy = 0; }
+      ent.dx = 0; ent.dy = 0;
     } else {
       ent.x = nx;
       ent.y = ny;
     }
 
-    // Túnel lateral (teletransporte esquerda <-> direita)
+    // Túnel lateral (teletransporte esquerda <-> direita na linha 6)
     if (ent.x < -0.4) ent.x = PAC_COLS - 0.6;
     else if (ent.x > PAC_COLS - 0.6) ent.x = -0.4;
   }
@@ -1683,11 +1689,15 @@ body.tela-fixa .btn-musica{display:none !important}
           ctx.save();
           ctx.translate(x + PAC_TILE / 2, y + PAC_TILE / 2);
           ctx.scale(pulso, pulso);
-          ctx.fillStyle = 'rgba(255,210,63,0.22)';
-          ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
-          ctx.font = '20px Arial';
+          ctx.fillStyle = '#FFD23F';
+          ctx.shadowColor = '#FFD23F'; ctx.shadowBlur = 14;
+          ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.lineWidth = 2; ctx.strokeStyle = '#181826'; ctx.stroke();
+          ctx.fillStyle = '#181826';
+          ctx.font = '800 14px "Baloo 2", sans-serif';
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText('🎤', 0, 1);
+          ctx.fillText('★', 0, 1);
           ctx.restore();
         }
       }
