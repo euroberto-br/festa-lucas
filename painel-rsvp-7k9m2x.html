@@ -13,35 +13,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/tema-mussa.css">
 <style>
-body{min-height:100svh;padding:1.5rem 1rem 3rem;background:#110822;color:var(--branco)}
+body{min-height:100svh;padding:1.5rem 1rem 3rem;background:#FFF6E5;color:var(--grafite)}
 .wrap{max-width:1080px;margin:0 auto}
 .topo{display:block;text-align:center;margin-bottom:1.5rem;padding:0}
-.topo h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.7rem);color:var(--branco);text-shadow:0 .06em 0 var(--vermelho), 0 .13em 0 var(--grafite)}
-.topo p{font-weight:700;opacity:.88;color:var(--ouro)}
+.topo h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.7rem);color:var(--vermelho-escuro);text-shadow:0 .06em 0 var(--ouro)}
+.topo p{font-weight:700;opacity:.88;color:var(--palco-roxo)}
 
 .login-box{
   max-width:420px;margin:2rem auto;
-  background:linear-gradient(160deg, rgba(32,22,56,.92), rgba(16,14,32,.96));
-  color:var(--branco);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background:linear-gradient(160deg, rgba(255,255,255,.95), rgba(255,248,232,.95));
+  color:var(--grafite);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:3.5px solid var(--ouro);border-radius:28px;padding:1.8rem 1.4rem;text-align:center;
-  box-shadow:0 10px 0 #090912, 0 24px 46px rgba(0,0,0,.55), 0 0 34px rgba(255,210,63,.18);
+  box-shadow:0 8px 0 var(--grafite), 0 20px 38px rgba(70,27,110,.16);
 }
 .login-box input{
   width:100%;font-family:var(--texto);font-size:1.05rem;font-weight:800;
-  background:rgba(12,10,24,.82);color:var(--branco);
-  border:2.5px solid rgba(255,210,63,.65);border-radius:14px;padding:.72rem .9rem;margin:1rem 0;text-align:center;
+  background:#FFFFFF;color:var(--grafite);
+  border:2.5px solid var(--ouro-escuro);border-radius:14px;padding:.72rem .9rem;margin:1rem 0;text-align:center;
 }
 .login-box .cta{width:100%}
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.3rem}
 .stat{
-  background:linear-gradient(160deg, rgba(32,22,56,.88), rgba(16,14,32,.94));
+  background:linear-gradient(160deg, rgba(255,255,255,.95), rgba(255,248,232,.95));
+  color:var(--grafite);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   border:3px solid var(--ouro);border-radius:20px;
   padding:.95rem;text-align:center;
-  box-shadow:0 6px 0 #090912, 0 0 22px rgba(255,210,63,.12);
+  box-shadow:0 6px 0 var(--grafite), 0 14px 26px rgba(70,27,110,.12);
 }
-.stat .num{font-family:var(--display);font-weight:800;font-size:2.1rem;color:var(--ouro);line-height:1}
+.stat .num{font-family:var(--display);font-weight:800;font-size:2.1rem;color:var(--vermelho);line-height:1}
 .stat .lbl{font-size:.86rem;font-weight:800;opacity:.9;margin-top:.2rem}
 
 .barra-acoes{
@@ -55,11 +56,11 @@ body{min-height:100svh;padding:1.5rem 1rem 3rem;background:#110822;color:var(--b
 
 .tabela-wrap{
   background:var(--creme);color:var(--grafite);border:4px solid var(--ouro);
-  border-radius:24px;overflow-x:auto;box-shadow:0 10px 0 #090912;
+  border-radius:24px;overflow-x:auto;box-shadow:0 8px 0 var(--grafite), 0 20px 38px rgba(70,27,110,.16);
 }
 table{width:100%;border-collapse:collapse;font-size:.92rem}
 th,td{padding:.75rem .9rem;text-align:left;border-bottom:2px solid #EFE4D6;vertical-align:top}
-th{background:#181826;color:var(--ouro);font-family:var(--display);font-weight:800;white-space:nowrap}
+th{background:#FFF1C2;color:var(--vermelho-escuro);font-family:var(--display);font-weight:800;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 .badge-num{
   display:inline-block;background:var(--ouro);color:var(--grafite);
@@ -80,14 +81,14 @@ tr:last-child td{border-bottom:none}
 
 /* Modal de inclusão / edição */
 .modal-bg{
-  position:fixed;inset:0;z-index:200;background:rgba(10,8,20,.76);backdrop-filter:blur(4px);
+  position:fixed;inset:0;z-index:200;background:rgba(70,27,110,.45);backdrop-filter:blur(4px);
   display:none;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;
 }
 .modal-bg.aberto{display:flex}
 .modal-card{
   width:100%;max-width:540px;background:var(--creme);color:var(--grafite);
   border:4px solid var(--ouro);border-radius:26px;padding:1.4rem 1.35rem;
-  box-shadow:0 14px 36px rgba(0,0,0,.45);max-height:92svh;overflow-y:auto;
+  box-shadow:0 14px 36px rgba(70,27,110,.28);max-height:92svh;overflow-y:auto;
 }
 .modal-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem}
 .modal-head h2{font-family:var(--display);font-weight:800;font-size:1.45rem;margin:0}
@@ -127,8 +128,8 @@ tr:last-child td{border-bottom:none}
 .abas-painel{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.25rem}
 .aba-p{
   font-family:var(--display);font-weight:800;font-size:.94rem;text-decoration:none;
-  background:rgba(255,255,255,.1);color:var(--creme);
-  border:2.5px solid rgba(255,210,63,.5);border-radius:99px;padding:.42rem 1.1rem;
+  background:#FFFFFF;color:var(--grafite);
+  border:2.5px solid var(--ouro-escuro);border-radius:99px;padding:.42rem 1.1rem;
 }
 .aba-p.ativa{background:var(--ouro);color:var(--grafite);border-color:var(--grafite)}
 .btn-chk{background:#EFE4D6;color:var(--grafite)}
@@ -136,7 +137,7 @@ tr:last-child td{border-bottom:none}
 .capsula-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
 .capsula-card{
   background:var(--creme);color:var(--grafite);border:3.5px solid var(--ouro);border-radius:22px;
-  padding:1.15rem 1.2rem;box-shadow:0 6px 0 #090912;
+  padding:1.15rem 1.2rem;box-shadow:0 6px 0 var(--grafite);
 }
 .capsula-card h3{font-family:var(--display);font-weight:800;font-size:1.15rem;margin-bottom:.15rem}
 .capsula-meta{font-size:.8rem;font-weight:800;color:#6A4B8A;margin-bottom:.6rem}
@@ -179,7 +180,7 @@ tr:last-child td{border-bottom:none}
       <div class="stat"><div class="num" id="stPessoas">0</div><div class="lbl">Total de Pessoas</div></div>
       <div class="stat"><div class="num" id="stAdultos">0</div><div class="lbl">Adultos</div></div>
       <div class="stat"><div class="num" id="stCriancas">0</div><div class="lbl">Crianças</div></div>
-      <div class="stat" style="border-color:var(--verde)"><div class="num" id="stChegaram" style="color:var(--verde)">0</div><div class="lbl">Chegaram (Check-in)</div></div>
+      <div class="stat" style="border-color:var(--verde)"><div class="num" id="stChegaram" style="color:#1E8E4A">0</div><div class="lbl">Chegaram (Check-in)</div></div>
     </div>
 
     <div class="barra-acoes">
@@ -216,14 +217,14 @@ tr:last-child td{border-bottom:none}
 
     <div id="abaCapsula" hidden>
       <div class="barra-acoes">
-        <strong style="font-family:var(--display);font-size:1.25rem;color:var(--ouro)">📼 Rimas e Recados Selados (<span id="stCapsula">0</span>)</strong>
+        <strong style="font-family:var(--display);font-size:1.25rem;color:var(--vermelho-escuro)">📼 Rimas e Recados Selados (<span id="stCapsula">0</span>)</strong>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
           <button class="cta" id="btnAtualizarCapsula" type="button">↺ Atualizar</button>
           <button class="cta cta--capsula" id="btnImprimirCapsula" type="button">🖨️ Imprimir / Salvar PDF</button>
         </div>
       </div>
       <div class="capsula-grid" id="gridCapsula">
-        <div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Carregando mensagens da Cápsula do Tempo...</div>
+        <div class="vazio" style="grid-column:1/-1;color:var(--palco-roxo)">Carregando mensagens da Cápsula do Tempo...</div>
       </div>
     </div>
   </section>
@@ -606,7 +607,7 @@ tr:last-child td{border-bottom:none}
 
   function carregarCapsula() {
     if (!chaveAtual) return;
-    gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Carregando mensagens...</div>';
+    gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--palco-roxo)">Carregando mensagens...</div>';
     fetch('/api/capsula?listar=1&t=' + Date.now(), {
       headers: { 'X-Admin-Key': chaveAtual }
     }).then(function (r) { return r.json(); }).then(function (d) {
@@ -614,7 +615,7 @@ tr:last-child td{border-bottom:none}
       var msgs = d.mensagens || [];
       document.getElementById('stCapsula').textContent = String(msgs.length);
       if (!msgs.length) {
-        gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--ouro)">Nenhuma mensagem gravada na Cápsula do Tempo ainda.</div>';
+        gridCapsula.innerHTML = '<div class="vazio" style="grid-column:1/-1;color:var(--palco-roxo)">Nenhuma mensagem gravada na Cápsula do Tempo ainda.</div>';
         return;
       }
       gridCapsula.innerHTML = msgs.map(function (m) {

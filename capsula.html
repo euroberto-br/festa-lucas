@@ -30,18 +30,18 @@ body{min-height:100svh;padding-bottom:3rem}
 .nav-mini{display:flex;gap:.45rem;flex-wrap:wrap}
 .nav-mini a{
   font-family:var(--display);font-weight:700;font-size:.82rem;
-  color:var(--branco);background:rgba(21,21,36,.72);text-decoration:none;
-  border:2px solid rgba(255,255,255,.35);border-radius:99px;padding:.28rem .75rem;
+  color:var(--grafite);background:rgba(255,255,255,.85);text-decoration:none;
+  border:2px solid var(--ouro-escuro);border-radius:99px;padding:.28rem .75rem;
 }
 
 .hero-pag{
-  text-align:center;color:var(--branco);
+  text-align:center;color:var(--grafite);
   max-width:720px;margin:0 auto;padding:.6rem 1.1rem 1.8rem;
 }
 .hero-pag h1{
   font-family:var(--display);font-weight:800;
   font-size:clamp(2rem,8.5vw,3.4rem);line-height:1;
-  text-shadow:0 5px 0 var(--grafite);margin:.5rem 0;
+  color:var(--grafite);text-shadow:0 4px 0 var(--ouro);margin:.5rem 0;
 }
 .hero-pag p{font-weight:700;font-size:1.05rem;opacity:.95}
 
@@ -49,44 +49,44 @@ body{min-height:100svh;padding-bottom:3rem}
   max-width:700px;margin:0 auto;padding:0 1.1rem;
 }
 .card-capsula{
-  background:linear-gradient(160deg, rgba(32,22,56,.90), rgba(16,14,32,.95));
-  color:var(--branco);
+  background:linear-gradient(160deg, rgba(255,255,255,.95), rgba(255,248,232,.95));
+  color:var(--grafite);
   border:3.5px solid var(--verde);border-radius:32px;
   padding:2rem 1.5rem;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.16), 0 10px 0 var(--grafite-escuro), 0 26px 48px rgba(0,0,0,.56), 0 0 36px rgba(62,201,107,.22);
+  box-shadow:0 8px 0 var(--grafite), 0 20px 38px rgba(70,27,110,.16);
 }
 .fita-ilustra{width:170px;margin:0 auto 1.2rem;filter:drop-shadow(0 0 18px rgba(255,210,63,.35))}
 .aviso-selada{
-  background:rgba(255,210,63,.12);color:var(--creme);border:2px dashed rgba(255,210,63,.65);border-radius:18px;
+  background:#FFF1C2;color:var(--grafite);border:2px dashed var(--ouro-escuro);border-radius:18px;
   padding:.8rem 1rem;font-size:.9rem;font-weight:800;margin-bottom:1.4rem;text-align:center;
 }
 .campo{margin-bottom:1.15rem}
 .campo label{
-  display:block;font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:.35rem;color:var(--ouro);
+  display:block;font-family:var(--display);font-weight:800;font-size:1rem;margin-bottom:.35rem;color:var(--palco-roxo);
 }
 .campo input,.campo textarea{
   width:100%;font-family:var(--texto);font-size:1rem;font-weight:700;
-  color:var(--branco);background:rgba(12,10,24,.78);
-  border:2.5px solid rgba(62,201,107,.58);border-radius:16px;padding:.72rem .95rem;
+  color:var(--grafite);background:#FFFFFF;
+  border:2.5px solid var(--ouro-escuro);border-radius:16px;padding:.72rem .95rem;
 }
-.campo input::placeholder,.campo textarea::placeholder{color:rgba(255,253,247,.5)}
+.campo input::placeholder,.campo textarea::placeholder{color:rgba(24,24,38,.45)}
 .campo textarea{min-height:150px;resize:vertical}
-.campo input:focus,.campo textarea:focus{outline:3px solid var(--ouro);border-color:var(--ouro);outline-offset:1px}
+.campo input:focus,.campo textarea:focus{outline:3px solid var(--ouro);border-color:var(--palco-roxo);outline-offset:1px}
 .grade-2{display:grid;grid-template-columns:1fr;gap:1rem}
 @media (min-width:600px){.grade-2{grid-template-columns:1fr 1fr}}
 
 .tipos{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem}
 .tipo-btn{
   font-family:var(--display);font-weight:800;font-size:.88rem;
-  background:rgba(255,255,255,.08);color:var(--creme);
-  border:2.5px solid rgba(255,255,255,.35);border-radius:99px;padding:.38rem .92rem;
-  box-shadow:0 3px 0 var(--grafite-escuro);transition:transform .12s ease, background .12s ease;
+  background:#FFFFFF;color:var(--grafite);
+  border:2.5px solid var(--ouro-escuro);border-radius:99px;padding:.38rem .92rem;
+  box-shadow:0 3px 0 var(--grafite);transition:transform .12s ease, background .12s ease;
 }
-.tipo-btn.ativo{background:var(--ouro);color:var(--grafite);border-color:var(--grafite);transform:translateY(2px);box-shadow:0 1px 0 var(--grafite-escuro)}
+.tipo-btn.ativo{background:var(--ouro);color:var(--grafite);border-color:var(--grafite);transform:translateY(2px);box-shadow:0 1px 0 var(--grafite)}
 
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.contador-chars{font-size:.82rem;font-weight:800;color:rgba(255,253,247,.72);text-align:right;margin-top:.25rem}
+.contador-chars{font-size:.82rem;font-weight:800;color:rgba(24,24,38,.72);text-align:right;margin-top:.25rem}
 .acoes{text-align:center;margin-top:1.4rem}
 .acoes .cta{width:100%;max-width:360px}
 .acoes .cta[disabled]{opacity:.6;cursor:wait}
@@ -116,7 +116,7 @@ body{min-height:100svh;padding-bottom:3rem}
 </header>
 
 <section class="hero-pag">
-  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">CÁPSULA DO TEMPO · LUCAS NERY 7 ANOS</p>
+  <p style="font-family:var(--display);font-weight:800;color:var(--vermelho-escuro);letter-spacing:.08em">CÁPSULA DO TEMPO · LUCAS NERY 7 ANOS</p>
   <h1>📼 Mande sua Rima!</h1>
   <p>Grave uma mensagem, um conselho ou uma rima especial que ficará selada até o Lucas crescer.</p>
 </section>

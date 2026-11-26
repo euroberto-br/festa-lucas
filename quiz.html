@@ -18,28 +18,28 @@
 body{min-height:100svh;padding-bottom:4rem}
 .wrap{max-width:740px;margin:0 auto;padding:0 1.1rem}
 .quiz-card{padding:1.9rem 1.45rem;border-color:var(--ouro)}
-.quiz-meta{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;font-family:var(--display);font-weight:800;color:var(--ouro)}
-.prog-bar{height:10px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;margin-bottom:1.3rem}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;font-family:var(--display);font-weight:800;color:var(--palco-roxo)}
+.prog-bar{height:10px;background:rgba(24,24,38,.12);border-radius:99px;overflow:hidden;margin-bottom:1.3rem}
 .prog-bar > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ouro),var(--laranja));transition:width .3s ease}
-.pergunta-txt{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,5.2vw,1.8rem);line-height:1.18;margin-bottom:1.25rem;color:var(--branco)}
+.pergunta-txt{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,5.2vw,1.8rem);line-height:1.18;margin-bottom:1.25rem;color:var(--grafite)}
 .opcoes{display:grid;gap:.7rem}
 .opcao-btn{
   text-align:left;font-family:var(--texto);font-weight:800;font-size:1rem;
-  color:var(--creme);background:rgba(12,10,24,.82);
-  border:2.5px solid rgba(255,210,63,.5);border-radius:18px;padding:.85rem 1.05rem;
+  color:var(--grafite);background:#FFFFFF;
+  border:2.5px solid var(--ouro-escuro);border-radius:18px;padding:.85rem 1.05rem;
   transition:transform .12s ease, border-color .12s ease, background .12s ease;
 }
-.opcao-btn:hover:not([disabled]){transform:translateY(-2px);border-color:var(--ouro);background:rgba(46,24,78,.9)}
-.opcao-btn.certa{background:rgba(62,201,107,.28);border-color:var(--verde);color:#fff}
-.opcao-btn.errada{background:rgba(230,46,45,.28);border-color:var(--vermelho);color:#fff}
-.feedback{margin-top:1rem;font-weight:800;min-height:1.6rem;text-align:center;color:var(--ouro)}
+.opcao-btn:hover:not([disabled]){transform:translateY(-2px);border-color:var(--ouro-escuro);background:#FFF1C2}
+.opcao-btn.certa{background:rgba(62,201,107,.28);border-color:var(--verde);color:var(--grafite)}
+.opcao-btn.errada{background:rgba(230,46,45,.28);border-color:var(--vermelho);color:var(--grafite)}
+.feedback{margin-top:1rem;font-weight:800;min-height:1.6rem;text-align:center;color:var(--vermelho-escuro)}
 .resultado-box{text-align:center;display:none}
 .resultado-box.ativo{display:block}
-.nota-grande{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,10vw,3.6rem);color:var(--ouro);line-height:1;margin:.5rem 0}
+.nota-grande{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,10vw,3.6rem);color:var(--vermelho);line-height:1;margin:.5rem 0}
 .campo-nome{
   width:min(320px,100%);font-family:var(--texto);font-size:1rem;font-weight:800;
-  color:var(--branco);background:rgba(12,10,24,.85);
-  border:2.5px solid var(--ouro);border-radius:14px;padding:.65rem .95rem;text-align:center;margin:.9rem 0;
+  color:var(--grafite);background:#FFFFFF;
+  border:2.5px solid var(--ouro-escuro);border-radius:14px;padding:.65rem .95rem;text-align:center;margin:.9rem 0;
 }
 </style>
 </head>
@@ -56,7 +56,7 @@ body{min-height:100svh;padding-bottom:4rem}
 </header>
 
 <section class="hero-pag">
-  <p style="font-family:var(--display);font-weight:800;color:var(--ouro);letter-spacing:.08em">DESAFIO DA TROPA · 7 PERGUNTAS</p>
+  <p style="font-family:var(--display);font-weight:800;color:var(--vermelho-escuro);letter-spacing:.08em">DESAFIO DA TROPA · 7 PERGUNTAS</p>
   <h1>🧠 Quiz do Lucas!</h1>
   <p>Será que você conhece bem o aniversariante? Responda às 7 perguntas e entre no Ranking da Tropa!</p>
 </section>
@@ -76,9 +76,9 @@ body{min-height:100svh;padding-bottom:4rem}
 
     <div class="resultado-box" id="telaResultado">
       <div style="font-size:3.2rem" id="resEmoji">🏆🎤</div>
-      <h2 id="resTitulo" style="font-family:var(--display);font-weight:800;font-size:1.9rem;color:var(--branco)"></h2>
+      <h2 id="resTitulo" style="font-family:var(--display);font-weight:800;font-size:1.9rem;color:var(--vermelho-escuro)"></h2>
       <div class="nota-grande" id="resPts">0 pts</div>
-      <p id="resResumo" style="font-weight:700;color:var(--creme)"></p>
+      <p id="resResumo" style="font-weight:700;color:var(--grafite)"></p>
       <div>
         <input class="campo-nome" id="inNomeQuiz" type="text" maxlength="40" placeholder="Seu nome para o Ranking...">
       </div>

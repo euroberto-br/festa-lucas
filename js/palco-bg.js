@@ -59,15 +59,15 @@
     var t = (now - t0) / 1000;
 
     var g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#1B0A36');
-    g.addColorStop(0.42, '#46156B');
-    g.addColorStop(0.80, '#78173A');
-    g.addColorStop(1, '#120D1E');
+    g.addColorStop(0, '#FFF4D6');
+    g.addColorStop(0.42, '#FFE4EE');
+    g.addColorStop(0.80, '#EADFFF');
+    g.addColorStop(1, '#FFF0DF');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
     var rad = ctx.createRadialGradient(W * mouseX, H * 0.2, 10, W * mouseX, H * 0.2, Math.max(W, H) * 0.52);
-    rad.addColorStop(0, 'rgba(255,210,63,0.16)');
+    rad.addColorStop(0, 'rgba(255,210,63,0.30)');
     rad.addColorStop(0.55, 'rgba(230,46,45,0.08)');
     rad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = rad;
@@ -75,7 +75,7 @@
 
     var sw1 = Math.sin(t * 0.8) * W * 0.18 + (mouseX - 0.5) * 80;
     var sw2 = Math.cos(t * 0.68) * W * 0.18 - (mouseX - 0.5) * 80;
-    ctx.fillStyle = 'rgba(255,210,63,0.10)';
+    ctx.fillStyle = 'rgba(255,210,63,0.18)';
     ctx.beginPath();
     ctx.moveTo(W * 0.14, H);
     ctx.lineTo(W * 0.04 + sw1, 0);
@@ -83,7 +83,7 @@
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(28,198,232,0.10)';
+    ctx.fillStyle = 'rgba(28,198,232,0.14)';
     ctx.beginPath();
     ctx.moveTo(W * 0.86, H);
     ctx.lineTo(W * 0.75 + sw2, 0);
@@ -93,13 +93,13 @@
 
     for (var i = 0; i < estrelas.length; i++) {
       var s = estrelas[i];
-      ctx.fillStyle = 'rgba(255,245,205,' + (0.24 + 0.6 * Math.abs(Math.sin(t * 1.7 + s.p))) + ')';
+      ctx.fillStyle = 'rgba(212,155,0,' + (0.24 + 0.6 * Math.abs(Math.sin(t * 1.7 + s.p))) + ')';
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    ctx.fillStyle = 'rgba(14,10,28,0.48)';
+    ctx.fillStyle = 'rgba(138,79,255,0.10)';
     var bw = Math.max(46, Math.round(W / 18));
     for (var bx = 0; bx < W + bw; bx += bw) {
       var bh = 44 + ((bx * 37) % 82);
@@ -112,7 +112,7 @@
       var wave = Math.abs(Math.sin(t * 2.5 + c * 0.45)) * 0.65 + Math.abs(Math.cos(t * 3.0 - c * 0.3)) * 0.35;
       var eh = 16 + wave * 56;
       ctx.fillStyle = CORES[c % CORES.length];
-      ctx.globalAlpha = 0.15;
+      ctx.globalAlpha = 0.28;
       ctx.fillRect(c * colW + 4, H - eh, Math.max(6, colW - 8), eh);
     }
     ctx.globalAlpha = 1;
