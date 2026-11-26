@@ -49,7 +49,8 @@ function montaRegistro(body) {
   const nome = limpa(body.nome, 80);
   if (!nome) return { erro: 'nome-obrigatorio' };
 
-  const tipoTitular = body.tipoTitular === 'crianca' ? 'crianca' : 'adulto';
+  if (body.tipoTitular !== 'adulto' && body.tipoTitular !== 'crianca') return { erro: 'tipo-titular-obrigatorio' };
+  const tipoTitular = body.tipoTitular;
   const observacao = limpa(body.observacao, 400);
   const listaBruta = Array.isArray(body.acompanhantes) ? body.acompanhantes.slice(0, 15) : [];
   const acompanhantes = [];

@@ -73,7 +73,10 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
 .campo input::placeholder,.campo textarea::placeholder{color:rgba(24,24,38,.45)}
 .campo select option{background:#FFFFFF;color:var(--grafite)}
 .campo textarea{min-height:84px;resize:vertical}
-.campo input[aria-invalid="true"]{border-color:var(--vermelho);outline:3px solid rgba(230,46,45,.35);outline-offset:1px}
+.linha-titular{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center}
+.linha-titular select{width:auto;padding:.65rem .7rem}
+@media (max-width:420px){.linha-titular{grid-template-columns:1fr}}
+.campo select[aria-invalid="true"],.campo input[aria-invalid="true"]{border-color:var(--vermelho);outline:3px solid rgba(230,46,45,.35);outline-offset:1px}
 .campo input:focus,.campo textarea:focus,.campo select:focus{outline:3px solid var(--ouro);border-color:var(--palco-roxo);outline-offset:1px}
 
 .acomp-lista{display:flex;flex-direction:column;gap:.65rem;margin-bottom:.75rem}
@@ -218,7 +221,14 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     <form id="formPresenca" novalidate>
       <div class="campo">
         <label for="nome">Seu nome completo *</label>
-        <input id="nome" name="nome" type="text" maxlength="80" placeholder="Ex.: Maria Oliveira" required>
+        <div class="linha-titular">
+          <input id="nome" name="nome" type="text" maxlength="80" placeholder="Ex.: Maria Oliveira" required>
+          <select id="tipoTitular" name="tipoTitular" aria-label="Você é adulto ou criança? (obrigatório)" required>
+            <option value="" selected disabled>Adulto ou criança? *</option>
+            <option value="adulto">Adulto</option>
+            <option value="crianca">Criança</option>
+          </select>
+        </div>
       </div>
 
       <div class="campo">
@@ -332,6 +342,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
   var telaSucesso = document.getElementById('telaSucesso');
   var avisoPrazo = document.getElementById('avisoPrazo');
   var campoNome = document.getElementById('nome');
+  var selTipoTitular = document.getElementById('tipoTitular');
   var campoObs = document.getElementById('observacao');
   var campoHp = document.getElementById('siteRobo');
   var acompLista = document.getElementById('acompLista');
@@ -396,15 +407,18 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
 
   function atualizaResumo() {
     var acomp = lerAcompanhantes();
-    var adultos = 1;
-    var criancas = 0;
+    var tipoTit = selTipoTitular.value;
+    var adultos = tipoTit === 'adulto' ? 1 : 0;
+    var criancas = tipoTit === 'crianca' ? 1 : 0;
     acomp.forEach(function (a) {
       if (a.tipo === 'crianca') criancas++;
       else adultos++;
     });
-    var total = adultos + criancas;
-    var partes = [adultos + (adultos === 1 ? ' adulto' : ' adultos')];
+    var total = 1 + acomp.length;
+    var partes = [];
+    if (adultos > 0) partes.push(adultos + (adultos === 1 ? ' adulto' : ' adultos'));
     if (criancas > 0) partes.push(criancas + (criancas === 1 ? ' criança' : ' crianças'));
+    if (!tipoTit) partes.push('você: informe se é adulto ou criança');
     txtResumo.textContent = total + (total === 1 ? ' pessoa' : ' pessoas') + ' (' + partes.join(' + ') + ')';
   }
 
@@ -443,6 +457,10 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
   campoNome.addEventListener('input', function () {
     if (campoNome.value.trim()) campoNome.removeAttribute('aria-invalid');
   });
+  selTipoTitular.addEventListener('change', function () {
+    selTipoTitular.removeAttribute('aria-invalid');
+    atualizaResumo();
+  });
   btnAdd.addEventListener('click', function () { adicionaLinha('', 'adulto'); });
   atualizaResumo();
 
@@ -454,6 +472,14 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     var nome = campoNome.value.trim();
     if (!nome) { campoNome.setAttribute('aria-invalid', 'true'); mostraToast('Digite seu nome completo para confirmar! ✅'); campoNome.focus(); return; }
     campoNome.removeAttribute('aria-invalid');
+
+    var tipoTitular = selTipoTitular.value;
+    if (tipoTitular !== 'adulto' && tipoTitular !== 'crianca') {
+      selTipoTitular.setAttribute('aria-invalid', 'true');
+      selTipoTitular.focus();
+      mostraToast('Informe se você é adulto ou criança! 👤');
+      return;
+    }
 
     var semNome = Array.prototype.filter.call(acompLista.querySelectorAll('.acomp-row input'), function (i) { return !i.value.trim(); });
     if (semNome.length) {
@@ -475,7 +501,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nome: nome,
-        tipoTitular: 'adulto',
+        tipoTitular: tipoTitular,
         acompanhantes: acompanhantes,
         observacao: observacao
       })
@@ -505,6 +531,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
 
   document.getElementById('btnNova').addEventListener('click', function () {
     campoNome.value = '';
+    selTipoTitular.value = '';
     campoObs.value = '';
     acompLista.innerHTML = '';
     atualizaResumo();
