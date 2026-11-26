@@ -119,6 +119,7 @@ input[type="file"]{position:fixed;left:-9999px;width:1px;height:1px;opacity:0}
   background:#FFFFFF;border:3px dashed var(--ouro-escuro);
   border-radius:24px;padding:2rem 1rem;font-weight:800;
 }
+input[aria-invalid="true"]{border-color:var(--vermelho) !important;outline:3px solid rgba(230,46,45,.35);outline-offset:1px}
 </style>
 </head>
 <body>
@@ -141,8 +142,8 @@ input[type="file"]{position:fixed;left:-9999px;width:1px;height:1px;opacity:0}
 <main class="wrap">
   <section class="card-studio">
     <div class="campo">
-      <label for="campoNome">Seu nome</label>
-      <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Lucas, Tia Ana, Pedro...">
+      <label for="campoNome">Seu nome *</label>
+      <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Lucas, Tia Ana, Pedro..." required>
     </div>
 
     <label class="consent">
@@ -244,8 +245,21 @@ input[type="file"]{position:fixed;left:-9999px;width:1px;height:1px;opacity:0}
     try { localStorage.setItem('festa-lucas-nome', campoNome.value.trim()); } catch (e) {}
   });
 
-  btnCamera.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inCamera.click(); } });
-  btnGaleria.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inGaleria.click(); } });
+  function exigeNome(e) {
+    if (campoNome.value.trim()) { campoNome.removeAttribute('aria-invalid'); return true; }
+    if (e) e.preventDefault();
+    campoNome.setAttribute('aria-invalid', 'true');
+    campoNome.focus();
+    mostraToast('Digite seu nome antes de tirar a selfie! ✍️');
+    return false;
+  }
+  campoNome.addEventListener('input', function () {
+    if (campoNome.value.trim()) campoNome.removeAttribute('aria-invalid');
+  });
+  btnCamera.addEventListener('click', exigeNome);
+  btnGaleria.addEventListener('click', exigeNome);
+  btnCamera.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (exigeNome()) inCamera.click(); } });
+  btnGaleria.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (exigeNome()) inGaleria.click(); } });
 
   function desenhaPill(ctx, x, y, w, h, r) {
     ctx.beginPath();
@@ -407,11 +421,12 @@ input[type="file"]{position:fixed;left:-9999px;width:1px;height:1px;opacity:0}
 
   function processar(arquivo) {
     if (!arquivo || gerandoAgora) return;
+    if (!exigeNome()) return;
     gerandoAgora = true;
     btnCamera.disabled = true;
     btnGaleria.disabled = true;
 
-    var nome = campoNome.value.trim() || 'Tropa do Lucas';
+    var nome = campoNome.value.trim();
     try { localStorage.setItem('festa-lucas-nome', nome); } catch (e) {}
 
     boxResultado.classList.remove('ativa');

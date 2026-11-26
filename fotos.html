@@ -156,6 +156,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
 .lb-fechar{top:16px;right:16px}
 .lb-ant{left:14px;top:50%;transform:translateY(-50%)}
 .lb-prox{right:14px;top:50%;transform:translateY(-50%)}
+input[aria-invalid="true"]{border-color:var(--vermelho) !important;outline:3px solid rgba(230,46,45,.35);outline-offset:1px}
 </style>
 </head>
 <body>
@@ -189,8 +190,8 @@ body{min-height:100svh;padding-bottom:3.5rem}
     </div>
     <div class="envio-grade">
       <div class="campo">
-        <label for="campoNome">Seu nome (aparece na legenda da foto)</label>
-        <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Tio Bruno, Mãe do Pedro...">
+        <label for="campoNome">Seu nome * (aparece na legenda da foto)</label>
+        <input id="campoNome" type="text" maxlength="60" placeholder="Ex.: Tio Bruno, Mãe do Pedro..." required>
       </div>
       <div>
         <input id="inputFotos" type="file" accept="image/*,.heic,.heif" multiple>
@@ -286,8 +287,20 @@ body{min-height:100svh;padding-bottom:3.5rem}
     try { localStorage.setItem('festa-lucas-nome', campoNome.value.trim()); } catch (e) {}
   });
 
+  function exigeNome(e) {
+    if (campoNome.value.trim()) { campoNome.removeAttribute('aria-invalid'); return true; }
+    if (e) e.preventDefault();
+    campoNome.setAttribute('aria-invalid', 'true');
+    campoNome.focus();
+    mostraToast('Digite seu nome antes de enviar as fotos! ✍️');
+    return false;
+  }
+  campoNome.addEventListener('input', function () {
+    if (campoNome.value.trim()) campoNome.removeAttribute('aria-invalid');
+  });
+  btnEscolher.addEventListener('click', exigeNome);
   btnEscolher.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputFotos.click(); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (exigeNome()) inputFotos.click(); }
   });
 
   function comprimir(arquivo) {
@@ -366,7 +379,8 @@ body{min-height:100svh;padding-bottom:3.5rem}
 
   function enviarArquivo(arquivo) {
     return new Promise(function (resolveEnvio) {
-      var nomeBase = campoNome.value.trim() || 'Convidado da Tropa';
+      var nomeBase = campoNome.value.trim();
+      if (!nomeBase) { exigeNome(); resolveEnvio(false); return; }
       try { localStorage.setItem('festa-lucas-nome', nomeBase); } catch (e) {}
       var nome = missaoAtiva ? (nomeBase + ' · 🎯 ' + missaoAtiva) : nomeBase;
       var nomeArq = (arquivo && arquivo.name) || ('foto-' + Date.now() + '.jpg');
@@ -438,6 +452,7 @@ body{min-height:100svh;padding-bottom:3.5rem}
 
   inputFotos.addEventListener('change', function () {
     var lista = Array.prototype.slice.call(inputFotos.files || []);
+    if (lista.length && !exigeNome()) { inputFotos.value = ''; return; }
     lista.forEach(function (f) { filaPendente.push(f); });
     processarProximo();
     setTimeout(function () { inputFotos.value = ''; }, 100);

@@ -73,6 +73,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
 .campo input::placeholder,.campo textarea::placeholder{color:rgba(24,24,38,.45)}
 .campo select option{background:#FFFFFF;color:var(--grafite)}
 .campo textarea{min-height:84px;resize:vertical}
+.campo input[aria-invalid="true"]{border-color:var(--vermelho);outline:3px solid rgba(230,46,45,.35);outline-offset:1px}
 .campo input:focus,.campo textarea:focus,.campo select:focus{outline:3px solid var(--ouro);border-color:var(--palco-roxo);outline-offset:1px}
 
 .acomp-lista{display:flex;flex-direction:column;gap:.65rem;margin-bottom:.75rem}
@@ -415,7 +416,7 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     var row = document.createElement('div');
     row.className = 'acomp-row';
     row.innerHTML =
-      '<input type="text" maxlength="80" placeholder="Nome do acompanhante">' +
+      '<input type="text" maxlength="80" placeholder="Nome do acompanhante *" aria-label="Nome do acompanhante (obrigatório)" required>' +
       '<select aria-label="Tipo">' +
         '<option value="adulto">Adulto</option>' +
         '<option value="crianca">Criança</option>' +
@@ -425,7 +426,10 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     var sel = row.querySelector('select');
     if (nomeInit) inp.value = nomeInit;
     if (tipoInit) sel.value = tipoInit;
-    inp.addEventListener('input', atualizaResumo);
+    inp.addEventListener('input', function () {
+      if (inp.value.trim()) inp.removeAttribute('aria-invalid');
+      atualizaResumo();
+    });
     sel.addEventListener('change', atualizaResumo);
     row.querySelector('.btn-rem').addEventListener('click', function () {
       row.remove();
@@ -436,6 +440,9 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     atualizaResumo();
   }
 
+  campoNome.addEventListener('input', function () {
+    if (campoNome.value.trim()) campoNome.removeAttribute('aria-invalid');
+  });
   btnAdd.addEventListener('click', function () { adicionaLinha('', 'adulto'); });
   atualizaResumo();
 
@@ -445,7 +452,16 @@ body{min-height:100svh;padding-bottom:3.2rem;background:#FFF6E5;color:var(--graf
     if (Date.now() > PRAZO_MS) { mostraEncerrado(); return; }
 
     var nome = campoNome.value.trim();
-    if (!nome) { mostraToast('Digite seu nome completo para confirmar! ✅'); campoNome.focus(); return; }
+    if (!nome) { campoNome.setAttribute('aria-invalid', 'true'); mostraToast('Digite seu nome completo para confirmar! ✅'); campoNome.focus(); return; }
+    campoNome.removeAttribute('aria-invalid');
+
+    var semNome = Array.prototype.filter.call(acompLista.querySelectorAll('.acomp-row input'), function (i) { return !i.value.trim(); });
+    if (semNome.length) {
+      semNome.forEach(function (i) { i.setAttribute('aria-invalid', 'true'); });
+      semNome[0].focus();
+      mostraToast('Preencha o nome de cada acompanhante (ou remova a linha com ✕).');
+      return;
+    }
 
     var acompanhantes = lerAcompanhantes();
     var observacao = campoObs.value.trim();

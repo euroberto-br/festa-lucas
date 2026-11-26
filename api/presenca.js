@@ -56,15 +56,18 @@ function montaRegistro(body) {
   let totalAdultos = tipoTitular === 'adulto' ? 1 : 0;
   let totalCriancas = tipoTitular === 'crianca' ? 1 : 0;
 
+  let acompanhanteSemNome = false;
   listaBruta.forEach(function (item) {
     if (!item) return;
     const n = limpa(typeof item === 'string' ? item : item.nome, 80);
-    if (!n) return;
+    if (!n) { acompanhanteSemNome = true; return; }
     const tipo = (typeof item === 'object' && item.tipo === 'crianca') ? 'crianca' : 'adulto';
     acompanhantes.push({ nome: n, tipo });
     if (tipo === 'crianca') totalCriancas++;
     else totalAdultos++;
   });
+
+  if (acompanhanteSemNome) return { erro: 'nome-acompanhante-obrigatorio' };
 
   const totalPessoas = totalAdultos + totalCriancas;
   const acompanhantesTexto = acompanhantes
