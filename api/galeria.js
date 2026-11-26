@@ -15,6 +15,21 @@ const MAPA_PASTAS = {
   'festa_lucas_ia': { folder: 'festa-lucas-ia', tags: ['festa_lucas_ia', 'festa-lucas-ia'] }
 };
 
+// Imagens de teste (23–24/11/2026) que não podem aparecer no site. Elas continuam no
+// Cloudinary porque apagar exige a Admin API; quando forem apagadas lá, esta lista pode sair.
+const OCULTAS = new Set([
+  'wsch5avgwnucjeyt7h7g',
+  'beqnr55hvycl2tia2wco',
+  'kz4v8imxnzupnfmqqspi',
+  'b7lvueu8u7wj0pcynrew',
+  'wbzfdndazsiniranz4ah',
+  'eaahu29kq2c4iz9wcz9j'
+]);
+
+function visivel(it) {
+  return it && !OCULTAS.has(it.public_id);
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ ok: false, erro: 'metodo-nao-permitido' });
@@ -43,7 +58,7 @@ module.exports = async function handler(req, res) {
 
       if (r.ok) {
         const data = await r.json();
-        const resources = (data.resources || []).map(function (it) {
+        const resources = (data.resources || []).filter(visivel).map(function (it) {
           return {
             public_id: it.public_id,
             version: it.version,
@@ -69,7 +84,7 @@ module.exports = async function handler(req, res) {
     const resources = [];
     resultados.forEach(function (d) {
       (d.resources || []).forEach(function (it) {
-        if (!vistos[it.public_id]) {
+        if (visivel(it) && !vistos[it.public_id]) {
           vistos[it.public_id] = true;
           resources.push(it);
         }
